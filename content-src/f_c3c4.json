@@ -3,64 +3,140 @@
     "id": "c3-f01",
     "comp": 3,
     "topic": "Work formula",
-    "front": "How do you calculate the work done on an object, and when is the work zero?",
-    "back": "W = Fd: force times the distance moved in the direction of the force, measured in joules. If the object does not move, or the force is perpendicular to the motion, no work is done: holding a heavy box still does zero work on it."
+    "front": "Write the formula for work.",
+    "back": "W = Fd: force times the distance moved in the direction of the force, measured in joules. If the object does not move, or the force is perpendicular to the motion, no work is done: holding a heavy box still does zero work on it.",
+    "drill": "type",
+    "answers": [
+      "w=fd",
+      "w=f*d",
+      "w=f x d",
+      "work=force*distance",
+      "work=force x distance"
+    ]
   },
   {
     "id": "c3-f02",
     "comp": 3,
     "topic": "Power formula",
-    "front": "What is power, and what formula and unit go with it?",
-    "back": "Power is the rate of doing work: P = W/t, measured in watts (1 W = 1 J/s). Two students lifting identical boxes do the same work, but the one who finishes faster develops more power."
+    "front": "Write the formula for power.",
+    "back": "Power is the rate of doing work: P = W/t, measured in watts (1 W = 1 J/s). Two students lifting identical boxes do the same work, but the one who finishes faster develops more power.",
+    "drill": "type",
+    "answers": [
+      "p=w/t",
+      "power=work/time",
+      "p=work/time",
+      "w/t"
+    ]
   },
   {
     "id": "c3-f03",
     "comp": 3,
     "topic": "Kinetic energy formula",
-    "front": "What is the formula for kinetic energy, and what happens to KE when speed doubles?",
-    "back": "KE = (1/2)mv^2, in joules. Because speed is squared, doubling speed quadruples the kinetic energy, and tripling speed makes it nine times greater."
+    "front": "Write the formula for kinetic energy.",
+    "back": "KE = (1/2)mv^2, in joules. Because speed is squared, doubling speed quadruples the kinetic energy, and tripling speed makes it nine times greater.",
+    "drill": "type",
+    "answers": [
+      "ke=1/2mv^2",
+      "ke=1/2 mv^2",
+      "ke=(1/2)mv^2",
+      "ke=0.5mv^2",
+      "ke=½mv^2",
+      "ke=1/2*m*v^2"
+    ]
   },
   {
     "id": "c3-f04",
     "comp": 3,
     "topic": "Potential energy formula",
-    "front": "How do you calculate gravitational potential energy near Earth's surface?",
-    "back": "PE = mgh: mass (kg) times 9.8 m/s^2 times height (m), in joules. A 2 kg book lifted to a 1.5 m shelf stores about 29 J."
+    "front": "Write the formula for gravitational potential energy near Earth's surface.",
+    "back": "PE = mgh: mass (kg) times 9.8 m/s^2 times height (m), in joules. A 2 kg book lifted to a 1.5 m shelf stores about 29 J.",
+    "drill": "type",
+    "answers": [
+      "pe=mgh",
+      "pe=m*g*h",
+      "pe=m x g x h",
+      "potential energy=mgh",
+      "pe=mass x gravity x height"
+    ]
   },
   {
     "id": "c3-f05",
     "comp": 3,
     "topic": "Ohm's law",
-    "front": "What equation relates voltage, current, and resistance in a circuit?",
-    "back": "Ohm's law: V = IR, so volts = amperes x ohms. Rearranged as I = V/R, a 12 V battery across a 6 ohm resistor drives 2 A of current."
+    "front": "Write Ohm's law as an equation.",
+    "back": "Ohm's law: V = IR, so volts = amperes x ohms. Rearranged as I = V/R, a 12 V battery across a 6 ohm resistor drives 2 A of current.",
+    "drill": "type",
+    "answers": [
+      "v=ir",
+      "v=i*r",
+      "v=i x r",
+      "i=v/r",
+      "r=v/i",
+      "voltage=current x resistance"
+    ]
   },
   {
     "id": "c3-f06",
     "comp": 3,
     "topic": "Electrical power",
-    "front": "What formula gives electrical power from current and voltage, and what unit results?",
-    "back": "P = IV, in watts; combined with Ohm's law it can also be written P = I^2 R or P = V^2 / R. A device drawing 5 A from a 120 V outlet uses 600 W."
+    "front": "Write the formula for electrical power in terms of current and voltage.",
+    "back": "P = IV, in watts; combined with Ohm's law it can also be written P = I^2 R or P = V^2 / R. A device drawing 5 A from a 120 V outlet uses 600 W.",
+    "drill": "type",
+    "answers": [
+      "p=iv",
+      "p=i*v",
+      "p=i x v",
+      "p=vi",
+      "power=current x voltage",
+      "power=current*voltage"
+    ]
   },
   {
     "id": "c3-f07",
     "comp": 3,
     "topic": "Efficiency",
-    "front": "How is the efficiency of a machine calculated, and can it ever exceed 100 percent?",
-    "back": "Efficiency = (useful output / total input) x 100. It is always below 100 percent because friction converts some input into waste heat: 400 J out for 500 J in is 80 percent efficient."
+    "front": "Write the efficiency formula as a ratio: what goes over what, before multiplying by 100 for percent?",
+    "back": "Efficiency = (useful output / total input) x 100. It is always below 100 percent because friction converts some input into waste heat: 400 J out for 500 J in is 80 percent efficient.",
+    "drill": "type",
+    "answers": [
+      "useful output/total input",
+      "output/input",
+      "efficiency=useful output/total input",
+      "efficiency=output/input",
+      "useful energy output/total energy input",
+      "work output/work input"
+    ]
   },
   {
     "id": "c3-f08",
     "comp": 3,
     "topic": "Mechanical advantage",
-    "front": "How do you find the mechanical advantage of a machine such as an inclined plane?",
-    "back": "MA = output force / input force; for an ideal inclined plane, MA = ramp length / ramp height. Machines multiply force but never energy: the smaller force is repaid by pushing through a longer distance."
+    "front": "Write the formula for mechanical advantage.",
+    "back": "MA = output force / input force; for an ideal inclined plane, MA = ramp length / ramp height. Machines multiply force but never energy: the smaller force is repaid by pushing through a longer distance.",
+    "drill": "type",
+    "answers": [
+      "ma=output force/input force",
+      "output force/input force",
+      "ma=fout/fin",
+      "ma=resistance force/effort force",
+      "ma=force out/force in"
+    ]
   },
   {
     "id": "c3-f09",
     "comp": 3,
     "topic": "EM spectrum order",
     "front": "List the electromagnetic spectrum in order from longest wavelength to shortest.",
-    "back": "Radio, microwave, infrared, visible light, ultraviolet, X-ray, gamma ray. As wavelength decreases along this list, frequency and photon energy both increase."
+    "back": "Radio, microwave, infrared, visible light, ultraviolet, X-ray, gamma ray. As wavelength decreases along this list, frequency and photon energy both increase.",
+    "drill": "type",
+    "answers": [
+      "radio, microwave, infrared, visible, ultraviolet, x-ray, gamma",
+      "radio, microwave, infrared, visible light, ultraviolet, x-ray, gamma ray",
+      "radio microwave infrared visible ultraviolet x-ray gamma",
+      "radio microwave infrared visible ultraviolet xray gamma",
+      "radio, microwave, infrared, visible, ultraviolet, xray, gamma",
+      "radio, microwave, infrared, visible, ultraviolet, x ray, gamma"
+    ]
   },
   {
     "id": "c3-f10",
@@ -171,22 +247,43 @@
     "id": "c3-f25",
     "comp": 3,
     "topic": "Half-life",
-    "front": "What is a half-life, and how much of a radioactive sample remains after three half-lives?",
-    "back": "A half-life is the time needed for half of a sample's parent atoms to decay. After three half-lives, (1/2)^3 = 1/8 of the original remains; the amount halves each interval no matter how much you start with."
+    "front": "After three half-lives, what fraction of the original parent isotope is left?",
+    "back": "A half-life is the time needed for half of a sample's parent atoms to decay. After three half-lives, (1/2)^3 = 1/8 of the original remains; the amount halves each interval no matter how much you start with.",
+    "drill": "type",
+    "answers": [
+      "1/8",
+      "one eighth",
+      "12.5%",
+      "12.5 percent",
+      "0.125"
+    ]
   },
   {
     "id": "c3-f26",
     "comp": 3,
     "topic": "Alpha beta gamma",
-    "front": "Rank alpha, beta, and gamma radiation by penetrating power, and state what each one is.",
-    "back": "Alpha is a helium nucleus (2 protons + 2 neutrons) stopped by paper; beta is a fast electron stopped by aluminum foil; gamma is a high-energy electromagnetic wave requiring thick lead or concrete. Penetrating power: gamma > beta > alpha."
+    "front": "Rank alpha, beta, and gamma radiation from most penetrating to least.",
+    "back": "Alpha is a helium nucleus (2 protons + 2 neutrons) stopped by paper; beta is a fast electron stopped by aluminum foil; gamma is a high-energy electromagnetic wave requiring thick lead or concrete. Penetrating power: gamma > beta > alpha.",
+    "drill": "type",
+    "answers": [
+      "gamma, beta, alpha",
+      "gamma beta alpha",
+      "gamma>beta>alpha"
+    ]
   },
   {
     "id": "c3-f27",
     "comp": 3,
     "topic": "Mass-energy equivalence",
-    "front": "In a nuclear reaction, why do the products have slightly less mass than the reactants?",
-    "back": "A small amount of mass is converted into energy according to E = mc^2, and because c^2 is enormous, a tiny mass loss releases huge energy. Ordinary chemical reactions, by contrast, conserve mass to any measurable precision."
+    "front": "Write the equation for mass-energy equivalence.",
+    "back": "A small amount of mass is converted into energy according to E = mc^2, and because c^2 is enormous, a tiny mass loss releases huge energy. Ordinary chemical reactions, by contrast, conserve mass to any measurable precision.",
+    "drill": "type",
+    "answers": [
+      "e=mc^2",
+      "e=mc2",
+      "e=mc²",
+      "energy=mass x c^2"
+    ]
   },
   {
     "id": "c3-f28",
@@ -381,8 +478,13 @@
     "id": "c4-f19",
     "comp": 4,
     "topic": "Geologic eras",
-    "front": "Name the three eras of visible life in order, and state what kind of event marks their boundaries.",
-    "back": "Paleozoic, Mesozoic (age of reptiles), Cenozoic (age of mammals). The boundaries are marked by mass extinctions recorded in the fossil record: the Permian extinction ends the Paleozoic, and the extinction of the nonavian dinosaurs ends the Mesozoic."
+    "front": "Name the three eras of visible life in order, oldest first.",
+    "back": "Paleozoic, Mesozoic (age of reptiles), Cenozoic (age of mammals). The boundaries are marked by mass extinctions recorded in the fossil record: the Permian extinction ends the Paleozoic, and the extinction of the nonavian dinosaurs ends the Mesozoic.",
+    "drill": "type",
+    "answers": [
+      "paleozoic, mesozoic, cenozoic",
+      "paleozoic mesozoic cenozoic"
+    ]
   },
   {
     "id": "c4-f20",
@@ -402,8 +504,15 @@
     "id": "c4-f22",
     "comp": 4,
     "topic": "Atmospheric layers",
-    "front": "List the atmospheric layers from the ground upward with one defining feature of each.",
-    "back": "Troposphere: nearly all weather, temperature falls with height. Stratosphere: contains the ozone layer, temperature rises. Mesosphere: coldest layer, where most meteors burn up. Thermosphere: extremely thin air, auroras, temperature rises steeply. Beyond it the exosphere fades into space."
+    "front": "List the layers of the atmosphere in order from the ground upward.",
+    "back": "Troposphere: nearly all weather, temperature falls with height. Stratosphere: contains the ozone layer, temperature rises. Mesosphere: coldest layer, where most meteors burn up. Thermosphere: extremely thin air, auroras, temperature rises steeply. Beyond it the exosphere fades into space.",
+    "drill": "type",
+    "answers": [
+      "troposphere, stratosphere, mesosphere, thermosphere",
+      "troposphere stratosphere mesosphere thermosphere",
+      "troposphere, stratosphere, mesosphere, thermosphere, exosphere",
+      "troposphere stratosphere mesosphere thermosphere exosphere"
+    ]
   },
   {
     "id": "c4-f23",

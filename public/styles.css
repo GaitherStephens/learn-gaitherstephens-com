@@ -487,6 +487,123 @@ footer.foot a { color: var(--muted); }
   background: var(--fg); opacity: .55;
 }
 
+/* ---------- readiness evidence ---------- */
+
+.ready-band { margin-bottom: .2rem; }
+.evidence {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: .8rem 1rem;
+  padding-top: .8rem;
+  border-top: 1px solid var(--line);
+}
+.evidence div b { display: block; font-family: var(--serif); font-size: 1.25rem; line-height: 1.1; }
+.evidence div b .muted { font-size: .8rem; color: var(--muted); }
+.evidence div span { font-size: .74rem; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+
+/* ---------- confidence / why-missed prompts ---------- */
+
+.ask {
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: .8rem;
+  margin-bottom: 1rem;
+  background: var(--bg);
+}
+.ask-q { font-weight: 700; font-size: .93rem; margin: 0 0 .55rem; }
+.ask-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: .45rem; }
+.ask-opts.why { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.ask-opts button { font-size: .85rem; padding: .6rem .5rem; min-height: 44px; }
+
+.choice.picked { border-color: var(--cyan); background: var(--card-bg); }
+.choice.picked .key { background: var(--cyan); color: var(--on-cyan); }
+
+.conf-tag {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  background: var(--line); color: var(--muted);
+  padding: .12rem .45rem; border-radius: 999px; vertical-align: middle;
+}
+.conf-tag.danger { background: var(--bad-bg); color: var(--bad); }
+
+/* ---------- typed formula drill ---------- */
+
+.typed-in {
+  width: 100%;
+  font: inherit;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  padding: .8rem;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.date-in {
+  font: inherit;
+  padding: .55rem .7rem;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 44px;
+}
+
+/* ---------- plan ---------- */
+
+.plan { list-style: none; padding: 0; margin: .6rem 0 0; }
+.plan li { margin-bottom: .45rem; }
+.plan button {
+  display: flex; align-items: center; gap: .65rem;
+  width: 100%; text-align: left;
+  padding: .7rem .8rem; font-weight: 500; font-size: .92rem;
+}
+.plan button .ico { color: var(--cyan); }
+.plan button .go { margin-left: auto; color: var(--muted); }
+
+/* ---------- teaching today ---------- */
+
+.teach h3 { display: flex; align-items: center; gap: .45rem; margin-bottom: .25rem; }
+.teach-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .4rem; margin-top: .7rem; }
+.teach-opt {
+  display: flex; align-items: center; gap: .5rem;
+  text-align: left; font-size: .85rem; font-weight: 500;
+  padding: .6rem .7rem; min-height: 44px;
+}
+.teach-opt .ico { color: var(--cyan); flex: none; }
+
+/* ---------- skill map ---------- */
+
+.skill-sum { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .9rem; }
+.pill {
+  display: inline-flex; align-items: baseline; gap: .35rem;
+  padding: .35rem .75rem; border-radius: 999px;
+  font-size: .84rem; font-weight: 600;
+  border: 1px solid var(--line-strong);
+}
+.pill b { font-family: var(--serif); font-size: 1.05rem; }
+.pill.mastered { background: var(--good-bg); color: var(--good); border-color: transparent; }
+.pill.shaky { background: var(--warn-bg); color: var(--warn); border-color: transparent; }
+.pill.untouched { background: var(--line); color: var(--muted); border-color: transparent; }
+
+ol.skills { list-style: none; padding: 0; margin: 0; counter-reset: sk; }
+ol.skills .sk {
+  display: flex; align-items: flex-start; gap: .6rem;
+  padding: .6rem 0; border-bottom: 1px solid var(--line);
+  font-size: .89rem;
+}
+ol.skills .sk:last-child { border-bottom: 0; }
+ol.skills .sk .dot {
+  width: .7rem; height: .7rem; border-radius: 50%; flex: none; margin-top: .35rem;
+  background: var(--line-strong);
+}
+ol.skills .sk.mastered .dot { background: var(--good); }
+ol.skills .sk.shaky .dot { background: var(--warn); }
+ol.skills .sk .sk-txt { display: block; }
+ol.skills .sk > span:nth-child(2) { flex: 1; min-width: 0; }
+ol.skills .sk button { flex: none; padding: .3rem .6rem; align-self: center; }
+details.sec > summary .small { margin-left: auto; }
+
 /* ---------- celebration ---------- */
 
 .celebrate { text-align: center; padding: .5rem 0 0; }

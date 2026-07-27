@@ -36,6 +36,7 @@ def main():
     for f in sorted(glob.glob(os.path.join(HERE, "f_*.json"))):
         F += json.load(open(f))
     G = json.load(open(os.path.join(HERE, "guide.json")))
+    SK = json.load(open(os.path.join(HERE, "skills.json")))
 
     errs = []
     seen = set()
@@ -54,11 +55,33 @@ def main():
                 errs.append(f"{q['id']}: explanation references an answer by position")
     fseen = set()
     for c in F:
-        if set(c) != {"id","comp","topic","front","back"}:
-            errs.append(f"{c.get('id')}: wrong flashcard keys")
+        allowed = {"id","comp","topic","front","back"}
+        extra = set(c) - allowed
+        if not set(c) >= allowed or extra - {"drill","answers"}:
+            errs.append(f"{c.get('id')}: wrong flashcard keys ({sorted(set(c))})")
         if c["id"] in fseen:
             errs.append(f"{c['id']}: duplicate flashcard id")
         fseen.add(c["id"])
+        if c.get("drill") == "type":
+            ans = c.get("answers")
+            if not isinstance(ans, list) or not ans or not all(isinstance(a, str) and a.strip() for a in ans):
+                errs.append(f"{c['id']}: drill=type needs a non-empty answers list")
+
+    # Skill framework: every question must point at a real skill, and every
+    # skill needs at least one question or the coverage map lies to her.
+    counts = {int(k): len(v) for k, v in SK.items()}
+    if sum(counts.values()) != 101:
+        errs.append(f"expected 101 skills, found {sum(counts.values())}")
+    have = collections.defaultdict(set)
+    for q in Q:
+        if not (1 <= q["skill"] <= counts.get(q["comp"], 0)):
+            errs.append(f"{q['id']}: skill {q['skill']} does not exist in competency {q['comp']}")
+        else:
+            have[q["comp"]].add(q["skill"])
+    for c in sorted(counts):
+        for s in range(1, counts[c] + 1):
+            if s not in have[c]:
+                errs.append(f"competency {c} skill {s} has no question")
 
     if errs:
         print("BUILD FAILED:", file=sys.stderr)
@@ -70,11 +93,13 @@ def main():
         "meta": {"test": "FTCE Middle Grades General Science 5-9 (004)",
                  "questions": 80, "minutes": 150, "passing": "scaled 200"},
         "comps": [{"comp": k, "title": v[0], "pct": v[1]} for k, v in sorted(COMPS.items())],
-        "questions": Q, "cards": F, "guide": G,
+        "questions": Q, "cards": F, "guide": G, "skills": SK,
     }
     with open(OUT, "w") as fh:
         json.dump(out, fh, ensure_ascii=False, separators=(",", ":"))
-    print(f"OK: {len(Q)} questions, {len(F)} cards, {len(G)} guides")
+    typed = sum(1 for c in F if c.get("drill") == "type")
+    print(f"OK: {len(Q)} questions, {len(F)} cards ({typed} typed-recall), "
+          f"{len(G)} guides, {sum(len(v) for v in SK.values())} skills")
     print("  by competency:", dict(sorted(collections.Counter(q["comp"] for q in Q).items())))
 
 if __name__ == "__main__":

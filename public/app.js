@@ -24,7 +24,8 @@
 
   /* ================= state ================= */
 
-  const emptyState = () => ({ cards: {}, questions: {}, exams: [], recall: {}, days: {}, prefs: {}, prefsAt: 0, updatedAt: 0 });
+  const emptyState = () => ({ cards: {}, questions: {}, exams: [], recall: {}, days: {}, recent: [], prefs: {}, prefsAt: 0, updatedAt: 0 });
+  const RECENT_CAP = 300;
 
   function loadLocal() {
     try { return { ...emptyState(), ...JSON.parse(localStorage.getItem(LS_KEY) || "{}") }; }
@@ -89,11 +90,22 @@
         const cur = days[d] || {};
         days[d] = { q: Math.max(cur.q || 0, v.q || 0), c: Math.max(cur.c || 0, v.c || 0), at: Math.max(cur.at || 0, v.at || 0) };
       }
+      // Mirror of the server rule: attempts are events, so union them.
+      const seenAtt = new Set();
+      const recent = [];
+      for (const a of [...(server.recent || []), ...(local.recent || [])]) {
+        const k = `${a.at}:${a.qid}`;
+        if (seenAtt.has(k)) continue;
+        seenAtt.add(k);
+        recent.push(a);
+      }
+      recent.sort((a, b) => a.at - b.at);
       S = {
         cards: mergeRec(server.cards, local.cards),
         questions: mergeRec(server.questions, local.questions),
         recall: mergeRec(server.recall, local.recall),
         days,
+        recent: recent.slice(-RECENT_CAP),
         exams,
         prefs: (local.prefsAt ?? 0) >= (server.prefsAt ?? 0) ? local.prefs : server.prefs,
         prefsAt: Math.max(local.prefsAt ?? 0, server.prefsAt ?? 0),
@@ -231,22 +243,183 @@
     return out;
   }
 
-  /* Readiness: one number she can watch move. Deliberately conservative,
-     blending per-competency mastery by the real blueprint weights with how
-     much of the bank she has actually covered, so it cannot read high off a
-     handful of lucky answers. */
+  /* ================= skills, decay, readiness ================= */
+
+  const SKILL_COUNT = () => Object.values(DATA.skills).reduce((a, v) => a + v.length, 0);
+
+  // Per-skill status. This is the view that answers her original question,
+  // "what am I actually responsible for", so it is deliberately strict:
+  // one lucky answer is not mastery.
+  function skillStatus(comp, skill) {
+    const qs = DATA.questions.filter((q) => q.comp === comp && q.skill === skill);
+    let seen = 0, right = 0, lastAt = 0;
+    for (const q of qs) {
+      const r = S.questions[q.id];
+      if (!r?.seen) continue;
+      seen++;
+      if (r.lastCorrect) right++;
+      lastAt = Math.max(lastAt, r.at || 0);
+    }
+    if (!seen) return { state: "untouched", seen, right, total: qs.length, lastAt };
+    const solid = seen >= 2 && right === seen;
+    return { state: solid ? "mastered" : "shaky", seen, right, total: qs.length, lastAt };
+  }
+
+  function skillSummary() {
+    const out = { mastered: 0, shaky: 0, untouched: 0 };
+    for (const [comp, list] of Object.entries(DATA.skills)) {
+      for (let i = 1; i <= list.length; i++) out[skillStatus(Number(comp), i).state]++;
+    }
+    return out;
+  }
+
+  /* Knowledge decays. Without this, a competency drilled in September still
+     reads green in April, which is the single most misleading thing a mastery
+     display can do. Gentle on purpose: nothing for a week, then a slow slide
+     to a 70% floor over about seven weeks. It never reaches zero, because she
+     did genuinely learn it once. */
+  function decayFactor(lastAt) {
+    if (!lastAt) return 1;
+    const d = (now() - lastAt) / 86400000;
+    if (d <= 7) return 1;
+    return Math.max(0.7, 1 - (d - 7) / 50 * 0.3);
+  }
+
+  function compLastTouched(comp) {
+    let t = 0;
+    for (const q of DATA.questions) {
+      if (q.comp !== comp) continue;
+      const r = S.questions[q.id];
+      if (r?.at) t = Math.max(t, r.at);
+    }
+    return t;
+  }
+
+  /* Readiness. Reported as a BAND with the evidence behind it, never as a bare
+     percentage: a number like "82%" reads as scientific precision that the
+     underlying data does not support, and Pearson does not publish the
+     raw-to-scaled conversion anyway. */
   function readiness() {
     let score = 0, weight = 0;
     for (const c of DATA.comps) {
       const m = compMastery(c.comp);
-      score += c.pct * m.score;
+      score += c.pct * m.score * decayFactor(compLastTouched(c.comp));
       weight += c.pct;
     }
     const base = weight ? score / weight : 0;
     const o = overall();
     const coverage = o.total ? o.seen / o.total : 0;
-    const confidence = Math.min(1, coverage / 0.5);   // needs ~half the bank seen
-    return Math.round(base * confidence * 100);
+    const sk = skillSummary();
+    const mocks = S.exams.filter((e) => e.total >= 40);
+    const lastMock = mocks[mocks.length - 1];
+    const trend = recentTrend();
+
+    let band, why;
+    if (o.seen < 25) {
+      band = "Not enough evidence";
+      why = "Answer more questions and this starts reporting.";
+    } else if (base >= 0.8 && coverage >= 0.6 && sk.untouched === 0 && lastMock && lastMock.raw / lastMock.total >= 0.8) {
+      band = "Ready";
+      why = "Strong across the blueprint, full skill coverage, and a mock exam at or above 80 percent.";
+    } else if (base >= 0.72 && coverage >= 0.4 && sk.untouched <= 8) {
+      band = "Probably ready";
+      why = lastMock ? "Solid practice accuracy. Confirm it with another full mock." : "Solid practice accuracy, but you have not sat a full mock yet.";
+    } else if (base >= 0.55) {
+      band = "Needs work";
+      why = sk.untouched > 15 ? `${sk.untouched} skills are still untouched.` : "Accuracy is below the safety line on too much of the blueprint.";
+    } else {
+      band = "Far from ready";
+      why = "Accuracy is well below the passing region across most of the test.";
+    }
+    return { band, why, base, coverage, sk, lastMock, trend, seen: o.seen };
+  }
+
+  const BAND_CLASS = { "Ready": "pass", "Probably ready": "pass", "Needs work": "close", "Far from ready": "no", "Not enough evidence": "" };
+
+  // Accuracy over the most recent attempts versus the ones before, so the app
+  // can say "improving" or "slipping" rather than only reporting a level.
+  function recentTrend(n = 50) {
+    const r = S.recent || [];
+    if (r.length < 20) return null;
+    const last = r.slice(-n);
+    const prev = r.slice(-2 * n, -n);
+    if (!prev.length) return null;
+    const acc = (a) => a.filter((x) => x.ok).length / a.length;
+    const d = acc(last) - acc(prev);
+    return { delta: d, last: acc(last), prev: acc(prev) };
+  }
+
+  /* ================= today's teaching ================= */
+
+  /* Her real edge over every other test-taker: she teaches this material in a
+     classroom the same day. Whatever she taught today already has the relevant
+     knowledge activated, so practising it tonight is cheap and sticky. This is
+     the one thing a commercial prep product structurally cannot do, because it
+     does not know the learner. */
+
+  function todaysTeaching() {
+    const t = S.prefs?.teaching;
+    if (!t || t.date !== dayKey()) return null;
+    return t;
+  }
+
+  function setTeaching(comp) {
+    S.prefs = { ...(S.prefs || {}), teaching: comp ? { date: dayKey(), comp } : null };
+    S.prefsAt = Date.now();
+    save();
+  }
+
+  /* ================= exam date and pacing ================= */
+
+  const examDate = () => S.prefs?.examDate || null;
+
+  function daysUntilExam() {
+    const d = examDate();
+    if (!d) return null;
+    const [y, m, day] = d.split("-").map(Number);
+    const target = new Date(y, m - 1, day);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    target.setHours(0, 0, 0, 0);
+    return Math.round((target - today) / 86400000);
+  }
+
+  // The app should behave differently at 90 days than at 3. Phases change what
+  // the daily plan asks for, not just the wording.
+  function phase() {
+    const d = daysUntilExam();
+    if (d === null) return { key: "open", label: "No test date set" };
+    if (d < 0) return { key: "past", label: "Test date has passed" };
+    if (d <= 3) return { key: "final", label: "Final days" };
+    if (d <= 10) return { key: "taper", label: "Last stretch" };
+    if (d <= 30) return { key: "sharpen", label: "Sharpening" };
+    if (d <= 60) return { key: "build", label: "Building" };
+    return { key: "explore", label: "Early days" };
+  }
+
+  /* The daily plan. Deliberately small and finishable: a plan she completes is
+     worth more than an optimal one she abandons. */
+  function dailyPlan() {
+    const p = phase().key;
+    const dueN = dueCards().length;
+    const missedN = missedQuestions().length;
+    const sk = skillSummary();
+    const items = [];
+
+    if (dueN) items.push({ icon: "i-cards", label: `Review ${Math.min(dueN, p === "final" ? 15 : 30)} due cards`, hash: "#/cards" });
+
+    if (p === "explore" || p === "build") {
+      if (sk.untouched) items.push({ icon: "i-search", label: `Cover ${Math.min(sk.untouched, 3)} untouched skills`, hash: "#/skills" });
+      items.push({ icon: "i-quiz", label: "One topic quiz, 15 questions", hash: "#/quiz" });
+    }
+    if (p === "build" || p === "sharpen") items.push({ icon: "i-shuffle", label: "One adaptive drill, 20 questions", hash: "#/drill" });
+    if (p === "sharpen" || p === "taper") items.push({ icon: "i-clock", label: "One mini mock, 20 questions on the clock", hash: "#/mini" });
+    if (missedN) items.push({ icon: "i-redo", label: `Clear ${Math.min(missedN, 15)} from the missed queue`, hash: "#/missed" });
+    if (p === "taper" || p === "final") items.push({ icon: "i-energy", label: "Formula drill, typed from memory", hash: "#/formulas" });
+    if (p === "final") items.push({ icon: "i-book", label: "Skim the traps in the concept guide", hash: "#/guide" });
+    if (!items.length) items.push({ icon: "i-shuffle", label: "One adaptive drill, 20 questions", hash: "#/drill" });
+
+    return items.slice(0, 5);
   }
 
   /* ================= scoring model ================= */
@@ -363,6 +536,10 @@
     "quiz": quizSetup,
     "drill": drillStart,
     "exam": examSetup,
+    "mini": miniMockStart,
+    "formulas": formulaDrillStart,
+    "skills": skillMap,
+    "review": reviewDashboard,
     "guide": guideIndex,
     "recall": recallSetup,
     "missed": missedStart,
@@ -404,8 +581,12 @@
     const doneToday = todayCount();
     const pctGoal = Math.min(1, doneToday / target);
     const st = streak();
-    const R = 34, C = 2 * Math.PI * R;
-    const ready = readiness();
+    const RAD = 34, C = 2 * Math.PI * RAD;
+    const R = readiness();
+    const dLeft = daysUntilExam();
+    const ph = phase();
+    const plan = dailyPlan();
+    const teaching = todaysTeaching();
 
     // Resume: the single highest-value next click, as one big obvious button.
     let resume;
@@ -443,19 +624,60 @@
         ${icon("i-arrow-right", "ico go")}
       </button>
 
+      <section class="panel teach">
+        ${teaching ? `
+          <h3>${compIcon(teaching.comp)} Teaching ${esc(compTitle(teaching.comp).toLowerCase())} today</h3>
+          <p class="small muted">Tonight's practice is weighted toward it. You already did the hard part of activating this material in front of a class, so it will stick for much less effort now.</p>
+          <div class="actions">
+            <button class="btn-primary" id="teachDrill">${icon("i-shuffle")} Drill it</button>
+            <button id="teachCards">${icon("i-cards")} Cards</button>
+            <button id="teachClear" class="small">Change</button>
+          </div>`
+        : `
+          <h3>${icon("i-lab")} What are you teaching today?</h3>
+          <p class="small muted">Optional, five seconds. Practising tonight what you taught today is the cheapest retention you will ever get, and no prep course can do this for you.</p>
+          <div class="teach-opts">
+            ${DATA.comps.map((c) => `<button class="teach-opt" data-teach="${c.comp}">${compIcon(c.comp)}${esc(c.title)}</button>`).join("")}
+            <button class="teach-opt" data-teach="0">Not teaching science today</button>
+          </div>`}
+      </section>
+
+      ${dLeft !== null && dLeft >= 0 ? `
       <section class="panel">
-        <div class="crumb"><span class="chip">${icon("i-target")} Exam readiness</span></div>
-        <div class="ready-num">${o.seen < 15 ? "&mdash;" : ready + "%"}</div>
-        <div class="ready-bar"><i style="width:${o.seen < 15 ? 0 : ready}%"></i><span class="mark" style="left:80%" title="Target"></span></div>
-        <p class="small muted" style="margin:0">${o.seen < 15
-          ? "Answer about 15 questions and this starts tracking."
-          : ready >= 80 ? "At or above the line. Sit a full mock exam to confirm."
-          : `The mark at 80% is the target before booking the seat. ${esc(nudge)}`}</p>
-        <div class="stat-row" style="margin-top:1rem">
-          <div class="stat"><b>${o.seen}<span style="font-size:1rem;color:var(--muted)">/${o.total}</span></b><span>Questions tried</span></div>
-          <div class="stat"><b>${o.seen ? Math.round(o.accuracy * 100) + "%" : "&mdash;"}</b><span>Accuracy</span></div>
-          <div class="stat"><b>${due}</b><span>Cards due</span></div>
-          <div class="stat"><b>${lastExam ? Math.round((lastExam.raw / lastExam.total) * 100) + "%" : "&mdash;"}</b><span>Last mock</span></div>
+        <div class="crumb"><span class="chip">${icon("i-clock")} ${esc(ph.label)}</span>
+          <span class="prog">${dLeft === 0 ? "Today" : `${dLeft} day${dLeft === 1 ? "" : "s"}`}</span></div>
+        <h2 style="margin-bottom:.2rem">Plan for today</h2>
+        <p class="small muted">Short on purpose. A plan you finish beats an ideal one you abandon.</p>
+        <ul class="plan">
+          ${plan.map((p) => `<li><button data-plan="${p.hash}">${icon(p.icon)}<span>${esc(p.label)}</span>${icon("i-arrow-right", "ico go")}</button></li>`).join("")}
+        </ul>
+      </section>` : `
+      <section class="panel">
+        <h3>${icon("i-clock")} When is your test?</h3>
+        <p class="small muted">Set the date and this becomes a countdown with a plan that changes as it gets closer. Without it the app cannot pace anything.</p>
+        <div class="actions">
+          <input type="date" id="examDateQuick" class="date-in">
+          <button class="btn-primary" id="examDateSave">Set date</button>
+        </div>
+      </section>`}
+
+      <section class="panel">
+        <div class="crumb"><span class="chip">${icon("i-target")} Exam readiness</span>
+          ${dLeft !== null && dLeft >= 0 ? `<span class="prog">${dLeft === 0 ? "Test is today" : `${dLeft} day${dLeft === 1 ? "" : "s"} to go`}</span>` : ""}</div>
+        <div class="ready-band"><span class="verdict-band ${BAND_CLASS[R.band] || ""}">${R.band}</span></div>
+        <p class="small" style="margin:.5rem 0 .8rem">${esc(R.why)}</p>
+        <div class="evidence">
+          <div><b>${R.seen}<span class="muted">/${o.total}</span></b><span>Questions answered</span></div>
+          <div><b>${Math.round(R.coverage * 100)}%</b><span>Bank covered</span></div>
+          <div><b>${R.sk.mastered}<span class="muted">/${SKILL_COUNT()}</span></b><span>Skills mastered</span></div>
+          <div><b>${R.lastMock ? Math.round((R.lastMock.raw / R.lastMock.total) * 100) + "%" : "&mdash;"}</b><span>Last full mock</span></div>
+          <div><b>${R.trend ? (R.trend.delta >= 0 ? "+" : "") + Math.round(R.trend.delta * 100) + "%" : "&mdash;"}</b><span>Recent trend</span></div>
+          <div><b>${due}</b><span>Cards due</span></div>
+        </div>
+        <p class="small muted" style="margin:.8rem 0 0">A band rather than a number on purpose: Pearson does not publish how raw scores convert to the 200 scaled pass mark, so a precise percentage would be false precision.</p>
+        <div class="actions" style="margin-top:.8rem">
+          <button onclick="location.hash='#/skills'">${icon("i-search")} Skill map</button>
+          <button onclick="location.hash='#/review'">${icon("i-chart")} Last 50</button>
         </div>
       </section>
 
@@ -477,10 +699,30 @@
           <h3>Adaptive drill</h3>
           <p>Twenty mixed questions, weighted toward your weak competencies and things you got wrong before.</p>
         </button>
+        <button class="mode" onclick="location.hash='#/mini'">
+          <span class="tagline">${icon("i-clock")} Timed practice</span>
+          <h3>Mini mock</h3>
+          <p>Twenty questions on the real blueprint and the real clock, done in 37 minutes. Cheap enough to sit twice a week.</p>
+        </button>
         <button class="mode" onclick="location.hash='#/exam'">
           <span class="tagline">${icon("i-exam")} Test simulation</span>
-          <h3>Mock exam</h3>
-          <p>Eighty questions on the real blueprint, on a 2:30 clock, no feedback until you submit.</p>
+          <h3>Full mock exam</h3>
+          <p>Eighty questions, 2:30 clock, no feedback until you submit. Save these: there are only three in the bank.</p>
+        </button>
+        <button class="mode" onclick="location.hash='#/formulas'">
+          <span class="tagline">${icon("i-energy")} Typed recall</span>
+          <h3>Formula drill</h3>
+          <p>${typedCards().length} formulas typed from memory, not self-graded. The real test gives you no reference sheet.</p>
+        </button>
+        <button class="mode" onclick="location.hash='#/skills'">
+          <span class="tagline">${icon("i-search")} Coverage</span>
+          <h3>Skill map</h3>
+          <p>All ${SKILL_COUNT()} published skills, marked mastered, shaky, or untouched. This is what you are responsible for.</p>
+        </button>
+        <button class="mode" onclick="location.hash='#/review'">
+          <span class="tagline">${icon("i-chart")} Diagnostics</span>
+          <h3>Last 50</h3>
+          <p>Accuracy, pace against the 112-second budget, how well calibrated your confidence is, and what kind of mistakes you make.</p>
         </button>
         <button class="mode" onclick="location.hash='#/recall'">
           <span class="tagline">${icon("i-brain")} Free recall</span>
@@ -509,12 +751,39 @@
         <h2>Mastery by competency</h2>
         ${DATA.comps.map((c) => {
           const m = compMastery(c.comp);
-          const pct = Math.round(m.score * 100);
+          const dec = decayFactor(compLastTouched(c.comp));
+          const eff = m.score * dec;
+          const pct = Math.round(eff * 100);
           return `<div class="mrow"><span class="lbl">${compIcon(c.comp)} ${c.comp}. ${esc(c.title)}</span>
-            <span class="val">${m.seen ? pct + "%" : "not started"} &middot; ${c.pct}% of test</span></div>
-            <div class="bar"><i class="${barClass(m.score)}" style="width:${Math.max(pct, m.seen ? 2 : 0)}%"></i></div>`;
+            <span class="val">${m.seen ? pct + "%" : "not started"}${dec < 0.99 ? " &middot; fading" : ""} &middot; ${c.pct}% of test</span></div>
+            <div class="bar"><i class="${barClass(eff)}" style="width:${Math.max(pct, m.seen ? 2 : 0)}%"></i></div>`;
         }).join("")}
+        <p class="small muted">Bars fade if a competency has gone untouched for weeks. Knowledge decays, and a display that only ever grows would quietly lie to you.</p>
       </div>`;
+
+    app.querySelectorAll("[data-teach]").forEach((b) => {
+      b.onclick = () => { const c = Number(b.dataset.teach); setTeaching(c || null); router(); };
+    });
+    const td = $("#teachDrill");
+    if (td) td.onclick = () => drillStart(null, teaching.comp);
+    const tc = $("#teachCards");
+    if (tc) tc.onclick = () => {
+      const pool = DATA.cards.filter((c) => c.comp === teaching.comp);
+      session = { queue: shuffle(pool), i: 0, shown: false, done: 0, again: [] };
+      renderCard();
+    };
+    const tcl = $("#teachClear");
+    if (tcl) tcl.onclick = () => { S.prefs = { ...(S.prefs || {}), teaching: null }; S.prefsAt = Date.now(); save(); router(); };
+    app.querySelectorAll("[data-plan]").forEach((b) => { b.onclick = () => { location.hash = b.dataset.plan; }; });
+    const eds = $("#examDateSave");
+    if (eds) eds.onclick = () => {
+      const v = $("#examDateQuick").value;
+      if (!v) return;
+      S.prefs = { ...(S.prefs || {}), examDate: v };
+      S.prefsAt = Date.now();
+      save();
+      router();
+    };
   }
 
   /* ================= flashcards ================= */
@@ -647,21 +916,51 @@
         <button class="btn-primary" onclick="location.hash='#/'">Home</button></div>`;
       return;
     }
-    session = { kind: "run", label, qs: questions, i: 0, picked: null, right: 0, opts };
+    session = {
+      kind: "run", label, qs: questions, i: 0, right: 0, opts,
+      picked: null, stage: null, conf: 0, ms: 0, why: undefined, logged: false, shownAt: now(),
+    };
     renderRunQuestion();
   }
+
+  /* The answer flow has three beats, and the two extra ones exist because
+     "she got it wrong" is almost useless on its own:
+       1. pick an answer
+       2. say how sure you were, BEFORE seeing the result   -> calibration
+       3. if wrong, say why you missed it                   -> routing
+     Confident-and-wrong is the single most dangerous state for someone who
+     failed by two questions, and it is invisible without step 2. */
+
+  const CONF = [
+    { v: 1, label: "Guess" },
+    { v: 2, label: "Maybe" },
+    { v: 3, label: "Pretty sure" },
+    { v: 4, label: "Certain" },
+  ];
+
+  const WHY = [
+    { v: "never", label: "Never learned it" },
+    { v: "mixed", label: "Knew it but mixed it up" },
+    { v: "misread", label: "Misread the question" },
+    { v: "formula", label: "Forgot the formula" },
+    { v: "changed", label: "Changed my answer" },
+  ];
+
+  function askConfidence() { return S.prefs?.askConfidence !== false; }
 
   function renderRunQuestion() {
     const s = session;
     if (s.i >= s.qs.length) return runDone();
     const q = s.qs[s.i];
     // Shuffle choices per presentation so she learns the science, not the shape.
-    if (!q._order) {
-      q._order = shuffle(q.choices.map((_, idx) => idx));
-    }
+    if (!q._order) q._order = shuffle(q.choices.map((_, idx) => idx));
+    if (!s.shownAt) s.shownAt = now();
+
     const order = q._order;
-    const answered = s.picked !== null;
+    const picked = s.picked !== null;
+    const revealed = s.stage === "reveal";
     const correctPos = order.indexOf(q.answer);
+    const wasRight = s.picked === correctPos;
 
     app.innerHTML = `
       <div class="panel">
@@ -674,43 +973,113 @@
         <div class="choices">
           ${order.map((origIdx, pos) => {
             let cls = "choice";
-            if (answered && pos === correctPos) cls += " correct";
-            else if (answered && pos === s.picked) cls += " wrong";
-            return `<button class="${cls}" data-pos="${pos}" ${answered ? "disabled" : ""}>
+            if (revealed && pos === correctPos) cls += " correct";
+            else if (revealed && pos === s.picked) cls += " wrong";
+            else if (!revealed && pos === s.picked) cls += " picked";
+            return `<button class="${cls}" data-pos="${pos}" ${picked ? "disabled" : ""}>
               <span class="key">${"ABCD"[pos]}</span><span>${esc(q.choices[origIdx])}</span></button>`;
           }).join("")}
         </div>
-        ${answered ? `
-          <p class="verdict ${s.picked === correctPos ? "ok" : "no"}">${s.picked === correctPos ? "Correct" : "Not quite"}</p>
+
+        ${s.stage === "conf" ? `
+          <div class="ask">
+            <p class="ask-q">How sure are you?</p>
+            <div class="ask-opts">
+              ${CONF.map((c) => `<button data-conf="${c.v}">${esc(c.label)}</button>`).join("")}
+            </div>
+          </div>` : ""}
+
+        ${revealed ? `
+          <p class="verdict ${wasRight ? "ok" : "no"}">${wasRight ? "Correct" : "Not quite"}${
+            s.conf ? ` <span class="conf-tag${!wasRight && s.conf >= 3 ? " danger" : ""}">${esc(CONF.find((c) => c.v === s.conf).label)}</span>` : ""}</p>
+          ${!wasRight && s.conf >= 3 ? `<p class="small" style="color:var(--bad);margin-bottom:.5rem">You were sure and it was wrong. That is the kind of gap that costs points, so this one is worth a second look.</p>` : ""}
           <div class="explain">${esc(q.explanation)}</div>
+          ${!wasRight && s.why === null ? `
+            <div class="ask">
+              <p class="ask-q">Why did you miss it?</p>
+              <div class="ask-opts why">
+                ${WHY.map((w) => `<button data-why="${w.v}">${esc(w.label)}</button>`).join("")}
+              </div>
+            </div>` : ""}
           <div class="actions">
             <button class="btn-primary" id="next">${s.i + 1 >= s.qs.length ? "See results" : "Next question"}</button>
             <button onclick="location.hash='#/'">Stop here</button>
-          </div>`
-        : `<p class="small muted">Keys A-D or 1-4 to answer</p>`}
+          </div>` : ""}
+
+        ${!picked ? `<p class="small muted">Keys A-D or 1-4 to answer</p>` : ""}
       </div>`;
 
-    if (!answered) {
-      app.querySelectorAll(".choice").forEach((b) => {
-        b.onclick = () => answerRun(Number(b.dataset.pos));
-      });
-    } else {
-      $("#next").onclick = () => { s.i++; s.picked = null; renderRunQuestion(); };
+    if (!picked) {
+      app.querySelectorAll(".choice").forEach((b) => { b.onclick = () => pickAnswer(Number(b.dataset.pos)); });
     }
+    app.querySelectorAll("[data-conf]").forEach((b) => { b.onclick = () => setConfidence(Number(b.dataset.conf)); });
+    app.querySelectorAll("[data-why]").forEach((b) => {
+      b.onclick = () => { session.why = b.dataset.why; commitAttempt(); renderRunQuestion(); };
+    });
+    const nx = $("#next");
+    if (nx) nx.onclick = () => nextRunQuestion();
   }
 
-  function answerRun(pos) {
+  function pickAnswer(pos) {
+    const s = session;
+    s.picked = pos;
+    s.ms = now() - (s.shownAt || now());
+    if (askConfidence()) { s.stage = "conf"; renderRunQuestion(); }
+    else { s.conf = 0; revealAnswer(); }
+  }
+
+  function setConfidence(v) {
+    session.conf = v;
+    revealAnswer();
+  }
+
+  function revealAnswer() {
     const s = session;
     const q = s.qs[s.i];
-    const correct = q._order[pos] === q.answer;
-    s.picked = pos;
+    const correct = q._order[s.picked] === q.answer;
     if (correct) s.right++;
-    recordQuestion(q, correct);
+    s.stage = "reveal";
+    s.why = correct ? undefined : null;   // null means "still asking"
+    recordQuestion(q, correct, s.conf, s.ms);
+    if (correct) commitAttempt();
     save();
     renderRunQuestion();
   }
 
-  function recordQuestion(q, correct) {
+  function commitAttempt() {
+    const s = session;
+    const q = s.qs[s.i];
+    if (s.logged) return;
+    s.logged = true;
+    const correct = q._order[s.picked] === q.answer;
+    S.recent.push({
+      qid: q.id, comp: q.comp, skill: q.skill,
+      ok: correct, conf: s.conf || 0, ms: s.ms || 0,
+      why: s.why || "", at: now(),
+    });
+    if (S.recent.length > RECENT_CAP) S.recent = S.recent.slice(-RECENT_CAP);
+    if (s.why) {
+      const r = S.questions[q.id];
+      if (r) r.why = s.why;
+    }
+    save();
+  }
+
+  function nextRunQuestion() {
+    commitAttempt();          // in case she skipped the why prompt
+    const s = session;
+    s.i++;
+    s.picked = null;
+    s.stage = null;
+    s.conf = 0;
+    s.ms = 0;
+    s.why = undefined;
+    s.logged = false;
+    s.shownAt = now();
+    renderRunQuestion();
+  }
+
+  function recordQuestion(q, correct, conf = 0, ms = 0) {
     bump("q");
     const prev = S.questions[q.id] || { seen: 0, correct: 0, wrong: 0 };
     S.questions[q.id] = {
@@ -718,6 +1087,7 @@
       correct: prev.correct + (correct ? 1 : 0),
       wrong: prev.wrong + (correct ? 0 : 1),
       lastCorrect: correct,
+      conf, ms,
       at: now(),
     };
   }
@@ -809,15 +1179,19 @@
 
   /* ---- adaptive drill ---- */
 
-  function drillStart() {
-    /* Weight each competency by (its share of the test) x (how much you are missing it).
-       Then interleave: the mix is deliberately jumbled rather than blocked by topic,
-       because blocked practice feels easier and retains worse. */
+  function drillStart(_rest, focusComp) {
+    /* Weight each competency by (its share of the test) x (how much you are missing it)
+       x (decay, so stale areas resurface) x (a large boost for whatever she taught
+       today). Then interleave: the mix is deliberately jumbled rather than blocked by
+       topic, because blocked practice feels easier and retains worse. */
     const N = 20;
+    const teach = focusComp || todaysTeaching()?.comp || null;
     const weights = DATA.comps.map((c) => {
       const m = compMastery(c.comp);
       const gap = m.seen >= 3 ? 1 - m.score : 0.65;   // unknown areas get a middling default
-      return { comp: c.comp, w: (c.pct / 100) * (0.25 + 1.75 * gap) };
+      const stale = 1 + (1 - decayFactor(compLastTouched(c.comp))) * 2;
+      const taught = c.comp === teach ? 4 : 1;
+      return { comp: c.comp, w: (c.pct / 100) * (0.25 + 1.75 * gap) * stale * taught };
     });
     const wsum = weights.reduce((a, b) => a + b.w, 0);
 
@@ -837,7 +1211,8 @@
       const q = DATA.questions[Math.floor(Math.random() * DATA.questions.length)];
       if (!used.has(q.id)) { picked.push(q); used.add(q.id); }
     }
-    startQuestionRun(shuffle(picked).slice(0, N), "Adaptive drill: weighted to your weak spots");
+    startQuestionRun(shuffle(picked).slice(0, N),
+      teach ? `Adaptive drill, weighted to ${compTitle(teach).toLowerCase()}` : "Adaptive drill: weighted to your weak spots");
   }
 
   /* ---- missed queue ---- */
@@ -892,6 +1267,8 @@
         i: 0,
         answers: {},
         flags: {},
+        times: {},
+        shownAt: now(),
         started: now(),
         endsAt: now() + EXAM_MINUTES * 60000,
         reviewing: false,
@@ -957,7 +1334,17 @@
       </div>`;
 
     app.querySelectorAll(".choice").forEach((b) => {
-      b.onclick = () => { s.answers[q.id] = Number(b.dataset.pos); if (s.i < s.qs.length - 1) s.i++; renderExam(); };
+      b.onclick = () => {
+        // Time on the item, accumulated so revisits do not overwrite the first
+        // read. Pace against the real 112s/question is only meaningful if this
+        // is honest about how long she actually spent.
+        s.times = s.times || {};
+        s.times[q.id] = (s.times[q.id] || 0) + (now() - (s.shownAt || now()));
+        s.shownAt = now();
+        s.answers[q.id] = Number(b.dataset.pos);
+        if (s.i < s.qs.length - 1) s.i++;
+        renderExam();
+      };
     });
     app.querySelectorAll("[data-jump]").forEach((b) => {
       b.onclick = () => { s.i = Number(b.dataset.jump); renderExam(); };
@@ -985,10 +1372,15 @@
       byComp[q.comp] = byComp[q.comp] || { n: 0, r: 0 };
       byComp[q.comp].n++;
       if (correct) byComp[q.comp].r++;
-      if (pos !== undefined) recordQuestion(q, correct);
+      if (pos !== undefined) {
+        const ms = s.times?.[q.id] || 0;
+        recordQuestion(q, correct, 0, ms);
+        S.recent.push({ qid: q.id, comp: q.comp, skill: q.skill, ok: correct, conf: 0, ms, why: "", at: now() });
+      }
     }
+    if (S.recent.length > RECENT_CAP) S.recent = S.recent.slice(-RECENT_CAP);
     const minutes = Math.round((now() - s.started) / 60000);
-    S.exams.push({ at: now(), raw, total: s.qs.length, minutes, byComp });
+    S.exams.push({ at: now(), raw, total: s.qs.length, minutes, byComp, mini: !!s.mini });
     save();
 
     const pct = raw / s.qs.length;
@@ -1001,7 +1393,11 @@
         ${timedOut ? `<p class="small" style="color:var(--bad)">Time ran out. Everything unanswered counted wrong, same as the real test.</p>` : ""}
         <div class="score-big">${raw}<span style="font-size:1.5rem;color:var(--muted)">/${s.qs.length}</span></div>
         <p><span class="verdict-band ${b.cls}">${Math.round(pct * 100)}% raw &middot; ${b.label}</span></p>
-        <p class="small muted">Finished in ${minutes} of ${EXAM_MINUTES} minutes.</p>
+        <p class="small muted">Finished in ${minutes} of ${s.mini ? MINI_MINUTES : EXAM_MINUTES} minutes.${
+          (() => { const tv = Object.values(s.times || {}).filter((x) => x > 1000);
+            if (!tv.length) return "";
+            const av = tv.reduce((a, b) => a + b, 0) / tv.length / 1000;
+            return ` Average ${av.toFixed(0)}s per question against a 112s budget.`; })()}</p>
         <p class="small muted" style="max-width:46ch;margin:1rem auto 0">Pearson does not publish how raw scores convert to the 200 scaled passing score, so this is a band, not a predicted scaled score. Prep programs generally treat roughly 72 to 75 percent raw as the danger line. Aim for 80 and up before you book the seat.</p>
       </div>
       <div class="panel">
@@ -1023,6 +1419,302 @@
     const w = wrong.slice();
     $("#reviewWrong").onclick = () => startQuestionRun(w, "Exam review: questions you missed");
     session = null;
+  }
+
+  /* ================= mini mock ================= */
+
+  // 20 items at blueprint proportions on proportional time (20/80 of 150 min
+  // = 37.5). Cheap enough to sit twice a week, so the full 80-item mock stays
+  // rare and its questions stay unseen.
+  const MINI_BLUEPRINT = { 1: 3, 2: 3, 3: 2, 4: 3, 5: 1, 6: 3, 7: 2, 8: 1, 9: 2 };
+  const MINI_MINUTES = 37;
+
+  function miniMockStart() {
+    const qs = [];
+    for (const c of DATA.comps) {
+      // Prefer questions not used in a recent full mock so the two modes do
+      // not chew through the same items.
+      const pool = DATA.questions.filter((q) => q.comp === c.comp);
+      qs.push(...sample(pool, Math.min(MINI_BLUEPRINT[c.comp], pool.length)));
+    }
+    session = {
+      kind: "exam", mini: true, qs: shuffle(qs), i: 0, answers: {}, flags: {},
+      started: now(), endsAt: now() + MINI_MINUTES * 60000, times: {}, shownAt: now(),
+    };
+    for (const q of session.qs) q._order = shuffle(q.choices.map((_, idx) => idx));
+    startExamTimer();
+    renderExam();
+  }
+
+  /* ================= formula drill (typed production) ================= */
+
+  // Normalise both sides the same way. The exam wants production, but a right
+  // answer marked wrong over a space or a capital letter is the fastest way to
+  // make her stop using the feature, so be generous about form and strict only
+  // about content.
+  // Greek letters map to their spelled-out names, because she will type
+  // "lambda" on a phone keyboard and the card may hold the symbol (or vice
+  // versa). Same idea for the various dashes, arrows and multiplication signs.
+  const GREEK = { "λ": "lambda", "Δ": "delta", "δ": "delta", "ρ": "rho", "π": "pi", "μ": "mu", "Ω": "ohm", "ω": "omega", "α": "alpha", "β": "beta", "γ": "gamma", "θ": "theta", "Σ": "sigma", "σ": "sigma" };
+
+  function normAnswer(s) {
+    return String(s)
+      .replace(/[λΔδρπμΩωαβγθΣσ]/g, (ch) => GREEK[ch])
+      .toLowerCase()
+      .replace(/[→⇒]/g, "->")       // arrows
+      .replace(/[×·⋅]/g, "*")
+      .replace(/[−–—]/g, "-")
+      .replace(/\s*->\s*/g, "->")
+      .replace(/\s*([=*/+^])\s*/g, "$1")
+      .replace(/\s*-\s*/g, "-")
+      .replace(/[.,;]+$/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  // Second, looser pass: drop every space and comma. "KE = 1/2 mv^2" and
+  // "ke=1/2mv^2" are the same answer, and so are "radio, microwave, infrared"
+  // and "radio microwave infrared". A false "incorrect" on a right answer is
+  // the fastest way to make her abandon the drill, so tolerance wins here;
+  // the character sequence still has to match exactly.
+  // Also drops explicit multiplication signs, since juxtaposition is the norm
+  // in physics notation: "f=m*a" and "f=ma" are the same answer.
+  const looseAnswer = (s) => normAnswer(s).replace(/[\s,*]/g, "");
+
+  const answerMatches = (typed, accepted) => {
+    const n = normAnswer(typed), l = looseAnswer(typed);
+    if (!n) return false;
+    return accepted.some((a) => normAnswer(a) === n || looseAnswer(a) === l);
+  };
+
+  const typedCards = () => DATA.cards.filter((c) => c.drill === "type");
+
+  function formulaDrillStart() {
+    const pool = typedCards();
+    if (!pool.length) { app.innerHTML = `<div class="panel"><p>No formula cards.</p></div>`; return; }
+    // Due ones first, then anything, so this doubles as scheduled review.
+    const t = now();
+    const due = pool.filter((c) => { const r = S.cards[c.id]; return !r || (r.due ?? 0) <= t; });
+    const queue = shuffle(due.length >= 8 ? due : pool).slice(0, 15);
+    session = { kind: "typed", queue, i: 0, right: 0, stage: "ask", value: "" };
+    renderTyped();
+  }
+
+  function renderTyped() {
+    const s = session;
+    if (s.i >= s.queue.length) {
+      const pct = Math.round((s.right / s.queue.length) * 100);
+      app.innerHTML = `
+        <div class="panel celebrate">
+          <div class="score-big">${s.right}<span style="font-size:1.5rem;color:var(--muted)">/${s.queue.length}</span></div>
+          <p><span class="verdict-band ${band(s.right / s.queue.length).cls}">${pct}% typed from memory</span></p>
+          <p class="small muted" style="max-width:42ch;margin:.6rem auto 0">There are no reference materials on the real test. Producing a formula cold is a different skill from recognising it, which is why these are typed.</p>
+          <div class="actions" style="justify-content:center">
+            <button class="btn-primary" onclick="location.hash='#/formulas'">Go again</button>
+            <button onclick="location.hash='#/'">Home</button>
+          </div>
+        </div>`;
+      session = null;
+      return;
+    }
+    const c = s.queue[s.i];
+    const graded = s.stage !== "ask";
+
+    app.innerHTML = `
+      <div class="panel">
+        <div class="crumb">
+          <span class="chip">${icon("i-energy")} Formula drill</span>
+          <span class="small muted">${esc(c.topic)}</span>
+          <span class="prog">${s.i + 1} of ${s.queue.length} &middot; ${s.right} right</span>
+        </div>
+        <p class="stem">${esc(c.front)}</p>
+        <input id="typedIn" class="typed-in" type="text" autocomplete="off" autocapitalize="off"
+          autocorrect="off" spellcheck="false" placeholder="Type it from memory" ${graded ? "disabled" : ""}
+          value="${esc(s.value)}">
+        ${graded ? `
+          <p class="verdict ${s.stage === "right" ? "ok" : "no"}">${s.stage === "right" ? "Correct" : "Not a match"}</p>
+          <div class="explain">${esc(c.back)}</div>
+          ${s.stage === "wrong" ? `<p class="small muted">Accepted forms include: <code>${esc(c.answers[0])}</code></p>
+            <div class="actions" style="margin-bottom:.6rem">
+              <button id="override">I actually had this right</button>
+            </div>` : ""}
+          <div class="actions">
+            <button class="btn-primary" id="nextTyped">${s.i + 1 >= s.queue.length ? "See results" : "Next"}</button>
+            <button onclick="location.hash='#/'">Stop</button>
+          </div>`
+        : `<div class="actions"><button class="btn-primary" id="checkTyped">Check</button>
+            <button id="skipTyped">I do not know it</button></div>`}
+      </div>`;
+
+    const inp = $("#typedIn");
+    if (inp && !graded) {
+      inp.focus();
+      inp.onkeydown = (e) => { if (e.key === "Enter") { e.preventDefault(); gradeTyped(inp.value); } };
+    }
+    const chk = $("#checkTyped");
+    if (chk) chk.onclick = () => gradeTyped($("#typedIn").value);
+    const skip = $("#skipTyped");
+    if (skip) skip.onclick = () => gradeTyped("", true);
+    const ov = $("#override");
+    if (ov) ov.onclick = () => { s.stage = "right"; s.right++; scheduleTyped(s.queue[s.i], true); renderTyped(); };
+    const nt = $("#nextTyped");
+    if (nt) nt.onclick = () => { s.i++; s.stage = "ask"; s.value = ""; renderTyped(); };
+  }
+
+  function gradeTyped(value, skipped = false) {
+    const s = session;
+    const c = s.queue[s.i];
+    s.value = value;
+    const ok = !skipped && answerMatches(value, c.answers);
+    if (ok) s.right++;
+    s.stage = ok ? "right" : "wrong";
+    scheduleTyped(c, ok);
+    save();
+    renderTyped();
+  }
+
+  // Typed cards ride the same Leitner schedule, but a miss drops straight to
+  // box 0 rather than easing back a step. Formulas are all-or-nothing.
+  function scheduleTyped(card, ok) {
+    bump("c");
+    const prev = S.cards[card.id] || { box: 0, seen: 0 };
+    const box = ok ? Math.min(BOXES.length - 1, prev.box + 1) : 0;
+    S.cards[card.id] = { box, due: now() + days(BOXES[box]), seen: (prev.seen || 0) + 1, at: now() };
+  }
+
+  /* ================= skill coverage map ================= */
+
+  function skillMap(rest) {
+    const only = rest && rest[0] ? Number(rest[0]) : null;
+    const sum = skillSummary();
+    const total = SKILL_COUNT();
+
+    app.innerHTML = `
+      <div class="panel">
+        <h1>${icon("i-search")} Skill coverage</h1>
+        <p class="muted">The state publishes ${total} individual skills under the nine competencies. This is the full list, and it is the direct answer to "what am I responsible for".</p>
+        <div class="skill-sum">
+          <span class="pill mastered"><b>${sum.mastered}</b> mastered</span>
+          <span class="pill shaky"><b>${sum.shaky}</b> shaky</span>
+          <span class="pill untouched"><b>${sum.untouched}</b> untouched</span>
+        </div>
+        <p class="small muted" style="margin:.7rem 0 0">Mastered means at least two questions on that skill, all correct most recently. One lucky answer is not mastery.</p>
+      </div>
+      ${DATA.comps.filter((c) => !only || c.comp === only).map((c) => {
+        const list = DATA.skills[String(c.comp)] || [];
+        return `<details class="sec" ${only ? "open" : ""}>
+          <summary>${compIcon(c.comp)} ${c.comp}. ${esc(c.title)}
+            <span class="small muted" style="margin-left:auto">${list.filter((_, i) => skillStatus(c.comp, i + 1).state === "mastered").length}/${list.length}</span></summary>
+          <div class="inner">
+            <ol class="skills">
+              ${list.map((txt, i) => {
+                const st = skillStatus(c.comp, i + 1);
+                return `<li class="sk ${st.state}">
+                  <span class="dot" aria-hidden="true"></span>
+                  <span><span class="sk-txt">${esc(txt)}</span>
+                  <span class="small muted">${st.seen ? `${st.right}/${st.seen} correct` : "not attempted"}${st.total ? ` &middot; ${st.total} in bank` : ""}</span></span>
+                  <button class="small" data-skill="${c.comp}:${i + 1}">Practise</button></li>`;
+              }).join("")}
+            </ol>
+          </div></details>`;
+      }).join("")}
+      <div class="panel"><button onclick="location.hash='#/'">Home</button></div>`;
+
+    app.querySelectorAll("[data-skill]").forEach((b) => {
+      b.onclick = () => {
+        const [c, s] = b.dataset.skill.split(":").map(Number);
+        const pool = DATA.questions.filter((q) => q.comp === c && q.skill === s);
+        startQuestionRun(shuffle(pool), `Competency ${c}, skill ${s}`);
+      };
+    });
+  }
+
+  /* ================= last 50 review dashboard ================= */
+
+  function reviewDashboard() {
+    const r = (S.recent || []).slice(-50);
+    if (r.length < 5) {
+      app.innerHTML = `<div class="panel"><h1>Last 50</h1>
+        <p class="muted">Answer a few more questions and this fills in: accuracy, how well calibrated your confidence is, pace against the real clock, and which competencies you have been hitting.</p>
+        <button class="btn-primary" onclick="location.hash='#/drill'">Run a drill</button></div>`;
+      return;
+    }
+    const acc = r.filter((x) => x.ok).length / r.length;
+    const timed = r.filter((x) => x.ms > 1000 && x.ms < 600000);
+    const avgS = timed.length ? timed.reduce((a, b) => a + b.ms, 0) / timed.length / 1000 : 0;
+    const confAnswered = r.filter((x) => x.conf > 0);
+    const dangerous = confAnswered.filter((x) => !x.ok && x.conf >= 3);
+    const guessedRight = confAnswered.filter((x) => x.ok && x.conf === 1);
+    const t = recentTrend();
+
+    const byComp = {};
+    for (const x of r) { byComp[x.comp] = byComp[x.comp] || { n: 0, ok: 0 }; byComp[x.comp].n++; if (x.ok) byComp[x.comp].ok++; }
+    const whyCounts = {};
+    for (const x of r) if (x.why) whyCounts[x.why] = (whyCounts[x.why] || 0) + 1;
+
+    app.innerHTML = `
+      <div class="panel">
+        <h1>${icon("i-chart")} Last ${r.length} questions</h1>
+        <div class="stat-row">
+          <div class="stat"><b>${Math.round(acc * 100)}%</b><span>Accuracy</span></div>
+          <div class="stat"><b>${avgS ? avgS.toFixed(0) + "s" : "&mdash;"}</b><span>Avg time</span></div>
+          <div class="stat"><b>${dangerous.length}</b><span>Sure but wrong</span></div>
+          <div class="stat"><b>${t ? (t.delta >= 0 ? "+" : "") + Math.round(t.delta * 100) + "%" : "&mdash;"}</b><span>Trend</span></div>
+        </div>
+        <p class="small muted" style="margin:1rem 0 0">Real exam pace is 112 seconds per question. ${
+          avgS ? (avgS > 112 ? `You are averaging ${avgS.toFixed(0)}s, which would leave you short on the real clock.` : `You are averaging ${avgS.toFixed(0)}s, comfortably inside the limit.`) : ""}</p>
+      </div>
+
+      ${dangerous.length ? `<div class="panel">
+        <h2 style="color:var(--bad)">Confidently wrong</h2>
+        <p class="small muted">You said "pretty sure" or "certain" and missed it. These are worth more than ordinary mistakes, because you do not know that you do not know them.</p>
+        <ul class="keypoints">${dangerous.slice(0, 8).map((x) => {
+          const q = DATA.questions.find((qq) => qq.id === x.qid);
+          return q ? `<li><span><strong>${esc(q.topic)}</strong><br><span class="small">${esc(q.stem.slice(0, 110))}${q.stem.length > 110 ? "..." : ""}</span></span></li>` : "";
+        }).join("")}</ul>
+        <button class="btn-primary" id="drillDangerous">Drill these now</button>
+      </div>` : ""}
+
+      ${confAnswered.length >= 10 ? `<div class="panel">
+        <h2>Calibration</h2>
+        ${[4, 3, 2, 1].map((lv) => {
+          const g = confAnswered.filter((x) => x.conf === lv);
+          if (!g.length) return "";
+          const a = g.filter((x) => x.ok).length / g.length;
+          return `<div class="mrow"><span class="lbl">${esc(CONF.find((c) => c.v === lv).label)} <span class="muted small">(${g.length})</span></span>
+            <span class="val">${Math.round(a * 100)}% right</span></div>
+            <div class="bar"><i class="${barClass(a)}" style="width:${Math.round(a * 100)}%"></i></div>`;
+        }).join("")}
+        <p class="small muted">Well calibrated means "certain" is near 100% and "guess" is near 25%. ${
+          guessedRight.length ? `You guessed right ${guessedRight.length} time${guessedRight.length === 1 ? "" : "s"}, which will not repeat on test day.` : ""}</p>
+      </div>` : ""}
+
+      ${Object.keys(whyCounts).length ? `<div class="panel">
+        <h2>Why you missed them</h2>
+        ${Object.entries(whyCounts).sort((a, b) => b[1] - a[1]).map(([k, n]) => {
+          const w = WHY.find((x) => x.v === k);
+          return `<div class="mrow"><span class="lbl">${esc(w ? w.label : k)}</span><span class="val">${n}</span></div>`;
+        }).join("")}
+        <p class="small muted">${whyCounts.misread >= 3 ? "Misreading is the cheapest thing on this list to fix. Slow down on the stem." :
+          whyCounts.formula >= 3 ? "Forgotten formulas point straight at the formula drill." :
+          whyCounts.never >= 3 ? "Genuinely new material points at the concept guide, then flashcards." : "Keep tagging misses. The pattern is what tells you where to spend time."}</p>
+      </div>` : ""}
+
+      <div class="panel">
+        <h2>Competency mix</h2>
+        ${Object.entries(byComp).sort((a, b) => a[0] - b[0]).map(([c, v]) => {
+          const p = v.ok / v.n;
+          return `<div class="mrow"><span class="lbl">${compIcon(Number(c))} ${c}. ${esc(compTitle(Number(c)))}</span><span class="val">${v.ok}/${v.n}</span></div>
+            <div class="bar"><i class="${barClass(p)}" style="width:${Math.round(p * 100)}%"></i></div>`;
+        }).join("")}
+        <button onclick="location.hash='#/'" style="margin-top:.8rem">Home</button>
+      </div>`;
+
+    const db = $("#drillDangerous");
+    if (db) db.onclick = () => {
+      const ids = new Set(dangerous.map((x) => x.qid));
+      startQuestionRun(shuffle(DATA.questions.filter((q) => ids.has(q.id))), "Confidently wrong");
+    };
   }
 
   /* ================= brain dump (free recall) ================= */
@@ -1072,11 +1764,11 @@
         <div class="panel">
           <div class="crumb"><span class="chip">Comp ${s.comp}</span>
             <span class="small muted">${esc(compTitle(s.comp))}</span></div>
-          <h2>Write down everything you know</h2>
-          <p class="muted small">Formulas, definitions, examples, the order of things. Do not look anything up. Messy is fine, blank is information too.</p>
-          <textarea class="recall" id="dump" placeholder="Start typing..."></textarea>
+          <h2>Say it out loud, or write it</h2>
+          <p class="muted small">Explain this competency from memory as if you were teaching it to your class. Out loud counts, and it is faster: you do this for a living. Type only what you want to keep. Do not look anything up. Blank space is information too.</p>
+          <textarea class="recall" id="dump" placeholder="Optional. Talking through it out loud works just as well."></textarea>
           <div class="actions" style="margin-top:.8rem">
-            <button class="btn-primary" id="doneWriting">I am done, show the key points</button>
+            <button class="btn-primary" id="doneWriting">Done, show the key points</button>
             <button onclick="location.hash='#/'">Stop</button>
           </div>
         </div>`;
@@ -1229,6 +1921,26 @@
       </div>
 
       <div class="panel">
+        <h2>${icon("i-clock")} Test date</h2>
+        <p class="small muted">Everything paces backwards from this: the daily plan, when mini mocks appear, and when the app switches to pacing and formulas.</p>
+        <div class="actions">
+          <input type="date" id="examDateIn" class="date-in" value="${esc(examDate() || "")}">
+          <button class="btn-primary" id="examDateSet">Save</button>
+          ${examDate() ? `<button id="examDateClear">Clear</button>` : ""}
+        </div>
+        ${examDate() ? `<p class="small" style="margin:.6rem 0 0">${daysUntilExam() >= 0 ? `${daysUntilExam()} days out. Phase: ${esc(phase().label.toLowerCase())}.` : "That date has passed. Set a new one."}</p>` : ""}
+      </div>
+
+      <div class="panel">
+        <h2>${icon("i-quiz")} Confidence check</h2>
+        <p class="small muted">Asks how sure you are before showing whether you were right. It is one extra tap, and it is the only way the app can spot the answers you are confidently wrong about, which are the ones that cost points.</p>
+        <div class="seg" role="group" aria-label="Confidence check">
+          <button type="button" data-conf-pref="1" aria-pressed="${askConfidence()}">On</button>
+          <button type="button" data-conf-pref="0" aria-pressed="${!askConfidence()}">Off</button>
+        </div>
+      </div>
+
+      <div class="panel">
         <h2>${icon("i-target")} Daily goal</h2>
         <p class="small muted">Cards and questions both count. Pick something you will actually hit on a bad day: a streak you can keep beats an ambitious one you break.</p>
         <div class="seg" role="group" aria-label="Daily goal">
@@ -1258,6 +1970,29 @@
 
     app.querySelectorAll("[data-theme-opt]").forEach((b) => {
       b.onclick = () => { applyTheme(b.dataset.themeOpt); save(); };
+    });
+    const eSet = $("#examDateSet");
+    if (eSet) eSet.onclick = () => {
+      const v = $("#examDateIn").value;
+      S.prefs = { ...(S.prefs || {}), examDate: v || null };
+      S.prefsAt = Date.now();
+      save();
+      progressView();
+    };
+    const eClr = $("#examDateClear");
+    if (eClr) eClr.onclick = () => {
+      S.prefs = { ...(S.prefs || {}), examDate: null };
+      S.prefsAt = Date.now();
+      save();
+      progressView();
+    };
+    app.querySelectorAll("[data-conf-pref]").forEach((b) => {
+      b.onclick = () => {
+        S.prefs = { ...(S.prefs || {}), askConfidence: b.dataset.confPref === "1" };
+        S.prefsAt = Date.now();
+        save();
+        progressView();
+      };
     });
     app.querySelectorAll("[data-goal]").forEach((b) => {
       b.onclick = () => {
@@ -1417,9 +2152,11 @@
     if (session.kind === "run") {
       const map = { a: 0, b: 1, c: 2, d: 3, 1: 0, 2: 1, 3: 2, 4: 3 };
       const k = e.key.toLowerCase();
-      if (session.picked === null && k in map) { e.preventDefault(); answerRun(map[k]); }
-      else if (session.picked !== null && (e.key === "Enter" || e.key === " ")) {
-        e.preventDefault(); session.i++; session.picked = null; renderRunQuestion();
+      if (session.picked === null && k in map) { e.preventDefault(); pickAnswer(map[k]); }
+      else if (session.stage === "conf" && ["1", "2", "3", "4"].includes(e.key)) {
+        e.preventDefault(); setConfidence(Number(e.key));
+      } else if (session.stage === "reveal" && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault(); nextRunQuestion();
       }
       return;
     }
@@ -1704,7 +2441,7 @@
   (async () => {
     try {
       const [content] = await Promise.all([
-        fetch("/content.json?v=2026.07.27-1340").then((r) => {
+        fetch("/content.json?v=2026.07.27-1404").then((r) => {
           if (!r.ok) throw new Error("content " + r.status);
           return r.json();
         }),

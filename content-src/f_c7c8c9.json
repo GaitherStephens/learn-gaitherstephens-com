@@ -45,8 +45,16 @@
     "id": "c7-f07",
     "comp": 7,
     "topic": "Ten percent rule",
-    "front": "About how much energy moves from one trophic level to the next, and where does the rest of it go?",
-    "back": "About 10 percent is stored as biomass at the next level. The other 90 percent powers the organism's own life processes and escapes as heat during respiration, or leaves in undigested waste. So 10,000 kcal of producers supports roughly 1,000 kcal of herbivores and 100 kcal of their predators."
+    "front": "What percentage of the energy at one trophic level is stored as biomass at the next?",
+    "back": "About 10 percent is stored as biomass at the next level. The other 90 percent powers the organism's own life processes and escapes as heat during respiration, or leaves in undigested waste. So 10,000 kcal of producers supports roughly 1,000 kcal of herbivores and 100 kcal of their predators.",
+    "drill": "type",
+    "answers": [
+      "10%",
+      "10 percent",
+      "about 10%",
+      "ten percent",
+      "10"
+    ]
   },
   {
     "id": "c7-f08",
@@ -59,8 +67,14 @@
     "id": "c7-f09",
     "comp": 7,
     "topic": "Trophic levels",
-    "front": "In the chain grass to grasshopper to frog to hawk, name the role at each position.",
-    "back": "Grass is the producer (autotroph), the grasshopper is the primary consumer (herbivore), the frog is the secondary consumer, and the hawk is the tertiary consumer. Decomposers act on organisms at every level and return nutrients to the soil."
+    "front": "In the chain grass to grasshopper to frog to hawk, name the trophic role at each position in order.",
+    "back": "Grass is the producer (autotroph), the grasshopper is the primary consumer (herbivore), the frog is the secondary consumer, and the hawk is the tertiary consumer. Decomposers act on organisms at every level and return nutrients to the soil.",
+    "drill": "type",
+    "answers": [
+      "producer, primary consumer, secondary consumer, tertiary consumer",
+      "producer primary consumer secondary consumer tertiary consumer",
+      "producer, primary, secondary, tertiary"
+    ]
   },
   {
     "id": "c7-f10",
@@ -157,8 +171,14 @@
     "id": "c7-f23",
     "comp": 7,
     "topic": "Red tide",
-    "front": "What organism causes Florida red tide, and what are its two best-known effects?",
-    "back": "The dinoflagellate Karenia brevis. Its brevetoxins kill fish, sea turtles, and marine mammals, and wave action puts the toxins into sea spray, which irritates the eyes, nose, and throat of people onshore. Decomposition of the die-off then drives dissolved oxygen down further."
+    "front": "Name the organism that causes Florida red tide.",
+    "back": "The dinoflagellate Karenia brevis. Its brevetoxins kill fish, sea turtles, and marine mammals, and wave action puts the toxins into sea spray, which irritates the eyes, nose, and throat of people onshore. Decomposition of the die-off then drives dissolved oxygen down further.",
+    "drill": "type",
+    "answers": [
+      "karenia brevis",
+      "k. brevis",
+      "k brevis"
+    ]
   },
   {
     "id": "c7-f24",
@@ -171,8 +191,15 @@
     "id": "c7-f25",
     "comp": 7,
     "topic": "Mangroves",
-    "front": "Name Florida's three mangrove species by zone and state two services mangroves provide.",
-    "back": "Red mangrove with arching prop roots grows closest to the water, black mangrove with pencil-like pneumatophores sits slightly higher, and white mangrove grows farthest upland. They absorb wave energy and reduce storm surge during hurricanes, trap sediment, and serve as nursery habitat for fish, shrimp, and crabs."
+    "front": "Name Florida's three mangrove species in order from the water's edge inland.",
+    "back": "Red mangrove with arching prop roots grows closest to the water, black mangrove with pencil-like pneumatophores sits slightly higher, and white mangrove grows farthest upland. They absorb wave energy and reduce storm surge during hurricanes, trap sediment, and serve as nursery habitat for fish, shrimp, and crabs.",
+    "drill": "type",
+    "answers": [
+      "red, black, white",
+      "red mangrove, black mangrove, white mangrove",
+      "red black white",
+      "red, black, white mangrove"
+    ]
   },
   {
     "id": "c7-f26",
@@ -283,15 +310,26 @@
     "id": "c8-f13",
     "comp": 8,
     "topic": "5E instructional model",
-    "front": "Name the five stages of the 5E model in order, and state the rule about the placement of Explain.",
-    "back": "Engage, Explore, Explain, Elaborate, Evaluate. Explore comes before Explain: students investigate the phenomenon first and build the vocabulary and formal explanation afterward, which is the reverse of a lecture-then-lab sequence."
+    "front": "Name the five stages of the 5E model in order.",
+    "back": "Engage, Explore, Explain, Elaborate, Evaluate. Explore comes before Explain: students investigate the phenomenon first and build the vocabulary and formal explanation afterward, which is the reverse of a lecture-then-lab sequence.",
+    "drill": "type",
+    "answers": [
+      "engage, explore, explain, elaborate, evaluate",
+      "engage explore explain elaborate evaluate"
+    ]
   },
   {
     "id": "c8-f14",
     "comp": 8,
     "topic": "Levels of inquiry",
-    "front": "Rank confirmation, structured, guided, and open inquiry by how much the students decide.",
-    "back": "Confirmation: teacher supplies question, procedure, and a known result. Structured: teacher supplies question and procedure, students find the result. Guided: teacher supplies the question, students design the procedure. Open: students generate the question and the procedure themselves."
+    "front": "List the four levels of inquiry in order from least to most student directed.",
+    "back": "Confirmation: teacher supplies question, procedure, and a known result. Structured: teacher supplies question and procedure, students find the result. Guided: teacher supplies the question, students design the procedure. Open: students generate the question and the procedure themselves.",
+    "drill": "type",
+    "answers": [
+      "confirmation, structured, guided, open",
+      "confirmation structured guided open",
+      "confirmation, structured, guided, open inquiry"
+    ]
   },
   {
     "id": "c9-f01",
@@ -361,7 +399,14 @@
     "comp": 9,
     "topic": "Accuracy vs precision",
     "front": "Four measurements of a block with a known mass of 50.0 g read 47.1, 47.2, 47.1, and 47.2 g. Accurate, precise, both, or neither?",
-    "back": "Precise but not accurate. Precision is agreement among repeated measurements; accuracy is closeness to the true value. Reading consistently about 3 g low points to an instrument that needs to be zeroed or calibrated, not to random error."
+    "back": "Precise but not accurate. Precision is agreement among repeated measurements; accuracy is closeness to the true value. Reading consistently about 3 g low points to an instrument that needs to be zeroed or calibrated, not to random error.",
+    "drill": "type",
+    "answers": [
+      "precise but not accurate",
+      "precise not accurate",
+      "precise, not accurate",
+      "precise"
+    ]
   },
   {
     "id": "c9-f11",
@@ -388,8 +433,15 @@
     "id": "c9-f14",
     "comp": 9,
     "topic": "SI base units",
-    "front": "Name the SI base units for length, mass, time, temperature, and amount of substance.",
-    "back": "Meter, kilogram, second, kelvin, and mole; the remaining two base units are the ampere and the candela. Watch the traps: the liter is a metric volume unit but not an SI base unit, and the SI base unit of temperature is the kelvin, not the degree Celsius."
+    "front": "Name the SI base units for length, mass, time, temperature, and amount of substance, in that order.",
+    "back": "Meter, kilogram, second, kelvin, and mole; the remaining two base units are the ampere and the candela. Watch the traps: the liter is a metric volume unit but not an SI base unit, and the SI base unit of temperature is the kelvin, not the degree Celsius.",
+    "drill": "type",
+    "answers": [
+      "meter, kilogram, second, kelvin, mole",
+      "metre, kilogram, second, kelvin, mole",
+      "meter kilogram second kelvin mole",
+      "m, kg, s, k, mol"
+    ]
   },
   {
     "id": "c9-f15",
@@ -409,15 +461,28 @@
     "id": "c9-f17",
     "comp": 9,
     "topic": "Significant figures",
-    "front": "You divide 12.5 g by 4.0 mL and the calculator reads 3.125. What do you report, and what is the rule?",
-    "back": "Report 3.1 g/mL. In multiplication and division the answer carries the fewest significant figures among the measurements used, and 4.0 has only two. For addition and subtraction, match the fewest decimal places instead."
+    "front": "You divide 12.5 g by 4.0 mL and the calculator reads 3.125. What value do you report?",
+    "back": "Report 3.1 g/mL. In multiplication and division the answer carries the fewest significant figures among the measurements used, and 4.0 has only two. For addition and subtraction, match the fewest decimal places instead.",
+    "drill": "type",
+    "answers": [
+      "3.1",
+      "3.1 g/ml",
+      "3.1 g per ml"
+    ]
   },
   {
     "id": "c9-f18",
     "comp": 9,
     "topic": "Mean median mode range",
-    "front": "For the times 0.22, 0.23, 0.24, 0.25, and 0.95 s, which measure of center best describes typical performance, and why?",
-    "back": "The median, 0.24 s. The mean is about 0.38 s because the single 0.95 s outlier drags it upward, leaving it above four of the five values. The range is largest minus smallest, 0.73 s, and there is no mode here since no value repeats."
+    "front": "For the times 0.22, 0.23, 0.24, 0.25, and 0.95 s, name the measure of center that best describes typical performance.",
+    "back": "The median, 0.24 s. The mean is about 0.38 s because the single 0.95 s outlier drags it upward, leaving it above four of the five values. The range is largest minus smallest, 0.73 s, and there is no mode here since no value repeats.",
+    "drill": "type",
+    "answers": [
+      "median",
+      "the median",
+      "median 0.24 s",
+      "median, 0.24 s"
+    ]
   },
   {
     "id": "c9-f19",

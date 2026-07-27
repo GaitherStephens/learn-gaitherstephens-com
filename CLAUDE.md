@@ -86,6 +86,30 @@ Daily counters live in `state.days` keyed by **local** calendar day and merge by
 
 She studies on her phone more than anything else. Verified at 390px: zero horizontal overflow, no tap target under 44px. Safe-area insets on the floating buttons, 16px minimum input text so iOS does not zoom on focus, hover styles suppressed under `@media (hover: none)`, static header in short landscape.
 
+## The learner model (added after external critique)
+
+The app used to know *what* she answered but not *why*, which made the adaptive engine blind: every wrong answer looked identical. Three additions fix that, and they are the point of the whole design now.
+
+- **Confidence before reveal.** After picking an answer she taps how sure she was, then sees the result. Confident-and-wrong is surfaced explicitly and routed to a dedicated drill. This is the highest-value signal in the app for someone who failed by two questions, because it finds what she does not know she does not know. Toggleable in settings, default on.
+- **Why-missed after wrong answers only.** Five options (never learned / mixed up / misread / forgot formula / changed answer). Skippable. The pattern drives the advice on the Last 50 page.
+- **Rolling attempt log** in `state.recent`, capped at 300. Feeds accuracy, pace, calibration, trend, and competency mix.
+
+`state.recent` merges by **union**, not last-write-wins: each attempt is a distinct event keyed on `at:qid`, so a sync cannot drop the attempts made on the other device. `state.days` still merges by max. Both rules are implemented twice, in `mergeState` (worker) and `pull` (client) — change one, change the other.
+
+**Readiness is a band, never a number.** `Ready / Probably ready / Needs work / Far from ready / Not enough evidence`, always shown with the evidence behind it (questions answered, coverage, skills mastered, last full mock, trend). A percentage reads as precision the data does not support. It also refuses to report at all below 25 questions.
+
+**Mastery decays.** `decayFactor()` is flat for 7 days then slides to a 0.7 floor over ~7 weeks. Without it, a competency drilled once in September still reads green in April, which is the most misleading thing a mastery display can do. Decay also feeds the adaptive drill weighting so stale areas resurface.
+
+**Exam date drives everything.** `prefs.examDate` produces a countdown and a phase (`explore / build / sharpen / taper / final`), and the phase changes what the daily plan asks for, not just the wording. Without a date the app cannot pace anything, so the home screen asks for it.
+
+**Teaching-topic hook.** She teaches this material daily, which no commercial prep product can exploit because it does not know the learner. Setting today's topic gives that competency a 4x weight in the adaptive drill. Stored per-day in `prefs.teaching`.
+
+**Typed formula recall.** 49 cards carry `drill: "type"` and an `answers` array. The exam supplies no reference sheet, so formulas must be produced, not recognised. The grader normalises hard (case, whitespace, Greek letters spelled out, arrows, multiplication signs) and compares twice, exact and loose. A false "incorrect" on a right answer is the fastest way to make her abandon the drill, so tolerance beats strictness; there is also an "I actually had this right" override. Verified: all 49 cards accept every one of their own declared variants, and genuinely wrong answers like `d=v/m` are still rejected.
+
+**Skill map.** All **101** published skills (not 92, which was an early miscount), marked mastered / shaky / untouched. Mastered requires at least two questions on that skill, all correct most recently. `build.py` fails if any skill has no question backing it, so the map can never quietly lie about coverage.
+
+**Mini mocks.** 20 items at blueprint proportions on proportional time (37 min). Cheap enough to sit twice a week, which keeps the three full 80-item mocks in reserve.
+
 ## Study modes
 
 Flashcards (Leitner, `BOXES` intervals in days), topic quiz, adaptive drill (weights competency by test share x mastery gap, interleaved), 80-question timed mock exam on the real blueprint, brain dump (free recall then self-scored checklist), concept guide (markdown rendered by the small renderer in `app.js`), missed queue, progress dashboard.

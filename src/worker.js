@@ -119,7 +119,8 @@ async function clearAttempts(env, ipHash) {
 
 /* ---------- progress state ---------- */
 
-const EMPTY_STATE = { cards: {}, questions: {}, exams: [], recall: {}, days: {}, prefs: {}, updatedAt: 0 };
+const EMPTY_STATE = { cards: {}, questions: {}, exams: [], recall: {}, days: {}, recent: [], prefs: {}, updatedAt: 0 };
+const RECENT_CAP = 300;
 
 async function loadState(env) {
   try {
@@ -167,11 +168,26 @@ function mergeState(server, client) {
     };
   }
 
+  // Rolling attempt log. Union rather than last-write-wins: every attempt is a
+  // distinct event, and the "last 50" view is meaningless if a sync drops the
+  // ones made on the other device. Keyed on time + question, which cannot
+  // collide in practice.
+  const seenAtt = new Set();
+  const recent = [];
+  for (const a of [...(server.recent || []), ...(client.recent || [])]) {
+    const k = `${a.at}:${a.qid}`;
+    if (seenAtt.has(k)) continue;
+    seenAtt.add(k);
+    recent.push(a);
+  }
+  recent.sort((a, b) => a.at - b.at);
+
   return {
     cards: mergeRecords(server.cards, client.cards),
     questions: mergeRecords(server.questions, client.questions),
     recall: mergeRecords(server.recall, client.recall),
     days,
+    recent: recent.slice(-RECENT_CAP),
     exams: exams.slice(-200),
     prefs: (client.prefsAt ?? 0) >= (server.prefsAt ?? 0) ? (client.prefs || {}) : (server.prefs || {}),
     prefsAt: Math.max(client.prefsAt ?? 0, server.prefsAt ?? 0),
@@ -206,7 +222,7 @@ function loginPage(error, nextPath) {
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><meta name="color-scheme" content="light dark">
 <title>Sign in : FTCE Science 5-9 Study</title>
-<link rel="stylesheet" href="/styles.css?v=2026.07.27-1340">
+<link rel="stylesheet" href="/styles.css?v=2026.07.27-1404">
 </head><body class="login-body">
 <main class="login-card">
   <div class="login-mark">FTCE</div>
