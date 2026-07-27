@@ -22,6 +22,20 @@
   --warn-bg: #fdf3e0;
   --flame: #d2601a;
   --on-cyan: #06222c;
+
+  /* One colour per competency, used consistently everywhere so "the purple
+     one" becomes a real handle for matter. Colour NEVER carries meaning on
+     its own: every use is paired with the competency number, an icon, or
+     both, so nothing is lost to colour blindness or a greyscale screen. */
+  --comp-1: #7048c4;
+  --comp-2: #2f6fbb;
+  --comp-3: #a86508;
+  --comp-4: #97522a;
+  --comp-5: #4a42b0;
+  --comp-6: #16794c;
+  --comp-7: #0b6f6b;
+  --comp-8: #a83459;
+  --comp-9: #0d6480;
   --sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
   --radius: 12px;
@@ -45,6 +59,15 @@
     --warn-bg: #3a2f18;
     --flame: #ffa24d;
     --on-cyan: #06222c;
+    --comp-1: #a78bfa;
+    --comp-2: #6da4d8;
+    --comp-3: #f0b44a;
+    --comp-4: #d99a6c;
+    --comp-5: #9a93f5;
+    --comp-6: #5fd39b;
+    --comp-7: #4ecdc4;
+    --comp-8: #f08fb0;
+    --comp-9: #61bcd8;
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.25);
   }
 }
@@ -65,6 +88,15 @@
   --warn-bg: #3a2f18;
   --flame: #ffa24d;
   --on-cyan: #06222c;
+  --comp-1: #a78bfa;
+  --comp-2: #6da4d8;
+  --comp-3: #f0b44a;
+  --comp-4: #d99a6c;
+  --comp-5: #9a93f5;
+  --comp-6: #5fd39b;
+  --comp-7: #4ecdc4;
+  --comp-8: #f08fb0;
+  --comp-9: #61bcd8;
   --shadow: 0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.25);
 }
 
@@ -117,6 +149,61 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 /* Icons. Sizing is font-relative so buttons and headings scale together. */
 .ico { width: 1.1em; height: 1.1em; flex: none; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
 .ico--lg { width: 1.5em; height: 1.5em; }
+.ico--sm { width: .9em; height: .9em; }
+
+/* Competency colour. Put .c1 .. .c9 on any element and --comp resolves; the
+   icon, chip, dot and bar helpers below all read from it, so a competency
+   looks the same everywhere in the app. */
+.c1 { --comp: var(--comp-1); }
+.c2 { --comp: var(--comp-2); }
+.c3 { --comp: var(--comp-3); }
+.c4 { --comp: var(--comp-4); }
+.c5 { --comp: var(--comp-5); }
+.c6 { --comp: var(--comp-6); }
+.c7 { --comp: var(--comp-7); }
+.c8 { --comp: var(--comp-8); }
+.c9 { --comp: var(--comp-9); }
+
+.ico--comp { color: var(--comp, var(--cyan)); }
+
+/* Competency chip: colour PLUS the number PLUS the icon. Three redundant
+   cues, so none of them has to carry the meaning alone. */
+.cchip {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  padding: .2rem .55rem; border-radius: 999px;
+  color: var(--comp, var(--muted));
+  background: color-mix(in srgb, var(--comp, var(--line)) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--comp, var(--line)) 35%, transparent);
+  white-space: nowrap;
+}
+.cchip .ico { width: .95em; height: .95em; }
+
+/* Left colour rail on a competency row, so the eye can group by subject.
+   The specific selectors are needed because `details.sec` and `.mode` both
+   set their own border and would otherwise win on specificity. */
+.rail,
+details.sec.rail,
+button.mode.rail,
+.mrow.rail {
+  border-left: 3px solid var(--comp, var(--line-strong));
+  padding-left: .7rem;
+}
+
+/* Status: mastered / shaky / untouched. Always icon + word + colour. */
+.status {
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-size: .74rem; font-weight: 700;
+  padding: .15rem .5rem; border-radius: 999px;
+}
+.status.ok { background: var(--good-bg); color: var(--good); }
+.status.mid { background: var(--warn-bg); color: var(--warn); }
+.status.no { background: var(--line); color: var(--muted); }
+
+/* Difficulty: three pips, filled to the item's level. */
+.diff { display: inline-flex; gap: .18rem; align-items: center; vertical-align: middle; }
+.diff i { width: .38rem; height: .38rem; border-radius: 50%; background: var(--line-strong); }
+.diff i.on { background: var(--muted); }
 
 /* ---------- login ---------- */
 
@@ -234,7 +321,8 @@ header.top {
 .stat-row { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1rem; }
 .stat { min-width: 90px; }
 .stat b { display: block; font-size: 1.5rem; font-family: var(--serif); line-height: 1.1; }
-.stat span { font-size: .78rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.stat span { font-size: .78rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; display: inline-flex; align-items: center; gap: .25rem; }
+.stat span .ico { opacity: .8; }
 
 .modes { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .85rem; }
 .mode {
@@ -499,7 +587,8 @@ footer.foot a { color: var(--muted); }
 }
 .evidence div b { display: block; font-family: var(--serif); font-size: 1.25rem; line-height: 1.1; }
 .evidence div b .muted { font-size: .8rem; color: var(--muted); }
-.evidence div span { font-size: .74rem; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+.evidence div span { font-size: .74rem; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; display: inline-flex; align-items: center; gap: .25rem; }
+.evidence div span .ico { opacity: .8; }
 
 /* ---------- confidence / why-missed prompts ---------- */
 
@@ -586,7 +675,46 @@ footer.foot a { color: var(--muted); }
 .pill.shaky { background: var(--warn-bg); color: var(--warn); border-color: transparent; }
 .pill.untouched { background: var(--line); color: var(--muted); border-color: transparent; }
 
+/* Stacked coverage bar: mastered / shaky / untouched at a glance. */
+.stackbar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; margin-top: .8rem; background: var(--line); }
+.stackbar i { display: block; height: 100%; }
+.stackbar i.m { background: var(--good); }
+.stackbar i.s { background: var(--warn); }
+.stackbar i.u { background: var(--line-strong); }
+
+/* Verdict, warning and rating colour cues. */
+.verdict { display: flex; align-items: center; gap: .4rem; }
+.warn-note {
+  display: flex; gap: .5rem; align-items: flex-start;
+  background: var(--bad-bg); color: var(--bad);
+  border-radius: 9px; padding: .55rem .7rem;
+  font-size: .87rem; margin-bottom: .7rem;
+}
+.warn-note .ico { flex: none; margin-top: .1rem; }
+
+.rate button { display: flex; flex-direction: column; align-items: center; gap: .1rem; }
+.rate button .ico { margin-bottom: .1rem; }
+.rate .g0 { color: var(--bad); }
+.rate .g1 { color: var(--warn); }
+.rate .g2 { color: var(--good); }
+.rate .g3 { color: var(--cyan); }
+.rate button small { color: var(--muted); }
+
+.ask-opts button { display: inline-flex; align-items: center; justify-content: center; gap: .35rem; }
+.ask-q { display: flex; align-items: center; gap: .4rem; }
+.conf-tag { display: inline-flex; align-items: center; gap: .25rem; }
+
+.pill .ico { flex: none; }
+.pill { align-items: center; }
+
+.rail-bar { border-left: 3px solid transparent; padding-left: .7rem; }
+
 ol.skills { list-style: none; padding: 0; margin: 0; counter-reset: sk; }
+ol.skills .sk .sk-ico { margin-top: .15rem; flex: none; }
+ol.skills .sk.mastered .sk-ico { color: var(--good); }
+ol.skills .sk.shaky .sk-ico { color: var(--warn); }
+ol.skills .sk.untouched .sk-ico { color: var(--muted); opacity: .7; }
+ol.skills .sk button { display: inline-flex; align-items: center; gap: .25rem; }
 ol.skills .sk {
   display: flex; align-items: flex-start; gap: .6rem;
   padding: .6rem 0; border-bottom: 1px solid var(--line);
@@ -627,7 +755,9 @@ details.sec > summary .small { margin-left: auto; }
   font-size: .82rem; font-weight: 600;
   background: none; color: var(--muted);
   display: inline-flex; align-items: center; gap: .35rem;
-  min-height: 40px;
+  /* 44px, not 40: this selector is more specific than the mobile
+     `button { min-height: 44px }` rule and would otherwise silently win. */
+  min-height: 44px;
 }
 .seg button + button { border-left: 1px solid var(--line); }
 .seg button[aria-pressed="true"] { background: var(--cyan); color: var(--on-cyan); }

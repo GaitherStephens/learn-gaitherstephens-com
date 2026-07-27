@@ -146,7 +146,32 @@
   const icon = (name, cls = "ico") => `<svg viewBox="0 0 24 24" class="${cls}" aria-hidden="true"><use href="#${name}"></use></svg>`;
 
   const COMP_ICON = { 1: "i-atom", 2: "i-motion", 3: "i-energy", 4: "i-earth", 5: "i-space", 6: "i-life", 7: "i-eco", 8: "i-lab", 9: "i-search" };
-  const compIcon = (n) => `<svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><use href="#${COMP_ICON[n] || "i-book"}"></use></svg>`;
+  const COMP_SHORT = { 1: "Matter", 2: "Forces", 3: "Energy", 4: "Earth", 5: "Space", 6: "Life", 7: "Environment", 8: "Classroom", 9: "Inquiry" };
+
+  // Competency icon, tinted with that competency's colour.
+  const compIcon = (n) => `<svg viewBox="0 0 24 24" class="ico ico--comp c${n}" aria-hidden="true"><use href="#${COMP_ICON[n] || "i-book"}"></use></svg>`;
+
+  /* Competency chip. Colour, number, short name and icon all at once: four
+     redundant cues so the colour never has to do the work by itself. */
+  const compChip = (n, extra = "") => `<span class="cchip c${n}">${
+    `<svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><use href="#${COMP_ICON[n] || "i-book"}"></use></svg>`
+  }${n}. ${esc(COMP_SHORT[n] || "")}${extra}</span>`;
+
+  const diffPips = (d) => `<span class="diff" title="Difficulty ${d} of 3" aria-label="Difficulty ${d} of 3">${
+    [1, 2, 3].map((i) => `<i class="${i <= d ? "on" : ""}"></i>`).join("")}</span>`;
+
+  const STATUS_META = {
+    mastered: { cls: "ok", icon: "i-check-circle", label: "Mastered" },
+    shaky: { cls: "mid", icon: "i-alert", label: "Shaky" },
+    untouched: { cls: "no", icon: "i-seed", label: "Not started" },
+  };
+  const statusPill = (state) => {
+    const m = STATUS_META[state];
+    return `<span class="status ${m.cls}">${icon(m.icon, "ico ico--sm")}${m.label}</span>`;
+  };
+
+  const CONF_ICON = { 1: "i-dice", 2: "i-half", 3: "i-thumb", 4: "i-star" };
+  const WHY_ICON = { never: "i-seed", mixed: "i-swap", misread: "i-eye", formula: "i-energy", changed: "i-undo" };
 
   /* ================= theme ================= */
 
@@ -466,6 +491,9 @@
   }
 
   function barClass(v) { return v < 0.5 ? "weak" : v < 0.75 ? "mid" : "strong"; }
+  // Matching text colour for the same three performance bands, so the number
+  // beside a bar agrees with the bar.
+  function barTone(v) { return v < 0.5 ? "bad" : v < 0.75 ? "warn" : "good"; }
 
   /* Raw-percent bands. Pearson does not publish the raw-to-scaled conversion for
      the FTCE, so this is deliberately a band, not a fake precise scaled score. */
@@ -667,12 +695,12 @@
         <div class="ready-band"><span class="verdict-band ${BAND_CLASS[R.band] || ""}">${R.band}</span></div>
         <p class="small" style="margin:.5rem 0 .8rem">${esc(R.why)}</p>
         <div class="evidence">
-          <div><b>${R.seen}<span class="muted">/${o.total}</span></b><span>Questions answered</span></div>
-          <div><b>${Math.round(R.coverage * 100)}%</b><span>Bank covered</span></div>
-          <div><b>${R.sk.mastered}<span class="muted">/${SKILL_COUNT()}</span></b><span>Skills mastered</span></div>
-          <div><b>${R.lastMock ? Math.round((R.lastMock.raw / R.lastMock.total) * 100) + "%" : "&mdash;"}</b><span>Last full mock</span></div>
-          <div><b>${R.trend ? (R.trend.delta >= 0 ? "+" : "") + Math.round(R.trend.delta * 100) + "%" : "&mdash;"}</b><span>Recent trend</span></div>
-          <div><b>${due}</b><span>Cards due</span></div>
+          <div><b>${R.seen}<span class="muted">/${o.total}</span></b><span>${icon("i-quiz", "ico ico--sm")}Questions answered</span></div>
+          <div><b>${Math.round(R.coverage * 100)}%</b><span>${icon("i-layers", "ico ico--sm")}Bank covered</span></div>
+          <div><b>${R.sk.mastered}<span class="muted">/${SKILL_COUNT()}</span></b><span>${icon("i-check-circle", "ico ico--sm")}Skills mastered</span></div>
+          <div><b>${R.lastMock ? Math.round((R.lastMock.raw / R.lastMock.total) * 100) + "%" : "&mdash;"}</b><span>${icon("i-exam", "ico ico--sm")}Last full mock</span></div>
+          <div><b>${R.trend ? `<span style="color:var(--${R.trend.delta >= 0 ? "good" : "bad"})">${(R.trend.delta >= 0 ? "+" : "") + Math.round(R.trend.delta * 100)}%</span>` : "&mdash;"}</b><span>${icon(R.trend && R.trend.delta < 0 ? "i-trend-down" : "i-trend-up", "ico ico--sm")}Recent trend</span></div>
+          <div><b>${due}</b><span>${icon("i-cards", "ico ico--sm")}Cards due</span></div>
         </div>
         <p class="small muted" style="margin:.8rem 0 0">A band rather than a number on purpose: Pearson does not publish how raw scores convert to the 200 scaled pass mark, so a precise percentage would be false precision.</p>
         <div class="actions" style="margin-top:.8rem">
@@ -754,9 +782,9 @@
           const dec = decayFactor(compLastTouched(c.comp));
           const eff = m.score * dec;
           const pct = Math.round(eff * 100);
-          return `<div class="mrow"><span class="lbl">${compIcon(c.comp)} ${c.comp}. ${esc(c.title)}</span>
-            <span class="val">${m.seen ? pct + "%" : "not started"}${dec < 0.99 ? " &middot; fading" : ""} &middot; ${c.pct}% of test</span></div>
-            <div class="bar"><i class="${barClass(eff)}" style="width:${Math.max(pct, m.seen ? 2 : 0)}%"></i></div>`;
+          return `<div class="mrow c${c.comp} rail"><span class="lbl">${compIcon(c.comp)} ${c.comp}. ${esc(c.title)}</span>
+            <span class="val">${m.seen ? `<span style="color:var(--${barTone(eff)})">${pct}%</span>` : "not started"}${dec < 0.99 ? ` ${icon("i-trend-down", "ico ico--sm")}fading` : ""} &middot; ${c.pct}% of test</span></div>
+            <div class="bar c${c.comp} rail-bar"><i class="${barClass(eff)}" style="width:${Math.max(pct, m.seen ? 2 : 0)}%"></i></div>`;
         }).join("")}
         <p class="small muted">Bars fade if a competency has gone untouched for weeks. Knowledge decays, and a display that only ever grows would quietly lie to you.</p>
       </div>`;
@@ -839,9 +867,9 @@
     app.innerHTML = `
       <div class="panel">
         <div class="crumb">
-          <span class="chip">Comp ${c.comp}</span>
+          ${compChip(c.comp)}
           <span class="small muted">${esc(c.topic)}</span>
-          <span class="prog">${s.i + 1} of ${total}${rec ? ` &middot; box ${rec.box}` : " &middot; new"}</span>
+          <span class="prog">${s.i + 1} of ${total} &middot; ${rec ? `${icon("i-layers", "ico ico--sm")}box ${rec.box}` : `${icon("i-seed", "ico ico--sm")}new`}</span>
         </div>
         <div class="flash">
           <div>
@@ -852,10 +880,10 @@
         ${s.shown ? `
           <p class="small muted">How well did you know that, before you saw the answer?</p>
           <div class="rate">
-            <button data-g="0">Blank<small>see again now</small></button>
-            <button data-g="1">Shaky<small>tomorrow</small></button>
-            <button data-g="2">Got it<small>few days</small></button>
-            <button data-g="3">Easy<small>next week+</small></button>
+            <button data-g="0" class="g0">${icon("i-x-circle")}Blank<small>see again now</small></button>
+            <button data-g="1" class="g1">${icon("i-alert")}Shaky<small>tomorrow</small></button>
+            <button data-g="2" class="g2">${icon("i-check")}Got it<small>few days</small></button>
+            <button data-g="3" class="g3">${icon("i-star")}Easy<small>next week+</small></button>
           </div>`
         : `<div class="actions"><button class="btn-primary" id="reveal">Show answer</button>
              <button onclick="location.hash='#/'">Stop</button></div>`}
@@ -965,9 +993,9 @@
     app.innerHTML = `
       <div class="panel">
         <div class="crumb">
-          <span class="chip">Comp ${q.comp}</span>
-          <span class="small muted">${esc(q.topic)}</span>
-          <span class="prog">${s.i + 1} of ${s.qs.length} &middot; ${s.right} right</span>
+          ${compChip(q.comp)}
+          <span class="small muted">${esc(q.topic)} ${diffPips(q.difficulty)}</span>
+          <span class="prog">${s.i + 1} of ${s.qs.length} &middot; <span style="color:var(--good)">${s.right} right</span></span>
         </div>
         <p class="stem">${esc(q.stem)}</p>
         <div class="choices">
@@ -985,20 +1013,20 @@
           <div class="ask">
             <p class="ask-q">How sure are you?</p>
             <div class="ask-opts">
-              ${CONF.map((c) => `<button data-conf="${c.v}">${esc(c.label)}</button>`).join("")}
+              ${CONF.map((c) => `<button data-conf="${c.v}">${icon(CONF_ICON[c.v])}${esc(c.label)}</button>`).join("")}
             </div>
           </div>` : ""}
 
         ${revealed ? `
-          <p class="verdict ${wasRight ? "ok" : "no"}">${wasRight ? "Correct" : "Not quite"}${
-            s.conf ? ` <span class="conf-tag${!wasRight && s.conf >= 3 ? " danger" : ""}">${esc(CONF.find((c) => c.v === s.conf).label)}</span>` : ""}</p>
-          ${!wasRight && s.conf >= 3 ? `<p class="small" style="color:var(--bad);margin-bottom:.5rem">You were sure and it was wrong. That is the kind of gap that costs points, so this one is worth a second look.</p>` : ""}
+          <p class="verdict ${wasRight ? "ok" : "no"}">${icon(wasRight ? "i-check-circle" : "i-x-circle")}${wasRight ? "Correct" : "Not quite"}${
+            s.conf ? ` <span class="conf-tag${!wasRight && s.conf >= 3 ? " danger" : ""}">${icon(CONF_ICON[s.conf], "ico ico--sm")}${esc(CONF.find((c) => c.v === s.conf).label)}</span>` : ""}</p>
+          ${!wasRight && s.conf >= 3 ? `<p class="warn-note">${icon("i-alert")}<span>You were sure and it was wrong. That is the kind of gap that costs points, so this one is worth a second look.</span></p>` : ""}
           <div class="explain">${esc(q.explanation)}</div>
           ${!wasRight && s.why === null ? `
             <div class="ask">
-              <p class="ask-q">Why did you miss it?</p>
+              <p class="ask-q">${icon("i-quiz")}Why did you miss it?</p>
               <div class="ask-opts why">
-                ${WHY.map((w) => `<button data-why="${w.v}">${esc(w.label)}</button>`).join("")}
+                ${WHY.map((w) => `<button data-why="${w.v}">${icon(WHY_ICON[w.v])}${esc(w.label)}</button>`).join("")}
               </div>
             </div>` : ""}
           <div class="actions">
@@ -1594,26 +1622,32 @@
         <h1>${icon("i-search")} Skill coverage</h1>
         <p class="muted">The state publishes ${total} individual skills under the nine competencies. This is the full list, and it is the direct answer to "what am I responsible for".</p>
         <div class="skill-sum">
-          <span class="pill mastered"><b>${sum.mastered}</b> mastered</span>
-          <span class="pill shaky"><b>${sum.shaky}</b> shaky</span>
-          <span class="pill untouched"><b>${sum.untouched}</b> untouched</span>
+          <span class="pill mastered">${icon("i-check-circle")}<b>${sum.mastered}</b> mastered</span>
+          <span class="pill shaky">${icon("i-alert")}<b>${sum.shaky}</b> shaky</span>
+          <span class="pill untouched">${icon("i-seed")}<b>${sum.untouched}</b> untouched</span>
+        </div>
+        <div class="stackbar" role="img" aria-label="${sum.mastered} mastered, ${sum.shaky} shaky, ${sum.untouched} untouched">
+          <i class="m" style="width:${(sum.mastered / total) * 100}%"></i>
+          <i class="s" style="width:${(sum.shaky / total) * 100}%"></i>
+          <i class="u" style="width:${(sum.untouched / total) * 100}%"></i>
         </div>
         <p class="small muted" style="margin:.7rem 0 0">Mastered means at least two questions on that skill, all correct most recently. One lucky answer is not mastery.</p>
       </div>
       ${DATA.comps.filter((c) => !only || c.comp === only).map((c) => {
         const list = DATA.skills[String(c.comp)] || [];
-        return `<details class="sec" ${only ? "open" : ""}>
+        const done = list.filter((_, i) => skillStatus(c.comp, i + 1).state === "mastered").length;
+        return `<details class="sec c${c.comp} rail" ${only ? "open" : ""}>
           <summary>${compIcon(c.comp)} ${c.comp}. ${esc(c.title)}
-            <span class="small muted" style="margin-left:auto">${list.filter((_, i) => skillStatus(c.comp, i + 1).state === "mastered").length}/${list.length}</span></summary>
+            <span class="small muted" style="margin-left:auto">${done}/${list.length}</span></summary>
           <div class="inner">
             <ol class="skills">
               ${list.map((txt, i) => {
                 const st = skillStatus(c.comp, i + 1);
                 return `<li class="sk ${st.state}">
-                  <span class="dot" aria-hidden="true"></span>
+                  ${icon(STATUS_META[st.state].icon, "ico sk-ico")}
                   <span><span class="sk-txt">${esc(txt)}</span>
-                  <span class="small muted">${st.seen ? `${st.right}/${st.seen} correct` : "not attempted"}${st.total ? ` &middot; ${st.total} in bank` : ""}</span></span>
-                  <button class="small" data-skill="${c.comp}:${i + 1}">Practise</button></li>`;
+                  <span class="small muted">${statusPill(st.state)} ${st.seen ? `${st.right}/${st.seen} correct` : "not attempted"}${st.total ? ` &middot; ${st.total} in bank` : ""}</span></span>
+                  <button class="small" data-skill="${c.comp}:${i + 1}">${icon("i-play", "ico ico--sm")}Practise</button></li>`;
               }).join("")}
             </ol>
           </div></details>`;
@@ -1656,10 +1690,10 @@
       <div class="panel">
         <h1>${icon("i-chart")} Last ${r.length} questions</h1>
         <div class="stat-row">
-          <div class="stat"><b>${Math.round(acc * 100)}%</b><span>Accuracy</span></div>
-          <div class="stat"><b>${avgS ? avgS.toFixed(0) + "s" : "&mdash;"}</b><span>Avg time</span></div>
-          <div class="stat"><b>${dangerous.length}</b><span>Sure but wrong</span></div>
-          <div class="stat"><b>${t ? (t.delta >= 0 ? "+" : "") + Math.round(t.delta * 100) + "%" : "&mdash;"}</b><span>Trend</span></div>
+          <div class="stat"><b style="color:var(--${barTone(acc)})">${Math.round(acc * 100)}%</b><span>${icon("i-percent", "ico ico--sm")}Accuracy</span></div>
+          <div class="stat"><b style="color:var(--${avgS && avgS > 112 ? "bad" : "fg"})">${avgS ? avgS.toFixed(0) + "s" : "&mdash;"}</b><span>${icon("i-clock", "ico ico--sm")}Avg time</span></div>
+          <div class="stat"><b style="color:var(--${dangerous.length ? "bad" : "good"})">${dangerous.length}</b><span>${icon("i-alert", "ico ico--sm")}Sure but wrong</span></div>
+          <div class="stat"><b style="color:var(--${t ? (t.delta >= 0 ? "good" : "bad") : "fg"})">${t ? (t.delta >= 0 ? "+" : "") + Math.round(t.delta * 100) + "%" : "&mdash;"}</b><span>${icon(t && t.delta < 0 ? "i-trend-down" : "i-trend-up", "ico ico--sm")}Trend</span></div>
         </div>
         <p class="small muted" style="margin:1rem 0 0">Real exam pace is 112 seconds per question. ${
           avgS ? (avgS > 112 ? `You are averaging ${avgS.toFixed(0)}s, which would leave you short on the real clock.` : `You are averaging ${avgS.toFixed(0)}s, comfortably inside the limit.`) : ""}</p>
@@ -1704,8 +1738,8 @@
         <h2>Competency mix</h2>
         ${Object.entries(byComp).sort((a, b) => a[0] - b[0]).map(([c, v]) => {
           const p = v.ok / v.n;
-          return `<div class="mrow"><span class="lbl">${compIcon(Number(c))} ${c}. ${esc(compTitle(Number(c)))}</span><span class="val">${v.ok}/${v.n}</span></div>
-            <div class="bar"><i class="${barClass(p)}" style="width:${Math.round(p * 100)}%"></i></div>`;
+          return `<div class="mrow c${c} rail"><span class="lbl">${compIcon(Number(c))} ${c}. ${esc(compTitle(Number(c)))}</span><span class="val">${v.ok}/${v.n}</span></div>
+            <div class="bar c${c} rail-bar"><i class="${barClass(p)}" style="width:${Math.round(p * 100)}%"></i></div>`;
         }).join("")}
         <button onclick="location.hash='#/'" style="margin-top:.8rem">Home</button>
       </div>`;
@@ -1832,10 +1866,10 @@
         <p class="muted">Everything the state says is testable, competency by competency, with the formulas you have to memorize and the traps that catch teachers. There are no reference materials on the real test, so anything in a formula box has to be in your head.</p>
       </div>
       <div class="modes">
-        ${DATA.guide.map((g) => `<button class="mode" onclick="location.hash='#/guide/${g.comp}'">
-          <span class="tagline">${g.pct}% of test</span>
+        ${DATA.guide.map((g) => `<button class="mode c${g.comp} rail" onclick="location.hash='#/guide/${g.comp}'">
+          <span class="tagline">${compIcon(g.comp)} ${g.pct}% of test</span>
           <h3>${g.comp}. ${esc(g.title)}</h3>
-          <p>${pluralize(g.sections.length, "section", "sections")}</p></button>`).join("")}
+          <p>${pluralize(g.sections.length, "section", "sections")} &middot; ${statusPill(skillSummary && DATA.skills[String(g.comp)] ? (DATA.skills[String(g.comp)].every((_, i) => skillStatus(g.comp, i + 1).state === "mastered") ? "mastered" : DATA.skills[String(g.comp)].some((_, i) => skillStatus(g.comp, i + 1).state !== "untouched") ? "shaky" : "untouched") : "untouched")}</p></button>`).join("")}
       </div>`;
   }
 
@@ -1877,10 +1911,10 @@
       <div class="panel">
         <h1>Progress</h1>
         <div class="stat-row">
-          <div class="stat"><b>${o.seen}/${o.total}</b><span>Questions tried</span></div>
+          <div class="stat"><b>${o.seen}/${o.total}</b><span>${icon("i-quiz", "ico ico--sm")}Questions tried</span></div>
           <div class="stat"><b>${o.seen ? Math.round(o.accuracy * 100) + "%" : "&mdash;"}</b><span>Accuracy</span></div>
-          <div class="stat"><b>${cardsSeen}/${DATA.cards.length}</b><span>Cards started</span></div>
-          <div class="stat"><b>${S.exams.length}</b><span>Mock exams</span></div>
+          <div class="stat"><b>${cardsSeen}/${DATA.cards.length}</b><span>${icon("i-cards", "ico ico--sm")}Cards started</span></div>
+          <div class="stat"><b>${S.exams.length}</b><span>${icon("i-exam", "ico ico--sm")}Mock exams</span></div>
         </div>
       </div>
 
@@ -2441,7 +2475,7 @@
   (async () => {
     try {
       const [content] = await Promise.all([
-        fetch("/content.json?v=2026.07.27-1404").then((r) => {
+        fetch("/content.json?v=2026.07.27-1418").then((r) => {
           if (!r.ok) throw new Error("content " + r.status);
           return r.json();
         }),
