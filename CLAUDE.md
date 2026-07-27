@@ -17,12 +17,33 @@ Plain Cloudflare **Worker** (no framework) + static assets + D1. Deliberately no
 
 Deploy is **manual**: `wrangler deploy` from this directory. There is no CI; pushing alone ships nothing.
 
-Secrets: `LEARN_PIN`, `SESSION_SECRET` (Worker secrets). Local copy in `../.gaither-private/learn-gaitherstephens.env`. Auth **fails closed**: if `LEARN_PIN` is unset nobody gets in.
+Repo: `GaitherStephens/learn-gaitherstephens-com`, deploy key at `../.gaither-private/id_ed25519_learn`. Push does **not** deploy; run `wrangler deploy` yourself.
+
+## Auth
+
+Same shape as house/recipes: **PIN + optional passkeys**.
+
+- PIN is `1450` initially. The DB hash in `settings.learn_pin_sha256` wins; the `LEARN_PIN` secret is the fallback. Changing the PIN in the app writes the DB row, so it does not need a redeploy.
+- Throttle: 6 attempts per 15 minutes per hashed IP, cleared on success. Fails **open** if the table is missing (deliberate: a broken table should not lock her out) but PIN checking fails **closed** if neither hash nor secret is set.
+- Passkeys are the hand-rolled SubtleCrypto WebAuthn port from `recipes/src/lib/webauthn.ts`, reduced to a single user (no `user_id` column). Discoverable/resident key, UV required. Challenges are stateless HMAC-signed cookies with a secret that self-bootstraps into `settings`.
+- Register one from Progress → Sign-in, after signing in with the PIN. `RP_ID`/`ORIGIN` in `src/webauthn.js` are hardcoded to this domain; they must match exactly or every assertion fails on rpId mismatch.
+
+Secrets: `LEARN_PIN`, `SESSION_SECRET` (Worker secrets). Local copy in `../.gaither-private/learn-gaitherstephens.env`.
+
+## Flags and back-to-top
+
+Flag button bottom-left, back-to-top bottom-right, network convention. The flag posts **browser-direct** to `https://gaithernews.com/api/network-flag` and surfaces in admin.gaitherdyn.com.
+
+`learn.gaitherstephens.com` had to be added to **both** `ALLOWED_ORIGINS` and `VALID_SITES` in `gaithernews/src/index.ts` (commit `0ab6a9e`). Those two lists are separate and a site missing from either fails silently, which is what ate Meg's recipes flag in June. Verified end to end: a real flag landed as `network_flags` id 68.
+
+Back-to-top is driven by an **IntersectionObserver on `#topSentinel`** (a 400px marker pinned to the top of the document) plus a scroll listener plus an unconditional call at init. All three are needed: scroll events do not fire when the browser restores a scroll position or when a route render changes page height, and IntersectionObserver does not run in a tab the browser is not painting.
 
 ## Gotchas that already bit once
 
 - **The login page's stylesheet must be reachable unauthenticated.** `PUBLIC_ASSETS` in `worker.js` allowlists `/styles.css` and `/favicon.ico` before the auth gate. Everything else, including `app.js` and `content.json`, stays gated. Without this the login page renders as raw unstyled HTML.
-- **Bump the `?v=` on `/styles.css` in BOTH `worker.js` (login page) and `public/index.html` when styles change.** Chrome caches a wrong-MIME response hard, and `nosniff` then refuses to apply the sheet even after the server is fixed. A hard reload does not reliably clear it.
+- **Run `./scripts/stamp.sh` before every deploy that touches `app.js`, `styles.css`, or `content.json`.** It rewrites the `?v=` build stamp everywhere at once. This bit the build three separate times: Chrome will serve a cached wrong-MIME stylesheet straight through a hard reload, and a stale `app.js` against a fresh worker produces bugs that look exactly like logic errors. The caching contract in `worker.js` is: HTML always revalidates (`no-cache`) because it carries the stamps, anything with `?v=` is `immutable`, anything else gets 5 minutes.
+- **`scripts/stamp.sh` must never use `sed -i.bak`.** The `~/GaitherDyn` mount allows create and rename but DENIES deletes from the sandbox, so a `.bak` is undeletable, and one dropped in `public/` gets uploaded as a public asset.
+- **Do not trust an automated browser tab for scroll or visibility testing.** Chrome does not paint background tabs, so `requestAnimationFrame`, `IntersectionObserver`, and programmatic `scrollTo` scroll events all silently do nothing there. Two "bugs" in the back-to-top button were this artifact, not real. Verify with a real input-driven scroll followed by a screenshot.
 - **Explanations must never reference an answer by position.** The app shuffles the four choices on every presentation, so "Choice C is wrong because..." or "the first option reverses..." points at the wrong thing. Name distractors by their content. There is a regression gate for this; re-run it before any content change ships:
 
   ```
