@@ -1,0 +1,534 @@
+[
+  {
+    "id": "c3-f01",
+    "comp": 3,
+    "topic": "Work formula",
+    "front": "How do you calculate the work done on an object, and when is the work zero?",
+    "back": "W = Fd: force times the distance moved in the direction of the force, measured in joules. If the object does not move, or the force is perpendicular to the motion, no work is done: holding a heavy box still does zero work on it."
+  },
+  {
+    "id": "c3-f02",
+    "comp": 3,
+    "topic": "Power formula",
+    "front": "What is power, and what formula and unit go with it?",
+    "back": "Power is the rate of doing work: P = W/t, measured in watts (1 W = 1 J/s). Two students lifting identical boxes do the same work, but the one who finishes faster develops more power."
+  },
+  {
+    "id": "c3-f03",
+    "comp": 3,
+    "topic": "Kinetic energy formula",
+    "front": "What is the formula for kinetic energy, and what happens to KE when speed doubles?",
+    "back": "KE = (1/2)mv^2, in joules. Because speed is squared, doubling speed quadruples the kinetic energy, and tripling speed makes it nine times greater."
+  },
+  {
+    "id": "c3-f04",
+    "comp": 3,
+    "topic": "Potential energy formula",
+    "front": "How do you calculate gravitational potential energy near Earth's surface?",
+    "back": "PE = mgh: mass (kg) times 9.8 m/s^2 times height (m), in joules. A 2 kg book lifted to a 1.5 m shelf stores about 29 J."
+  },
+  {
+    "id": "c3-f05",
+    "comp": 3,
+    "topic": "Ohm's law",
+    "front": "What equation relates voltage, current, and resistance in a circuit?",
+    "back": "Ohm's law: V = IR, so volts = amperes x ohms. Rearranged as I = V/R, a 12 V battery across a 6 ohm resistor drives 2 A of current."
+  },
+  {
+    "id": "c3-f06",
+    "comp": 3,
+    "topic": "Electrical power",
+    "front": "What formula gives electrical power from current and voltage, and what unit results?",
+    "back": "P = IV, in watts; combined with Ohm's law it can also be written P = I^2 R or P = V^2 / R. A device drawing 5 A from a 120 V outlet uses 600 W."
+  },
+  {
+    "id": "c3-f07",
+    "comp": 3,
+    "topic": "Efficiency",
+    "front": "How is the efficiency of a machine calculated, and can it ever exceed 100 percent?",
+    "back": "Efficiency = (useful output / total input) x 100. It is always below 100 percent because friction converts some input into waste heat: 400 J out for 500 J in is 80 percent efficient."
+  },
+  {
+    "id": "c3-f08",
+    "comp": 3,
+    "topic": "Mechanical advantage",
+    "front": "How do you find the mechanical advantage of a machine such as an inclined plane?",
+    "back": "MA = output force / input force; for an ideal inclined plane, MA = ramp length / ramp height. Machines multiply force but never energy: the smaller force is repaid by pushing through a longer distance."
+  },
+  {
+    "id": "c3-f09",
+    "comp": 3,
+    "topic": "EM spectrum order",
+    "front": "List the electromagnetic spectrum in order from longest wavelength to shortest.",
+    "back": "Radio, microwave, infrared, visible light, ultraviolet, X-ray, gamma ray. As wavelength decreases along this list, frequency and photon energy both increase."
+  },
+  {
+    "id": "c3-f10",
+    "comp": 3,
+    "topic": "EM spectrum energy",
+    "front": "Which end of the EM spectrum carries the most energy per photon, and why does that matter biologically?",
+    "back": "Gamma rays, because photon energy rises with frequency. High-energy UV, X-ray, and gamma photons can ionize atoms and damage DNA, which is why sunburn and X-ray shielding are concerns while radio waves are harmless."
+  },
+  {
+    "id": "c3-f11",
+    "comp": 3,
+    "topic": "Series circuits",
+    "front": "In a series circuit, what happens to current, voltage, and the whole circuit when one component fails?",
+    "back": "There is a single path: the same current flows through every component, the voltage drops across components add up to the source voltage, and adding resistors raises total resistance. One break, like a burned-out bulb, stops the entire circuit."
+  },
+  {
+    "id": "c3-f12",
+    "comp": 3,
+    "topic": "Parallel circuits",
+    "front": "In a parallel circuit, why do household devices keep working when one is switched off?",
+    "back": "Each branch connects across the full source voltage and operates independently, so a break in one branch does not affect the others. Branch currents add together, and total resistance decreases each time a branch is added."
+  },
+  {
+    "id": "c3-f13",
+    "comp": 3,
+    "topic": "Conduction",
+    "front": "What is conduction, and what everyday example clearly shows it?",
+    "back": "Heat transfer by direct particle-to-particle collisions through matter, fastest in metals because of their free electrons. A metal spoon left in hot soup soon has a hot handle even though only the bowl end touches the soup."
+  },
+  {
+    "id": "c3-f14",
+    "comp": 3,
+    "topic": "Convection",
+    "front": "What is convection, and what everyday example clearly shows it?",
+    "back": "Heat transfer by the bulk movement of a fluid: heated fluid expands, becomes less dense, and rises while cooler fluid sinks, forming a circulating current. Examples: the rolling water in a boiling pot, sea breezes, and convection in Earth's mantle."
+  },
+  {
+    "id": "c3-f15",
+    "comp": 3,
+    "topic": "Radiation",
+    "front": "What makes radiation different from the other two modes of heat transfer?",
+    "back": "It carries energy as electromagnetic waves (largely infrared) and needs no matter at all, so it is the only mode that works through a vacuum. Sunlight warming Earth and the warmth you feel on your face near a campfire are radiation."
+  },
+  {
+    "id": "c3-f16",
+    "comp": 3,
+    "topic": "Latent heat",
+    "front": "Why does temperature stay constant while a substance melts or boils?",
+    "back": "The added energy goes into breaking attractions between particles, raising their potential energy instead of their average kinetic energy. This absorbed energy is latent heat, and it is released again when the substance freezes or condenses."
+  },
+  {
+    "id": "c3-f17",
+    "comp": 3,
+    "topic": "Exothermic phase changes",
+    "front": "When water vapor condenses or liquid water freezes, where does the latent heat go?",
+    "back": "It is released to the surroundings: condensation and freezing are exothermic. This released latent heat is a major energy source that powers hurricanes and thunderstorms."
+  },
+  {
+    "id": "c3-f18",
+    "comp": 3,
+    "topic": "Sublimation and deposition",
+    "front": "What are sublimation and deposition? Give an example of each.",
+    "back": "Sublimation is solid changing directly to gas, as when dry ice fogs or ice cubes shrink in a frost-free freezer. Deposition is gas changing directly to solid, as when frost forms on grass from water vapor. Neither passes through a liquid stage."
+  },
+  {
+    "id": "c3-f19",
+    "comp": 3,
+    "topic": "Temperature vs thermal energy",
+    "front": "Why can a bathtub of warm water hold more thermal energy than a cup of boiling water?",
+    "back": "Temperature measures the average kinetic energy per particle, but thermal energy is the total for all particles. The tub's vastly greater number of particles outweighs the cup's higher average, so the tub stores more total thermal energy."
+  },
+  {
+    "id": "c3-f20",
+    "comp": 3,
+    "topic": "Definition of heat",
+    "front": "What exactly is heat in physics, and what unit is it measured in?",
+    "back": "Heat is thermal energy in the process of transferring between objects because of a temperature difference, measured in joules. Objects contain thermal energy; they transfer heat, always from hotter to colder."
+  },
+  {
+    "id": "c3-f21",
+    "comp": 3,
+    "topic": "Specific heat",
+    "front": "Why do coastal cities have milder temperature swings than inland cities at the same latitude?",
+    "back": "Water has a very high specific heat (4.18 J per gram per degree Celsius), so it warms and cools slowly, absorbing or releasing large amounts of energy with little temperature change. The nearby ocean therefore moderates coastal air temperatures year round."
+  },
+  {
+    "id": "c3-f22",
+    "comp": 3,
+    "topic": "First law of thermodynamics",
+    "front": "What does the first law of thermodynamics say about energy in any process?",
+    "back": "Energy cannot be created or destroyed, only transferred or transformed, so the total energy of a closed system stays constant. Energy that seems to disappear, like a coasting bike slowing down, has actually become another form, usually thermal energy from friction."
+  },
+  {
+    "id": "c3-f23",
+    "comp": 3,
+    "topic": "Second law of thermodynamics",
+    "front": "In which direction does heat flow spontaneously, and what does that imply for engines?",
+    "back": "Heat flows spontaneously from hotter objects to colder ones, never the reverse without work input, which is why a refrigerator needs electricity. Some energy is always degraded into unusable waste heat, so no engine can be 100 percent efficient."
+  },
+  {
+    "id": "c3-f24",
+    "comp": 3,
+    "topic": "Fission vs fusion",
+    "front": "What is the difference between nuclear fission and nuclear fusion, and where does each occur?",
+    "back": "Fission splits a heavy nucleus into smaller ones, as with uranium-235 in nuclear power plants; fusion joins light nuclei, as when hydrogen fuses into helium in the Sun's core. Both convert a tiny amount of mass into enormous energy via E = mc^2."
+  },
+  {
+    "id": "c3-f25",
+    "comp": 3,
+    "topic": "Half-life",
+    "front": "What is a half-life, and how much of a radioactive sample remains after three half-lives?",
+    "back": "A half-life is the time needed for half of a sample's parent atoms to decay. After three half-lives, (1/2)^3 = 1/8 of the original remains; the amount halves each interval no matter how much you start with."
+  },
+  {
+    "id": "c3-f26",
+    "comp": 3,
+    "topic": "Alpha beta gamma",
+    "front": "Rank alpha, beta, and gamma radiation by penetrating power, and state what each one is.",
+    "back": "Alpha is a helium nucleus (2 protons + 2 neutrons) stopped by paper; beta is a fast electron stopped by aluminum foil; gamma is a high-energy electromagnetic wave requiring thick lead or concrete. Penetrating power: gamma > beta > alpha."
+  },
+  {
+    "id": "c3-f27",
+    "comp": 3,
+    "topic": "Mass-energy equivalence",
+    "front": "In a nuclear reaction, why do the products have slightly less mass than the reactants?",
+    "back": "A small amount of mass is converted into energy according to E = mc^2, and because c^2 is enormous, a tiny mass loss releases huge energy. Ordinary chemical reactions, by contrast, conserve mass to any measurable precision."
+  },
+  {
+    "id": "c3-f28",
+    "comp": 3,
+    "topic": "Energy transformation chains",
+    "front": "Trace the energy transformations from a power plant's coal pile to a glowing lamp in your home.",
+    "back": "Chemical energy in coal becomes thermal energy when burned, then kinetic energy as steam spins a turbine, then electrical energy in the generator, and finally light plus waste heat in the lamp. Every step loses some energy as heat, consistent with the second law."
+  },
+  {
+    "id": "c3-f29",
+    "comp": 3,
+    "topic": "KE and speed",
+    "front": "A car's speed triples. What happens to its kinetic energy, and why does this matter for braking?",
+    "back": "KE = (1/2)mv^2, so tripling the speed makes the kinetic energy 9 times larger, and the brakes must convert 9 times as much energy into heat. This is why stopping distance grows much faster than speed."
+  },
+  {
+    "id": "c3-f30",
+    "comp": 3,
+    "topic": "Pendulum energy exchange",
+    "front": "Describe the energy exchange during one swing of a frictionless pendulum.",
+    "back": "At the highest points the pendulum has maximum potential energy and zero kinetic energy; at the bottom of the swing potential energy is minimum and kinetic energy is maximum. Total mechanical energy stays constant; with friction it slowly becomes thermal energy and the swing dies down."
+  },
+  {
+    "id": "c3-f31",
+    "comp": 3,
+    "topic": "Refraction",
+    "front": "Why does a straw look bent in a glass of water, and what devices depend on the same effect?",
+    "back": "Light changes speed when passing between materials of different optical density, bending at the boundary: refraction. Lenses in eyeglasses, cameras, microscopes, telescopes, and the human eye all form images by refraction."
+  },
+  {
+    "id": "c3-f32",
+    "comp": 3,
+    "topic": "Total internal reflection",
+    "front": "How do fiber optic cables keep light signals trapped inside the fiber?",
+    "back": "By total internal reflection: light hitting the internal boundary at more than the critical angle reflects completely back into the glass core, bouncing along the fiber with very little loss. This is how internet and phone data travel long distances."
+  },
+  {
+    "id": "c3-f33",
+    "comp": 3,
+    "topic": "Convex vs concave lenses",
+    "front": "What does a convex lens do to light compared with a concave lens, and which vision problem does each correct?",
+    "back": "A convex (converging) lens bends rays together: magnifying glasses, cameras, and correcting farsightedness. A concave (diverging) lens spreads rays apart, correcting nearsightedness by moving the focal point back onto the retina."
+  },
+  {
+    "id": "c3-f34",
+    "comp": 3,
+    "topic": "Conductors vs insulators",
+    "front": "Why are metals good electrical conductors while rubber and glass are insulators?",
+    "back": "Metal atoms hold their outer electrons loosely, so the electrons move freely and carry charge; insulators hold electrons tightly, blocking flow. That is why cords are copper cores wrapped in plastic insulation."
+  },
+  {
+    "id": "c3-f35",
+    "comp": 3,
+    "topic": "Resistance factors",
+    "front": "Name three physical factors that increase a wire's electrical resistance.",
+    "back": "Greater length, smaller cross-sectional area (a thinner wire), and a material with fewer free charges, such as nichrome instead of copper; in metals, higher temperature also raises resistance. Think of a longer, narrower straw being harder to drink through."
+  },
+  {
+    "id": "c3-f36",
+    "comp": 3,
+    "topic": "Kilowatt-hour",
+    "front": "What does a kilowatt-hour measure, and how do you compute it?",
+    "back": "Energy, not power: E = P x t with power in kilowatts and time in hours. A 1,000 W appliance running for 1 hour uses 1 kWh, the same as a 100 W bulb burning for 10 hours; electric bills charge per kWh."
+  },
+  {
+    "id": "c4-f01",
+    "comp": 4,
+    "topic": "Divergent boundaries",
+    "front": "What happens at a divergent plate boundary, and what is a real example?",
+    "back": "Plates move apart and magma rises to create new crust, forming mid-ocean ridges under the sea and rift valleys on land. Examples: the Mid-Atlantic Ridge and the East African Rift."
+  },
+  {
+    "id": "c4-f02",
+    "comp": 4,
+    "topic": "Convergent boundaries",
+    "front": "What happens at a convergent boundary where oceanic crust meets continental crust?",
+    "back": "The denser oceanic plate subducts beneath the continent, producing a deep trench, strong earthquakes, and a volcanic mountain chain such as the Andes. When two continents collide instead, the crust crumples into mountains like the Himalayas with little volcanism."
+  },
+  {
+    "id": "c4-f03",
+    "comp": 4,
+    "topic": "Transform boundaries",
+    "front": "What happens at a transform boundary, and what is the classic example?",
+    "back": "Plates slide horizontally past each other, so crust is neither created nor destroyed, but stress builds along the locked fault and releases as earthquakes. The classic example is the San Andreas Fault in California."
+  },
+  {
+    "id": "c4-f04",
+    "comp": 4,
+    "topic": "Wegener's evidence",
+    "front": "What evidence did Wegener offer for continental drift, and why was his idea rejected at first?",
+    "back": "Matching coastlines, identical fossils such as Mesosaurus on now-separated continents, matching rock formations and mountain belts, and glacial deposits in currently warm regions. He could not explain how continents plowed through ocean crust, so most geologists rejected the idea until a mechanism was found."
+  },
+  {
+    "id": "c4-f05",
+    "comp": 4,
+    "topic": "Seafloor spreading",
+    "front": "What two mid-1900s discoveries turned continental drift into the theory of plate tectonics?",
+    "back": "Seafloor spreading at mid-ocean ridges, proposed by Harry Hess, and the symmetric magnetic stripes on the seafloor recording reversals of Earth's magnetic field. Together they showed new crust forms at ridges and moves outward, which is also why ocean crust is youngest at ridges and oldest near trenches."
+  },
+  {
+    "id": "c4-f06",
+    "comp": 4,
+    "topic": "What moves the plates",
+    "front": "What drives the movement of Earth's tectonic plates, and how fast do they move?",
+    "back": "Convection in the mantle: hot rock slowly rises, cools, and sinks, while slab pull (a subducted plate sinking and dragging the rest) and ridge push also contribute. Plates creep along at a few centimeters per year, about the speed fingernails grow."
+  },
+  {
+    "id": "c4-f07",
+    "comp": 4,
+    "topic": "Igneous rocks",
+    "front": "How can you tell whether an igneous rock cooled above or below Earth's surface?",
+    "back": "Crystal size. Slow cooling underground grows large visible crystals (intrusive, like granite); rapid cooling at the surface leaves tiny crystals or glass (extrusive, like basalt and obsidian)."
+  },
+  {
+    "id": "c4-f08",
+    "comp": 4,
+    "topic": "Sedimentary rocks",
+    "front": "How do sedimentary rocks form, and why do they contain nearly all fossils?",
+    "back": "Sediments are deposited in layers, then compacted and cemented together (lithified); examples are sandstone, shale, and limestone. Because this happens at low temperature and pressure, the remains of organisms can survive as fossils, unlike in melted or metamorphosed rock."
+  },
+  {
+    "id": "c4-f09",
+    "comp": 4,
+    "topic": "Metamorphic rocks",
+    "front": "How do metamorphic rocks form? Give two before-and-after examples.",
+    "back": "Existing rock is transformed by heat and pressure without melting, often developing banding called foliation. Limestone becomes marble, shale becomes slate, and granite becomes gneiss."
+  },
+  {
+    "id": "c4-f10",
+    "comp": 4,
+    "topic": "Rock cycle",
+    "front": "In the rock cycle, what processes create each of the three rock types from any starting rock?",
+    "back": "Melting followed by cooling makes igneous rock; weathering, erosion, deposition, and cementation make sedimentary rock; heat and pressure make metamorphic rock. Any rock type can become any other, and there is no required order around the cycle."
+  },
+  {
+    "id": "c4-f11",
+    "comp": 4,
+    "topic": "Minerals",
+    "front": "What five criteria must a substance meet to be a mineral, and which identification property is least reliable?",
+    "back": "Naturally occurring, inorganic, solid, definite chemical composition, and an orderly crystal structure. Minerals are identified by hardness (Mohs scale), streak, luster, cleavage or fracture, and density; color is the least reliable because impurities change it."
+  },
+  {
+    "id": "c4-f12",
+    "comp": 4,
+    "topic": "Topographic maps",
+    "front": "On a topographic map, what does close spacing of contour lines mean, and what rules do contour lines always follow?",
+    "back": "Closely spaced contours mean a steep slope; widely spaced contours mean a gentle one. Contour lines connect points of equal elevation, never cross one another, and bend into Vs that point upstream where they cross a valley or stream."
+  },
+  {
+    "id": "c4-f13",
+    "comp": 4,
+    "topic": "Fossil formation",
+    "front": "What conditions favor fossil formation, and in which rock type are fossils found?",
+    "back": "Rapid burial in sediment plus durable hard parts like bones or shells; minerals may gradually replace the remains, a process called permineralization, as in petrified wood. Fossils are found almost exclusively in sedimentary rock."
+  },
+  {
+    "id": "c4-f14",
+    "comp": 4,
+    "topic": "Index fossils",
+    "front": "What two characteristics make a fossil useful as an index fossil?",
+    "back": "The organism lived across a wide geographic area but existed for only a short span of geologic time. Finding one therefore dates a rock layer narrowly and lets geologists correlate layers between distant locations."
+  },
+  {
+    "id": "c4-f15",
+    "comp": 4,
+    "topic": "Law of superposition",
+    "front": "State the law of superposition and the key condition it depends on.",
+    "back": "In an undisturbed sequence of sedimentary rock layers, the oldest layer is at the bottom and each layer above is younger. The word undisturbed matters: folding or faulting can tilt or even overturn the sequence."
+  },
+  {
+    "id": "c4-f16",
+    "comp": 4,
+    "topic": "Cross-cutting relationships",
+    "front": "A magma intrusion cuts across sedimentary layers. Which is younger, and what principle says so?",
+    "back": "The intrusion is younger. By the principle of cross-cutting relationships, any feature that cuts through rock, such as an intrusion or a fault, must be younger than the rock it cuts."
+  },
+  {
+    "id": "c4-f17",
+    "comp": 4,
+    "topic": "Relative vs absolute dating",
+    "front": "What is the difference between relative dating and absolute dating?",
+    "back": "Relative dating puts events in order (older versus younger) using superposition, cross-cutting, and index fossils, without assigning numbers. Absolute dating uses the steady decay of radioactive isotopes to give an actual age in years."
+  },
+  {
+    "id": "c4-f18",
+    "comp": 4,
+    "topic": "Half-life in geology",
+    "front": "A rock retains 12.5 percent of its original parent isotope. How many half-lives have passed, and how do you find its age?",
+    "back": "12.5 percent is 1/8, which is (1/2)^3, so three half-lives have passed. Age = 3 x the isotope's half-life; with a 50-million-year half-life, the rock is 150 million years old."
+  },
+  {
+    "id": "c4-f19",
+    "comp": 4,
+    "topic": "Geologic eras",
+    "front": "Name the three eras of visible life in order, and state what kind of event marks their boundaries.",
+    "back": "Paleozoic, Mesozoic (age of reptiles), Cenozoic (age of mammals). The boundaries are marked by mass extinctions recorded in the fossil record: the Permian extinction ends the Paleozoic, and the extinction of the nonavian dinosaurs ends the Mesozoic."
+  },
+  {
+    "id": "c4-f20",
+    "comp": 4,
+    "topic": "Weathering erosion deposition",
+    "front": "Distinguish weathering, erosion, and deposition in one sentence each.",
+    "back": "Weathering breaks rock down in place, physically or chemically. Erosion picks up and transports the pieces by water, wind, ice, or gravity. Deposition drops the sediment wherever the transporting agent slows and loses energy, building features like deltas and sandbars."
+  },
+  {
+    "id": "c4-f21",
+    "comp": 4,
+    "topic": "Physical vs chemical weathering",
+    "front": "Give two examples each of physical weathering and chemical weathering.",
+    "back": "Physical: ice wedging widening cracks, and abrasion by wind-blown or water-carried sand (plant roots wedging rock also counts). Chemical: carbonic acid dissolving limestone, and oxidation rusting iron-bearing rock. Physical weathering changes size and shape; chemical weathering changes the minerals themselves."
+  },
+  {
+    "id": "c4-f22",
+    "comp": 4,
+    "topic": "Atmospheric layers",
+    "front": "List the atmospheric layers from the ground upward with one defining feature of each.",
+    "back": "Troposphere: nearly all weather, temperature falls with height. Stratosphere: contains the ozone layer, temperature rises. Mesosphere: coldest layer, where most meteors burn up. Thermosphere: extremely thin air, auroras, temperature rises steeply. Beyond it the exosphere fades into space."
+  },
+  {
+    "id": "c4-f23",
+    "comp": 4,
+    "topic": "Stratosphere warming",
+    "front": "Why does temperature increase with altitude in the stratosphere?",
+    "back": "Ozone there absorbs solar ultraviolet radiation and converts it to thermal energy, warming the layer from within. This temperature inversion makes the stratosphere very stable, one reason jetliners cruise near its calm lower portion."
+  },
+  {
+    "id": "c4-f24",
+    "comp": 4,
+    "topic": "Cold vs warm fronts",
+    "front": "Contrast the weather brought by a cold front with that brought by a warm front.",
+    "back": "Cold front: dense cold air wedges steeply under warm air, forcing rapid uplift, so expect brief heavy showers or thunderstorms from cumulonimbus clouds, then cooler, drier, clearer air. Warm front: warm air glides gradually up over cold air, bringing widespread stratus clouds and long periods of steady, light precipitation."
+  },
+  {
+    "id": "c4-f25",
+    "comp": 4,
+    "topic": "Pressure systems",
+    "front": "What weather accompanies high pressure versus low pressure systems, and why?",
+    "back": "In a high, air sinks, warms, and dries, suppressing clouds: fair weather. In a low, converging air rises and cools to its dew point, forming clouds and precipitation. A falling barometer usually signals an approaching storm."
+  },
+  {
+    "id": "c4-f26",
+    "comp": 4,
+    "topic": "Air masses",
+    "front": "What do the air mass labels mT and cP tell you, and which one dominates Florida summers?",
+    "back": "The lowercase letter gives moisture (m = maritime, humid; c = continental, dry) and the capital gives temperature (T = tropical, warm; P = polar, cold). Florida's muggy summer air is mT from the Gulf and Atlantic, while winter cold snaps arrive with cP air from Canada."
+  },
+  {
+    "id": "c4-f27",
+    "comp": 4,
+    "topic": "Humidity and dew point",
+    "front": "What is relative humidity, and what does the dew point tell you?",
+    "back": "Relative humidity compares the water vapor actually in the air with the maximum it could hold at that temperature; warmer air can hold more vapor. The dew point is the temperature air must cool to before it saturates; cooling below it forces condensation as dew, fog, or cloud."
+  },
+  {
+    "id": "c4-f28",
+    "comp": 4,
+    "topic": "Precipitation types",
+    "front": "Distinguish sleet, freezing rain, and hail by how each one forms.",
+    "back": "Sleet: raindrops freeze into small ice pellets while falling through a deep layer of cold air. Freezing rain: supercooled drops stay liquid until they hit a cold surface, then freeze on contact into a glaze. Hail: thunderstorm updrafts repeatedly loft ice pellets, adding layers until the stones fall."
+  },
+  {
+    "id": "c4-f29",
+    "comp": 4,
+    "topic": "Hydrologic cycle",
+    "front": "Name the main processes of the hydrologic cycle in order, starting from the ocean surface.",
+    "back": "Evaporation from water surfaces (plus transpiration from plants) lifts vapor into the air; condensation forms clouds as rising air cools; precipitation returns the water; then infiltration into soil and groundwater, or runoff into streams, carries it back toward the ocean. Solar energy powers the entire cycle."
+  },
+  {
+    "id": "c4-f30",
+    "comp": 4,
+    "topic": "Causes of condensation",
+    "front": "What two things are required for water vapor to condense into cloud droplets?",
+    "back": "Air must cool to its dew point, usually by rising and expanding, and tiny particles called condensation nuclei (dust, sea salt, smoke) must be present for droplets to form on. This is why rising air builds clouds while sinking air dissolves them."
+  },
+  {
+    "id": "c4-f31",
+    "comp": 4,
+    "topic": "Surface ocean currents",
+    "front": "What creates surface ocean currents, and what large pattern do they form in each ocean basin?",
+    "back": "Steady global winds drag on the sea surface, and the Coriolis effect from Earth's rotation deflects the moving water, organizing it into giant circular gyres: clockwise in the Northern Hemisphere and counterclockwise in the Southern Hemisphere."
+  },
+  {
+    "id": "c4-f32",
+    "comp": 4,
+    "topic": "Gulf Stream",
+    "front": "How does the Gulf Stream influence climate on both sides of the North Atlantic?",
+    "back": "This fast, warm current flows from near the Gulf of Mexico up the U.S. East Coast and across toward Europe, releasing heat and moisture that make northwestern Europe far milder than its latitude suggests. In general, warm currents warm and moisten nearby coasts while cold currents, like the California Current, cool and dry them."
+  },
+  {
+    "id": "c4-f33",
+    "comp": 4,
+    "topic": "Deep currents and upwelling",
+    "front": "What drives deep ocean currents, and what is upwelling?",
+    "back": "Density differences due to temperature and salinity drive thermohaline circulation: cold, salty water sinks near the poles and creeps along the seafloor. Upwelling occurs where winds push surface water away and cold, nutrient-rich deep water rises to replace it, feeding productive fisheries."
+  },
+  {
+    "id": "c4-f34",
+    "comp": 4,
+    "topic": "Climate factors",
+    "front": "List five major factors that determine the climate of a geographic area.",
+    "back": "Latitude (angle of sunlight), elevation (cooler with height), proximity to large bodies of water (moderated temperatures), offshore ocean currents (warm or cold), and topography, where mountains create a wet windward side and a dry leeward rain shadow. Prevailing winds link several of these together."
+  },
+  {
+    "id": "c4-f35",
+    "comp": 4,
+    "topic": "Aquifers and water table",
+    "front": "What is an aquifer, and what does the water table mark?",
+    "back": "An aquifer is a body of permeable rock or sediment, such as porous limestone, sand, or gravel, that stores and transmits groundwater. The water table is the top of the zone where all pore spaces are saturated; a well must reach below it to draw water."
+  },
+  {
+    "id": "c4-f36",
+    "comp": 4,
+    "topic": "Watersheds",
+    "front": "What is a watershed, and why does land use anywhere within it matter downstream?",
+    "back": "A watershed is all the land that drains to a common outlet such as a river, lake, or estuary, with ridgelines called divides separating neighboring watersheds. Pollution or paving anywhere in the watershed eventually affects the shared water body, as in Florida's Kissimmee to Okeechobee to Everglades system."
+  },
+  {
+    "id": "c4-f37",
+    "comp": 4,
+    "topic": "Floridan aquifer",
+    "front": "What is the Floridan aquifer, and why is it so productive?",
+    "back": "A vast limestone aquifer system underlying all of Florida and parts of neighboring states, ranking among the most productive aquifers in the world. Its dissolved, cavity-riddled limestone stores and transmits huge volumes of groundwater, supplies most of Florida's drinking water, and feeds the state's hundreds of artesian springs."
+  },
+  {
+    "id": "c4-f38",
+    "comp": 4,
+    "topic": "Florida karst",
+    "front": "Why is Florida famous for sinkholes and springs? Name the process and the resulting landscape.",
+    "back": "Rainwater absorbs carbon dioxide and becomes weak carbonic acid, which chemically weathers the limestone bedrock by dissolving it. The result is karst topography: sinkholes, springs, caves, and disappearing streams. A sinkhole opens when the roof of a dissolved underground cavity collapses."
+  },
+  {
+    "id": "c4-f39",
+    "comp": 4,
+    "topic": "Florida Platform",
+    "front": "How did Florida's bedrock form, and why is there no native volcanic rock at the surface?",
+    "back": "Florida sits on the Florida Platform, a broad carbonate platform where shells and skeletons of marine organisms accumulated in warm, shallow seas over tens of millions of years and hardened into limestone. The igneous and metamorphic basement lies buried thousands of feet down, so no native igneous rock is exposed at the surface. As sea level rose and fell with the ice ages, the platform was alternately flooded and exposed to roughly twice its present width."
+  },
+  {
+    "id": "c4-f40",
+    "comp": 4,
+    "topic": "Florida formations",
+    "front": "Name three notable Florida geologic materials and where each is found.",
+    "back": "Miami Limestone, an oolitic limestone underlying southeastern Florida and the lower Keys; the Anastasia Formation, a coquina of cemented shells and sand along the Atlantic coast that was quarried to build the Castillo de San Marcos; and the Bone Valley phosphate deposits of central Florida, mined for fertilizer and rich in marine vertebrate fossils. Quartz sand eroded long ago from the Appalachians blankets much of the state in sandy soil."
+  }
+]

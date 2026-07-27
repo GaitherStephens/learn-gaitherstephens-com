@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="color-scheme" content="light dark">
+<title>FTCE Science 5-9 Study</title>
+<link rel="stylesheet" href="/styles.css?v=2026.07.27-1329">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%94%AC%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<!-- Pinned to the top of the document. The back-to-top button watches this
+     with an IntersectionObserver, which reports correctly even when the scroll
+     position changes without a scroll event (restored scroll, route render). -->
+<div id="topSentinel" aria-hidden="true"></div>
+<header class="top">
+  <div class="top-inner">
+    <a class="wordmark" href="#/">FTCE <span>Science 5&ndash;9</span></a>
+    <span class="sync-dot" id="sync" title="Progress sync"></span>
+    <button id="homeBtn" class="small" style="padding:.35rem .7rem">Home</button>
+  </div>
+</header>
+
+<main class="shell" id="app">
+  <div class="panel"><p class="muted">Loading study material&hellip;</p></div>
+</main>
+
+<footer class="foot">
+  <p>Built for the Florida Middle Grades General Science 5&ndash;9 (004) exam: 80 multiple-choice questions, 2 hours 30 minutes, scaled score of 200 to pass. Practice questions here are original and modeled on the state competency framework; they are not actual test items.</p>
+  <p><a href="/logout">Sign out</a> &middot; <a href="https://www.fl.nesinc.com/testPage.asp?test=004" target="_blank" rel="noopener">Official test page</a> &middot; <a href="#" data-learn-flag="open">Report a problem</a> &middot; <span class="footer-version" data-learn-flag="open" title="Report a problem">v2026.07.27-1329</span></p>
+</footer>
+
+<!-- Bottom-left: flag. Bottom-right: back to top. Network convention. -->
+<button class="fab fab--flag" id="flagFab" type="button" data-learn-flag="open" aria-label="Report a problem with this page">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V4M4 4h13l-2 4 2 4H4"/></svg>
+</button>
+<button class="fab fab--top" id="topFab" type="button" aria-label="Back to top" hidden>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<dialog class="flag-dialog" id="flagDialog" aria-labelledby="flagTitle">
+  <div class="flag-head">
+    <h3 id="flagTitle">Report something</h3>
+    <button type="button" class="flag-x" data-flag-close aria-label="Close">&times;</button>
+  </div>
+  <p class="flag-hint" id="flagHint">What looks broken, wrong, or confusing?</p>
+  <p class="flag-meta"><span>Page:</span> <code id="flagPageUrl"></code></p>
+  <div class="flag-step" id="flagStepCats"></div>
+  <div class="flag-step" id="flagStepSubs" hidden></div>
+  <form class="flag-step flag-note-step" id="flagStepNote" hidden>
+    <label class="field">
+      <span id="flagNoteLabel">Details</span>
+      <textarea id="flagNote" rows="3" maxlength="1800" placeholder="Optional but helpful."></textarea>
+    </label>
+    <div class="flag-actions">
+      <button type="button" data-flag-back>Back</button>
+      <button type="submit" class="btn-primary" id="flagSend">Send flag</button>
+    </div>
+  </form>
+  <div class="flag-toast" id="flagToast" hidden></div>
+</dialog>
+
+<script src="/app.js?v=2026.07.27-1329"></script>
+</body>
+</html>

@@ -1,0 +1,520 @@
+[
+  {
+    "id": "c5-f01",
+    "comp": 5,
+    "topic": "Cause of seasons",
+    "front": "Why does Florida have summer in July, if Earth is actually closest to the Sun in January?",
+    "back": "Seasons come from Earth's roughly 23.5 degree axial tilt, not distance from the Sun. In July the Northern Hemisphere tilts toward the Sun, so sunlight strikes at a steeper angle and days are longer. The distance idea fails immediately because the two hemispheres have opposite seasons at the same time."
+  },
+  {
+    "id": "c5-f02",
+    "comp": 5,
+    "topic": "Solstices and equinoxes",
+    "front": "What is happening to Earth's tilt at the June solstice versus the equinoxes?",
+    "back": "At the June solstice the North Pole is tilted most directly toward the Sun, giving the Northern Hemisphere its longest day; in December it is tilted away. At the March and September equinoxes neither pole leans toward the Sun, so day and night are about equal everywhere."
+  },
+  {
+    "id": "c5-f03",
+    "comp": 5,
+    "topic": "Rotation vs revolution",
+    "front": "What is the difference between Earth's rotation and revolution, and what does each cause?",
+    "back": "Rotation is Earth spinning on its axis once about every 24 hours, which causes day and night. Revolution is Earth orbiting the Sun once about every 365.25 days, which, combined with axial tilt, causes the yearly cycle of seasons."
+  },
+  {
+    "id": "c5-f04",
+    "comp": 5,
+    "topic": "Moon phase order",
+    "front": "What is the full order of moon phases starting from new moon?",
+    "back": "New, waxing crescent, first quarter, waxing gibbous, full, waning gibbous, third quarter, waning crescent, then back to new. Waxing means the lit fraction is growing, waning means shrinking, and the full cycle takes about 29.5 days."
+  },
+  {
+    "id": "c5-f05",
+    "comp": 5,
+    "topic": "Moon phase geometry",
+    "front": "Why do we see phases of the Moon at all, and why is the new moon dark?",
+    "back": "Half the Moon is always sunlit; phases are just how much of that lit half faces Earth as the Moon orbits. At new moon the Moon is between Earth and the Sun, so the lit side faces away from us. Phases are not caused by Earth's shadow, which only happens during a lunar eclipse."
+  },
+  {
+    "id": "c5-f06",
+    "comp": 5,
+    "topic": "Spring and neap tides",
+    "front": "What is the difference between spring tides and neap tides, and when does each occur?",
+    "back": "Spring tides have the largest tidal range and occur at new and full moon, when the Sun and Moon line up and their tidal effects add. Neap tides have the smallest range and occur at first and third quarter, when the two effects are at right angles and partly cancel. Spring tides are unrelated to the spring season."
+  },
+  {
+    "id": "c5-f07",
+    "comp": 5,
+    "topic": "Tidal bulges",
+    "front": "Why are there two high tides a day rather than just one on the side facing the Moon?",
+    "back": "The Moon's gravity pulls the ocean nearest it into a bulge, while the far side bulges because it is pulled least and effectively lags behind. Earth rotates through both bulges each day, so most coastlines see two high tides and two low tides roughly every 24 hours and 50 minutes."
+  },
+  {
+    "id": "c5-f08",
+    "comp": 5,
+    "topic": "Eclipses",
+    "front": "What alignment produces a solar eclipse versus a lunar eclipse?",
+    "back": "A solar eclipse needs a new moon, with the Moon between Earth and the Sun casting its shadow on Earth. A lunar eclipse needs a full moon, with Earth between the Sun and Moon so Earth's shadow falls on the Moon. Eclipses are not monthly because the Moon's orbit is tilted about 5 degrees."
+  },
+  {
+    "id": "c5-f09",
+    "comp": 5,
+    "topic": "Stellar life cycle by mass",
+    "front": "What is the life path of a star about the mass of the Sun, from birth to end state?",
+    "back": "Nebula, protostar, main sequence hydrogen fusion for about 10 billion years, red giant, planetary nebula, then a white dwarf that slowly cools. Low mass stars never explode, and this whole path applies to stars up to roughly 8 solar masses."
+  },
+  {
+    "id": "c5-f10",
+    "comp": 5,
+    "topic": "Stellar life cycle by mass",
+    "front": "How does the death of a high mass star differ from that of a Sun-like star?",
+    "back": "A star well above about 8 solar masses becomes a supergiant, fuses elements up to iron, then collapses and explodes as a supernova, leaving a neutron star or, for the most massive, a black hole. High mass stars burn hot and fast, lasting only millions of years instead of billions."
+  },
+  {
+    "id": "c5-f11",
+    "comp": 5,
+    "topic": "Star color and temperature",
+    "front": "What does a star's color tell you about its surface temperature?",
+    "back": "Color maps directly to temperature: blue and blue-white stars are hottest at roughly 10,000 K and up, yellow stars like the Sun are about 5,800 K, and red stars are coolest at roughly 3,000 K. The everyday phrase red hot makes students reverse this."
+  },
+  {
+    "id": "c5-f12",
+    "comp": 5,
+    "topic": "HR diagram",
+    "front": "What two properties are plotted on a Hertzsprung Russell diagram, and where do most stars fall?",
+    "back": "Luminosity or absolute brightness on the vertical axis against surface temperature or spectral class on the horizontal axis, with temperature increasing to the left. About 90 percent of stars, including the Sun, lie along the diagonal main sequence, with giants above right and white dwarfs below left."
+  },
+  {
+    "id": "c5-f13",
+    "comp": 5,
+    "topic": "Apparent vs absolute magnitude",
+    "front": "Why can a star that looks bright in the night sky actually be less luminous than a faint one?",
+    "back": "Apparent magnitude is how bright a star looks from Earth, which depends on distance, while absolute magnitude is its true brightness at a standard distance. A nearby modest star can outshine a distant, far more luminous one in our sky."
+  },
+  {
+    "id": "c5-f14",
+    "comp": 5,
+    "topic": "Spectroscopy",
+    "front": "What can astronomers learn from a star's spectrum?",
+    "back": "Absorption line patterns identify the elements present, the overall shape of the light curve gives surface temperature, and any Doppler shift of the lines reveals motion toward us, a blueshift, or away from us, a redshift. Spectroscopy is how we know stellar composition without ever going there."
+  },
+  {
+    "id": "c5-f15",
+    "comp": 5,
+    "topic": "Parallax",
+    "front": "How does stellar parallax measure distance, and what is the formula?",
+    "back": "A nearby star appears to shift against distant background stars as Earth moves across its orbit, and the size of that shift gives distance: distance in parsecs equals 1 divided by the parallax angle in arcseconds. A parallax of 0.1 arcsecond means 10 parsecs, and a larger angle means a closer star."
+  },
+  {
+    "id": "c5-f16",
+    "comp": 5,
+    "topic": "Telescopes and wavelengths",
+    "front": "Why are X-ray and much infrared astronomy done from space rather than the ground?",
+    "back": "Earth's atmosphere absorbs X-rays almost completely and much of the infrared, mainly through water vapor, so those wavelengths never reach the surface. Radio and visible light pass through atmospheric windows, which is why radio dishes and optical telescopes still work from the ground."
+  },
+  {
+    "id": "c5-f17",
+    "comp": 5,
+    "topic": "Space exploration spinoffs",
+    "front": "What technologies in everyday use trace back to space program requirements?",
+    "back": "Strict limits on mass, power, and reliability drove miniaturized integrated circuits, CCD and CMOS image sensors now in phones and medical imaging, water purification and filtration systems, memory foam, and satellite based GPS and weather forecasting."
+  },
+  {
+    "id": "c5-f18",
+    "comp": 5,
+    "topic": "Robotic vs crewed missions",
+    "front": "Why do agencies send robotic probes rather than astronauts to the outer solar system?",
+    "back": "Probes need no air, food, water, or return trip, and they tolerate radiation and journeys lasting years or decades that would endanger a crew, all at far lower cost. Humans still offer real time judgment and adaptability, which is why crewed missions focus on nearby targets."
+  },
+  {
+    "id": "c5-f19",
+    "comp": 5,
+    "topic": "Kuiper belt and Oort cloud",
+    "front": "How do the Kuiper belt and the Oort cloud differ in shape, location, and what they produce?",
+    "back": "The Kuiper belt is a flattened disk of icy bodies just beyond Neptune, includes Pluto, and supplies many short period comets. The Oort cloud is a vastly more distant spherical shell surrounding the solar system and is the source of long period comets. Neither is the rocky asteroid belt between Mars and Jupiter."
+  },
+  {
+    "id": "c5-f20",
+    "comp": 5,
+    "topic": "Solar wind and comet tails",
+    "front": "Why does a comet's tail always point away from the Sun, even when the comet is moving outward?",
+    "back": "The solar wind, a stream of charged particles from the Sun, plus radiation pressure push the gas and dust outward, so tail direction is set by the Sun's position, not the comet's velocity. An outbound comet therefore travels tail first, which breaks the smoke behind a car analogy."
+  },
+  {
+    "id": "c5-f21",
+    "comp": 5,
+    "topic": "Terrestrial vs gas giant planets",
+    "front": "What explains the split between small rocky inner planets and large gaseous outer planets?",
+    "back": "Inside the frost line the young solar nebula was too hot for water, ammonia, and methane to condense, so only rock and metal formed solids, producing Mercury, Venus, Earth, and Mars. Beyond it abundant ices built massive cores that captured thick hydrogen and helium envelopes, producing Jupiter, Saturn, Uranus, and Neptune."
+  },
+  {
+    "id": "c5-f22",
+    "comp": 5,
+    "topic": "Cratering and surface age",
+    "front": "How do scientists estimate the relative age of a planetary surface from photographs?",
+    "back": "Craters accumulate over time on bodies without weather or active geology, so a heavily cratered surface is old and a smooth, lightly cratered surface has been resurfaced more recently by lava, ice flows, or tectonics. This is why the lunar highlands are older than the smooth dark maria."
+  },
+  {
+    "id": "c6-f01",
+    "comp": 6,
+    "topic": "Photosynthesis equation",
+    "front": "What is the balanced equation for photosynthesis, and what are the two stages?",
+    "back": "6CO2 + 6H2O + light energy yields C6H12O6 + 6O2. The light dependent reactions happen in the thylakoid membranes and make ATP and NADPH while splitting water to release oxygen; the Calvin cycle happens in the stroma and builds sugar from carbon dioxide."
+  },
+  {
+    "id": "c6-f02",
+    "comp": 6,
+    "topic": "Cellular respiration equation",
+    "front": "What is the balanced equation for aerobic cellular respiration, and how does it relate to photosynthesis?",
+    "back": "C6H12O6 + 6O2 yields 6CO2 + 6H2O + energy captured as ATP. It is essentially the reverse of photosynthesis: photosynthesis stores solar energy in glucose, respiration releases it. Plants do both; animals only respire."
+  },
+  {
+    "id": "c6-f03",
+    "comp": 6,
+    "topic": "Respiration stages and locations",
+    "front": "Where in the cell does each stage of cellular respiration occur, and what does each yield?",
+    "back": "Glycolysis happens in the cytoplasm and nets 2 ATP without oxygen. The Krebs cycle runs in the mitochondrial matrix, and the electron transport chain sits in the inner mitochondrial membrane, together producing most of the roughly 30 to 32 ATP per glucose."
+  },
+  {
+    "id": "c6-f04",
+    "comp": 6,
+    "topic": "Electron transport chain",
+    "front": "How does the electron transport chain actually make ATP?",
+    "back": "Electrons passed along the chain power proton pumping into the intermembrane space, building a gradient; protons then flow back through ATP synthase, and that flow drives ADP plus phosphate into ATP. This is chemiosmosis, and oxygen is the final electron acceptor, forming water."
+  },
+  {
+    "id": "c6-f05",
+    "comp": 6,
+    "topic": "ATP energy transfer",
+    "front": "How does ATP release energy, and why is it called the energy currency of the cell?",
+    "back": "Breaking the bond to the terminal phosphate converts ATP to ADP plus phosphate and releases usable energy; respiration then recharges ADP back to ATP. It is currency because it is spent and remade constantly rather than stored long term, unlike fat or starch."
+  },
+  {
+    "id": "c6-f06",
+    "comp": 6,
+    "topic": "Prokaryote vs eukaryote",
+    "front": "What distinguishes a prokaryotic cell from a eukaryotic cell?",
+    "back": "Prokaryotes have no nucleus and no membrane bound organelles; their single circular chromosome sits in the nucleoid region, and they are small and divide by binary fission. Eukaryotes enclose linear chromosomes in a nucleus and have organelles like mitochondria. Both have DNA, ribosomes, cytoplasm, and a plasma membrane."
+  },
+  {
+    "id": "c6-f07",
+    "comp": 6,
+    "topic": "Nucleus",
+    "front": "Which organelle stores the cell's genetic instructions, and what is inside it?",
+    "back": "The nucleus, enclosed by a double membrane with pores, holds the chromosomes as chromatin and directs cell activities by controlling transcription. Inside it the nucleolus assembles ribosome subunits, which then exit through the nuclear pores."
+  },
+  {
+    "id": "c6-f08",
+    "comp": 6,
+    "topic": "Mitochondria",
+    "front": "Which organelle carries out most ATP production, and what feature increases its capacity?",
+    "back": "The mitochondrion, whose folded inner membrane, the cristae, provides surface area for the electron transport chain. Cells with high energy demand, such as heart muscle, contain far more mitochondria than less active cells."
+  },
+  {
+    "id": "c6-f09",
+    "comp": 6,
+    "topic": "Ribosomes",
+    "front": "Which structure builds proteins, and why is it not called an organelle by every definition?",
+    "back": "Ribosomes assemble amino acids into polypeptides by reading mRNA, and they occur free in the cytoplasm or attached to rough ER. They lack a membrane, which is why some texts exclude them from the organelle list, and they are the one protein factory found in both prokaryotes and eukaryotes."
+  },
+  {
+    "id": "c6-f10",
+    "comp": 6,
+    "topic": "Endoplasmic reticulum",
+    "front": "What is the difference in function between rough and smooth endoplasmic reticulum?",
+    "back": "Rough ER is studded with ribosomes and processes proteins bound for secretion or membranes. Smooth ER has no ribosomes and handles lipid and steroid synthesis, calcium storage, and detoxification, which is why liver cells are rich in it."
+  },
+  {
+    "id": "c6-f11",
+    "comp": 6,
+    "topic": "Golgi apparatus",
+    "front": "Which organelle modifies, sorts, and ships proteins after the ER, and what is a good analogy?",
+    "back": "The Golgi apparatus, a stack of flattened sacs that adds finishing touches like sugar groups and packages products into vesicles. Think of it as the post office: the ER manufactures, the Golgi labels and mails."
+  },
+  {
+    "id": "c6-f12",
+    "comp": 6,
+    "topic": "Lysosomes",
+    "front": "Which organelle digests worn out organelles and engulfed particles, and why is its membrane critical?",
+    "back": "The lysosome, a sac of hydrolytic enzymes active at acidic pH. Its membrane keeps those enzymes separated from the rest of the cytoplasm, since released enzymes would digest the cell itself. Lysosomes are prominent in animal cells and in white blood cells that engulf bacteria."
+  },
+  {
+    "id": "c6-f13",
+    "comp": 6,
+    "topic": "Cell membrane",
+    "front": "What is the structure of the plasma membrane, and what does selectively permeable mean?",
+    "back": "A phospholipid bilayer with embedded proteins, cholesterol, and carbohydrate markers, described by the fluid mosaic model. Selectively permeable means small nonpolar molecules like oxygen cross freely while ions and large polar molecules need protein channels or pumps."
+  },
+  {
+    "id": "c6-f14",
+    "comp": 6,
+    "topic": "Plant-only structures",
+    "front": "Which structures are found in plant cells but not animal cells, and what does each do?",
+    "back": "A rigid cellulose cell wall outside the membrane for support, chloroplasts containing chlorophyll for photosynthesis, and a large central vacuole that stores water and creates turgor pressure. Plant cells also have mitochondria, since they respire around the clock."
+  },
+  {
+    "id": "c6-f15",
+    "comp": 6,
+    "topic": "Animal-only structures",
+    "front": "Which structures are typical of animal cells but generally absent from plant cells?",
+    "back": "Centrioles for organizing the spindle, numerous lysosomes, and only small temporary vacuoles instead of one large central vacuole. Animal cells also have no cell wall, which is why they take rounded, flexible shapes rather than rigid boxes."
+  },
+  {
+    "id": "c6-f16",
+    "comp": 6,
+    "topic": "Mitosis phase order",
+    "front": "What are the four phases of mitosis in order, and what happens in each?",
+    "back": "PMAT: prophase, chromosomes condense and the nuclear envelope breaks down; metaphase, chromosomes line up on the cell equator; anaphase, sister chromatids separate to opposite poles; telophase, two nuclei re-form. Cytokinesis then divides the cytoplasm into two identical diploid cells."
+  },
+  {
+    "id": "c6-f17",
+    "comp": 6,
+    "topic": "Meiosis vs mitosis",
+    "front": "How does meiosis differ from mitosis in divisions, products, and chromosome number?",
+    "back": "Meiosis has one DNA replication followed by two divisions, producing four genetically distinct haploid cells, written n, from one diploid cell, written 2n; in humans 46 becomes 23. Mitosis has one division producing two identical diploid cells. Meiosis makes gametes, mitosis makes body cells."
+  },
+  {
+    "id": "c6-f18",
+    "comp": 6,
+    "topic": "Crossing over",
+    "front": "What is crossing over, when does it happen, and why does it matter?",
+    "back": "During prophase I of meiosis, homologous chromosomes pair up and exchange matching segments at the chiasmata. This shuffles alleles into new combinations, so it is a major source of genetic variation along with independent assortment of homologs in metaphase I."
+  },
+  {
+    "id": "c6-f19",
+    "comp": 6,
+    "topic": "Nondisjunction",
+    "front": "What happens when chromosomes fail to separate properly during meiosis?",
+    "back": "Nondisjunction produces gametes with an extra or missing chromosome, and fertilization then gives a zygote with an abnormal count. Trisomy 21 causes Down syndrome, while monosomy X causes Turner syndrome. Risk of nondisjunction rises with maternal age."
+  },
+  {
+    "id": "c6-f20",
+    "comp": 6,
+    "topic": "DNA vs RNA",
+    "front": "What are the three structural differences between DNA and RNA?",
+    "back": "DNA is double stranded, contains deoxyribose, and uses thymine; RNA is single stranded, contains ribose, and uses uracil in place of thymine. DNA stores the master copy in the nucleus while RNA carries and executes the message."
+  },
+  {
+    "id": "c6-f21",
+    "comp": 6,
+    "topic": "Complementary base pairing",
+    "front": "Which bases pair with which in DNA, and how does that change in RNA?",
+    "back": "In DNA, adenine pairs with thymine by two hydrogen bonds and guanine pairs with cytosine by three. In RNA, adenine pairs with uracil instead. So a DNA strand reading A T G C is complemented by T A C G in DNA and A U G C when transcribed from that template's partner."
+  },
+  {
+    "id": "c6-f22",
+    "comp": 6,
+    "topic": "DNA replication",
+    "front": "Why is DNA replication described as semiconservative?",
+    "back": "The double helix unzips and each original strand serves as a template for a new complementary strand, so every daughter molecule keeps one old strand and one new one. DNA polymerase builds the new strands, and replication happens during the S phase of interphase, before any cell division."
+  },
+  {
+    "id": "c6-f23",
+    "comp": 6,
+    "topic": "Transcription vs translation",
+    "front": "What is the difference between transcription and translation, including where each occurs?",
+    "back": "Transcription copies a DNA gene into mRNA and occurs in the nucleus of eukaryotes. Translation reads that mRNA at a ribosome in the cytoplasm or on rough ER and assembles amino acids into a protein. The flow is DNA to RNA to protein, the central dogma."
+  },
+  {
+    "id": "c6-f24",
+    "comp": 6,
+    "topic": "Codon and anticodon",
+    "front": "What is a codon, what is an anticodon, and how do they relate?",
+    "back": "A codon is a three base sequence on mRNA specifying one amino acid; an anticodon is the complementary three base sequence on a tRNA carrying that amino acid. The mRNA codon G C A is read by the tRNA anticodon C G U. AUG is the start codon and codes for methionine."
+  },
+  {
+    "id": "c6-f25",
+    "comp": 6,
+    "topic": "Mutation types",
+    "front": "Why is a frameshift mutation usually more damaging than a substitution?",
+    "back": "Inserting or deleting a base shifts the triplet reading frame, so every codon downstream is misread and the protein is usually nonfunctional. A substitution changes at most one codon and may be silent, because the genetic code is redundant, though sickle cell disease shows one substitution can still matter enormously."
+  },
+  {
+    "id": "c6-f26",
+    "comp": 6,
+    "topic": "Monohybrid cross",
+    "front": "What ratios come from crossing two heterozygotes for a simple dominant trait?",
+    "back": "Tt x Tt gives TT, Tt, Tt, tt: a 1:2:1 genotype ratio and a 3:1 phenotype ratio, since TT and Tt look the same. Reporting 1:2:1 as the phenotype ratio is the classic mistake."
+  },
+  {
+    "id": "c6-f27",
+    "comp": 6,
+    "topic": "Test cross",
+    "front": "How do you determine whether an organism showing a dominant trait is homozygous or heterozygous?",
+    "back": "Cross it with a homozygous recessive individual. If any recessive offspring appear, the unknown parent is heterozygous, since Bb x bb gives about 1 dominant to 1 recessive. If all offspring show the dominant trait, it is most likely homozygous dominant."
+  },
+  {
+    "id": "c6-f28",
+    "comp": 6,
+    "topic": "Dihybrid cross",
+    "front": "What phenotype ratio results from crossing two organisms heterozygous for two independently assorting genes?",
+    "back": "RrYy x RrYy gives a 16 box Punnett square with the 9:3:3:1 phenotype ratio: 9 showing both dominants, 3 and 3 showing one dominant each, and 1 showing both recessives. The 1:1:1:1 pattern is the gamete types from one parent, not the offspring ratio."
+  },
+  {
+    "id": "c6-f29",
+    "comp": 6,
+    "topic": "Incomplete dominance",
+    "front": "How do you recognize incomplete dominance, and what ratio does a heterozygous cross give?",
+    "back": "Neither allele fully masks the other, so heterozygotes show a blended intermediate, as with red RR by white WW snapdragons giving all pink RW. Crossing two pinks gives 1 red : 2 pink : 1 white, so phenotype and genotype ratios match."
+  },
+  {
+    "id": "c6-f30",
+    "comp": 6,
+    "topic": "Codominance and ABO blood",
+    "front": "How does codominance differ from incomplete dominance, and how do ABO blood types show it?",
+    "back": "In codominance both alleles are fully expressed at once rather than blended. Alleles I-A and I-B are codominant and both dominant over i, so I-A I-B gives type AB with both antigens present, while only ii gives type O. An AB parent and an O parent can have only type A or type B children."
+  },
+  {
+    "id": "c6-f31",
+    "comp": 6,
+    "topic": "Sex-linked inheritance",
+    "front": "Why do X linked recessive traits like color blindness and hemophilia appear more often in males?",
+    "back": "Males are XY, so a single recessive allele on their one X is expressed with no second X to mask it; females need two copies to be affected. A carrier mother crossed with an unaffected father gives about half affected sons and no affected daughters, though half the daughters are carriers."
+  },
+  {
+    "id": "c6-f32",
+    "comp": 6,
+    "topic": "Linked genes",
+    "front": "What happens to Mendel's law of independent assortment when two genes sit on the same chromosome?",
+    "back": "Linked genes tend to be inherited together, so the offspring show mostly parental combinations instead of 9:3:3:1. Crossing over during prophase I separates them occasionally, and the closer the genes lie, the rarer the recombinants, which is how gene maps are built."
+  },
+  {
+    "id": "c6-f33",
+    "comp": 6,
+    "topic": "Human genetic disorders",
+    "front": "How can you tell a recessive disorder from a dominant one in a family pedigree?",
+    "back": "Recessive disorders such as cystic fibrosis and sickle cell disease can skip generations and appear in a child of two unaffected carriers, who face a 1 in 4 risk per pregnancy. Dominant disorders such as Huntington disease appear in every generation, with each affected parent passing it to about half of offspring."
+  },
+  {
+    "id": "c6-f34",
+    "comp": 6,
+    "topic": "Taxonomy levels",
+    "front": "What are the taxonomic levels from broadest to most specific, and what is a mnemonic?",
+    "back": "Domain, Kingdom, Phylum, Class, Order, Family, Genus, Species, remembered as Dear King Philip Came Over For Good Soup. The more levels two organisms share, the more closely related they are."
+  },
+  {
+    "id": "c6-f35",
+    "comp": 6,
+    "topic": "Virus characteristics",
+    "front": "What are the key differences between a virus and a bacterium?",
+    "back": "A bacterium is a living prokaryotic cell with a cell wall, ribosomes, and metabolism, and it reproduces on its own by binary fission. A virus is only nucleic acid inside a protein capsid, far smaller, with no cell structure or metabolism, and it can replicate only inside a host cell. Antibiotics work on bacteria, not viruses."
+  },
+  {
+    "id": "c6-f36",
+    "comp": 6,
+    "topic": "Protist and fungi characteristics",
+    "front": "What distinguishes protists from fungi?",
+    "back": "Protists are diverse, mostly unicellular eukaryotes that do not fit the other kingdoms, including photosynthetic Euglena and algae plus heterotrophic amoebas and paramecia. Fungi are eukaryotic heterotrophs with chitin cell walls that absorb nutrients externally and reproduce by spores, such as mushrooms, molds, and yeast."
+  },
+  {
+    "id": "c6-f37",
+    "comp": 6,
+    "topic": "Plant transport tissue",
+    "front": "What does xylem carry versus phloem, and in what direction?",
+    "back": "Xylem carries water and dissolved minerals upward from roots to leaves, pulled largely by transpiration. Phloem carries dissolved sugars from the leaves to roots, fruits, and other growing tissues, in either direction. Memory hook: phloem carries food."
+  },
+  {
+    "id": "c6-f38",
+    "comp": 6,
+    "topic": "Transpiration",
+    "front": "What is transpiration, and what controls it?",
+    "back": "Transpiration is water loss as vapor through the stomata, and the resulting pull draws a continuous water column up the xylem from the roots. Guard cells open and close the stomata, trading water conservation against the carbon dioxide intake photosynthesis needs."
+  },
+  {
+    "id": "c6-f39",
+    "comp": 6,
+    "topic": "Flower parts",
+    "front": "What are the male and female parts of a flower, and what does each part do?",
+    "back": "The male stamen is the anther, where pollen forms, on a filament. The female pistil is the stigma, which receives pollen, the style, and the ovary containing ovules. After fertilization the ovule becomes a seed and the ovary becomes fruit."
+  },
+  {
+    "id": "c6-f40",
+    "comp": 6,
+    "topic": "Human digestion",
+    "front": "Where in the digestive tract does most chemical digestion and absorption take place?",
+    "back": "The small intestine, which receives pancreatic enzymes and bile from the liver and gallbladder and absorbs nutrients through villi and microvilli. The mouth starts starch digestion with salivary amylase, the stomach starts protein digestion with pepsin and acid, and the large intestine mainly reabsorbs water."
+  },
+  {
+    "id": "c6-f41",
+    "comp": 6,
+    "topic": "Gas exchange",
+    "front": "What is the path of air into the lungs, and how does oxygen enter the blood?",
+    "back": "Nose or mouth, pharynx, larynx, trachea, bronchi, bronchioles, then alveoli. At the alveoli oxygen diffuses passively across one cell thick walls into capillaries while carbon dioxide diffuses out. The diaphragm and rib muscles drive the airflow, since alveoli have no muscle."
+  },
+  {
+    "id": "c6-f42",
+    "comp": 6,
+    "topic": "Human organ systems",
+    "front": "What is the primary function of each major human organ system?",
+    "back": "Circulatory transports materials; respiratory exchanges gases; digestive breaks down food; excretory filters waste; nervous senses and coordinates rapidly; endocrine regulates slowly with hormones; muscular and skeletal give movement and support; immune and lymphatic defend and return fluid; integumentary protects; reproductive produces offspring."
+  },
+  {
+    "id": "c6-f43",
+    "comp": 6,
+    "topic": "Blood flow through heart",
+    "front": "What path does blood follow through the heart and lungs?",
+    "back": "Vena cava to right atrium to right ventricle to pulmonary artery to lungs, then pulmonary veins to left atrium to left ventricle to aorta to the body. The pulmonary artery is the exception that carries oxygen poor blood, because arteries are defined by carrying blood away from the heart."
+  },
+  {
+    "id": "c6-f44",
+    "comp": 6,
+    "topic": "Adaptations for survival",
+    "front": "What is the difference between a structural, behavioral, and physiological adaptation?",
+    "back": "Structural adaptations are body features such as a cactus spine or a thick waxy cuticle; behavioral adaptations are actions such as bird migration or nocturnal foraging; physiological adaptations are internal processes such as venom production or opening stomata only at night. All are products of natural selection, not conscious choices."
+  },
+  {
+    "id": "c6-f45",
+    "comp": 6,
+    "topic": "Cell theory",
+    "front": "What are the three statements of modern cell theory?",
+    "back": "All living things are made of one or more cells; the cell is the basic unit of structure and function in living things; all cells arise from preexisting cells. That third point, added later, replaced the idea of spontaneous generation."
+  },
+  {
+    "id": "c6-f46",
+    "comp": 6,
+    "topic": "Evidence for evolution",
+    "front": "What are the main independent lines of evidence supporting evolution?",
+    "back": "The fossil record showing change over time, comparative anatomy including homologous and vestigial structures, similar embryonic development across vertebrates, biogeography such as island species resembling nearby mainland forms, molecular and genetic similarity in DNA and proteins, and directly observed change like antibiotic resistance."
+  },
+  {
+    "id": "c6-f47",
+    "comp": 6,
+    "topic": "Natural selection",
+    "front": "What are the conditions required for natural selection to occur?",
+    "back": "More offspring are produced than can survive, individuals vary, some of that variation is heritable, and certain variants survive and reproduce better in the current environment. Over generations the helpful alleles become more common. Selection acts on variation that already exists; it does not create traits on demand."
+  },
+  {
+    "id": "c6-f48",
+    "comp": 6,
+    "topic": "Antibiotic resistance",
+    "front": "Why is it wrong to say bacteria develop resistance because they were exposed to an antibiotic?",
+    "back": "Resistance alleles arise by random mutation before exposure. The antibiotic acts as a selective agent, killing susceptible cells so the few resistant ones survive and multiply, raising the frequency of resistance in the population. Individuals do not adapt during their lifetime; populations evolve."
+  },
+  {
+    "id": "c6-f49",
+    "comp": 6,
+    "topic": "Genetic variation and extinction",
+    "front": "Why does low genetic variation raise a population's extinction risk?",
+    "back": "Natural selection can only act on variation that exists, so a genetically uniform population is unlikely to contain individuals able to survive a new disease, climate shift, or predator. Mutation and sexual recombination replenish variation, but often too slowly to keep up with rapid change."
+  },
+  {
+    "id": "c6-f50",
+    "comp": 6,
+    "topic": "Biotechnology applications",
+    "front": "How can bacteria be used to make human insulin?",
+    "back": "The human insulin gene is inserted into a bacterial plasmid, the bacteria take it up, and because the genetic code is essentially universal they transcribe and translate it into genuine human insulin, which is harvested at scale. This is recombinant DNA technology."
+  },
+  {
+    "id": "c6-f51",
+    "comp": 6,
+    "topic": "Biotechnology ethics",
+    "front": "What ethical and social questions does genetic technology raise, as distinct from technical ones?",
+    "back": "Whether insurers or employers might use genetic results against a person, who owns genetic data, informed consent, access and cost fairness, and ecological effects of engineered organisms. These differ from technical questions like sequencing accuracy or turnaround time, which ask only whether the tool works."
+  },
+  {
+    "id": "c6-f52",
+    "comp": 6,
+    "topic": "Chloroplast",
+    "front": "Which organelle captures light energy, and what are its internal parts?",
+    "back": "The chloroplast, which contains stacks of thylakoids called grana where chlorophyll absorbs light and the light dependent reactions occur, surrounded by fluid stroma where the Calvin cycle builds sugar. It is found in plant and algal cells, never in animal cells."
+  }
+]

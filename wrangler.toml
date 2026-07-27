@@ -1,0 +1,22 @@
+name = "learn-gaitherstephens"
+main = "src/worker.js"
+compatibility_date = "2026-01-28"
+compatibility_flags = ["nodejs_compat"]
+
+routes = [
+  { pattern = "learn.gaitherstephens.com", custom_domain = true }
+]
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "learn-db"
+database_id = "f1bf3d0a-a92e-4e1f-a2a8-fb02e62c494a"
+
+[vars]
+APP_NAME = "FTCE Science 5-9 Study"
+SITE_URL = "https://learn.gaitherstephens.com"

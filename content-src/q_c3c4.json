@@ -1,0 +1,1010 @@
+[
+  {
+    "id": "c3-q01",
+    "comp": 3,
+    "skill": 1,
+    "topic": "Energy transformations",
+    "difficulty": 2,
+    "stem": "A student turns on a battery-powered flashlight. Which sequence best describes the energy transformations that occur?",
+    "choices": [
+      "Electrical energy to chemical energy to light energy",
+      "Chemical energy to electrical energy to light and thermal energy",
+      "Mechanical energy to electrical energy to light energy",
+      "Thermal energy to chemical energy to light energy"
+    ],
+    "answer": 1,
+    "explanation": "A battery stores chemical energy, which becomes electrical energy when the circuit closes; the bulb then converts electrical energy into light plus waste heat. The option that starts with electrical energy reverses the opening steps, reflecting the misconception that a battery stores electricity directly rather than storing energy in chemical form."
+  },
+  {
+    "id": "c3-q02",
+    "comp": 3,
+    "skill": 1,
+    "topic": "Energy transformations",
+    "difficulty": 2,
+    "stem": "Which device transforms mechanical energy into electrical energy?",
+    "choices": [
+      "An electric motor",
+      "A solar panel",
+      "A generator at a hydroelectric dam",
+      "A battery"
+    ],
+    "answer": 2,
+    "explanation": "A generator spins a coil of wire in a magnetic field, converting the kinetic energy of moving water into electrical energy. An electric motor does exactly the opposite (electrical to mechanical), a common point of confusion; a solar panel converts light energy, and a battery converts chemical energy."
+  },
+  {
+    "id": "c3-q03",
+    "comp": 3,
+    "skill": 2,
+    "topic": "Phase changes and energy",
+    "difficulty": 2,
+    "stem": "A beaker of ice water is heated steadily on a hot plate. As long as ice remains, the thermometer stays at 0 degrees Celsius even though energy is being added continuously. What is happening to the added energy?",
+    "choices": [
+      "It is breaking the attractions between water molecules as the ice melts",
+      "It is increasing the average kinetic energy of the water molecules",
+      "It is being destroyed as the ice absorbs it",
+      "It is leaving the beaker exactly as fast as it enters"
+    ],
+    "answer": 0,
+    "explanation": "During a phase change, added energy goes into overcoming the attractions between particles (increasing their potential energy), not into speeding them up, so temperature holds constant until all the ice melts. The option about raising the average kinetic energy reflects the misconception that adding heat must always raise temperature; the option saying the energy is destroyed violates conservation of energy."
+  },
+  {
+    "id": "c3-q04",
+    "comp": 3,
+    "skill": 2,
+    "topic": "Phase changes and energy",
+    "difficulty": 1,
+    "stem": "Water vapor from the air condenses into liquid droplets on the outside of a cold glass. Which statement describes the energy change involved?",
+    "choices": [
+      "The water vapor absorbs thermal energy as it condenses",
+      "No energy is transferred because the droplets' temperature does not change",
+      "The glass releases thermal energy to the water vapor",
+      "The water vapor releases thermal energy as it condenses"
+    ],
+    "answer": 3,
+    "explanation": "Condensation is exothermic: as vapor becomes liquid, the latent heat that was absorbed during evaporation is released to the surroundings. The option saying the vapor absorbs thermal energy reverses the direction of energy flow, a misconception that comes from confusing condensation with evaporation, which absorbs energy."
+  },
+  {
+    "id": "c3-q05",
+    "comp": 3,
+    "skill": 3,
+    "topic": "Heat vs temperature",
+    "difficulty": 2,
+    "stem": "A bathtub full of water at 30 degrees Celsius is compared with a small cup of tea at 90 degrees Celsius. Which statement is accurate?",
+    "choices": [
+      "The bathtub water has more total thermal energy because it contains far more particles",
+      "The tea has more thermal energy because its temperature is higher",
+      "Both have the same thermal energy because both are liquid water",
+      "The bathtub water has a higher average particle kinetic energy than the tea"
+    ],
+    "answer": 0,
+    "explanation": "Thermal energy is the total energy of all particles, so the enormous number of particles in the tub outweighs the cup's higher temperature. The option crediting the tea with more thermal energy reflects the very common misconception that temperature and thermal energy are the same thing; temperature only measures the average kinetic energy per particle, which is indeed higher in the tea."
+  },
+  {
+    "id": "c3-q06",
+    "comp": 3,
+    "skill": 3,
+    "topic": "Heat vs temperature",
+    "difficulty": 1,
+    "stem": "Which statement correctly distinguishes heat from temperature?",
+    "choices": [
+      "Heat is the average kinetic energy of particles; temperature is the total energy of an object",
+      "Heat is thermal energy transferred between objects at different temperatures; temperature measures the average kinetic energy of particles",
+      "Heat and temperature are two names for the same measured quantity",
+      "Temperature is measured in joules, while heat is measured in degrees"
+    ],
+    "answer": 1,
+    "explanation": "Heat is energy in transit, flowing from a warmer object to a cooler one, while temperature is a measure of the average kinetic energy of the particles in a substance. The option defining heat as average kinetic energy swaps the two definitions, and the one putting temperature in joules swaps their units: heat is measured in joules and temperature in degrees."
+  },
+  {
+    "id": "c3-q07",
+    "comp": 3,
+    "skill": 4,
+    "topic": "Thermal energy transfer",
+    "difficulty": 2,
+    "stem": "A pot of water on a stove heats fairly evenly even though the burner touches only the bottom of the pot. Which process distributes thermal energy throughout the water?",
+    "choices": [
+      "Radiation, because energy travels through the water as electromagnetic waves",
+      "Conduction only, because water molecules collide with the metal pot",
+      "Convection, because heated water rises while cooler, denser water sinks in a circulating current",
+      "Evaporation, because vapor bubbles carry energy from the bottom to the top"
+    ],
+    "answer": 2,
+    "explanation": "Water heated at the bottom expands, becomes less dense, and rises while cooler water sinks to take its place, creating a convection current that mixes the pot. Conduction does transfer energy from the burner to the pot and into the first layer of water, but the conduction only option reflects the misconception that conduction alone can circulate energy through a fluid."
+  },
+  {
+    "id": "c3-q08",
+    "comp": 3,
+    "skill": 4,
+    "topic": "Thermal energy transfer",
+    "difficulty": 1,
+    "stem": "How does energy from the Sun reach Earth across about 150 million kilometers of nearly empty space?",
+    "choices": [
+      "By conduction through particles of the solar wind",
+      "By convection currents that carry warm gas from the Sun to Earth",
+      "By sound waves that transfer the Sun's vibrational energy",
+      "By radiation, because electromagnetic waves require no medium to travel"
+    ],
+    "answer": 3,
+    "explanation": "Radiation transfers energy as electromagnetic waves, which can travel through a vacuum. Conduction and convection both require matter, so they cannot bridge the near-vacuum of space; the conduction and convection options reflect the misconception that all heat transfer needs particles to carry it."
+  },
+  {
+    "id": "c3-q09",
+    "comp": 3,
+    "skill": 5,
+    "topic": "Laws of thermodynamics",
+    "difficulty": 2,
+    "stem": "A student leaves a cold can of soda on a picnic table on a hot afternoon. In terms of the second law of thermodynamics, why does the soda warm up?",
+    "choices": [
+      "Cold flows out of the can and into the warmer air",
+      "Thermal energy flows spontaneously from the warmer air to the cooler can until both reach the same temperature",
+      "The can generates its own thermal energy as its molecules multiply",
+      "The air can push heat into the can only when wind blows across it"
+    ],
+    "answer": 1,
+    "explanation": "Heat spontaneously flows from hotter matter to colder matter until thermal equilibrium is reached. The option describing cold flowing out of the can states the classic misconception that cold is a substance that moves; cold is simply the absence of thermal energy, and it is heat that transfers, always from hot to cold without outside work."
+  },
+  {
+    "id": "c3-q10",
+    "comp": 3,
+    "skill": 5,
+    "topic": "Laws of thermodynamics",
+    "difficulty": 2,
+    "stem": "A car engine converts only about 25 percent of the chemical energy in gasoline into useful motion. According to the laws of thermodynamics, what happens to the rest of the energy?",
+    "choices": [
+      "It is transferred to the surroundings as thermal energy that cannot all be recovered for useful work",
+      "It is destroyed by friction inside the engine",
+      "It disappears because the engine is an open system",
+      "It is stored in the car battery for later use"
+    ],
+    "answer": 0,
+    "explanation": "The first law says energy cannot be destroyed, and the second law says every real engine degrades some energy into waste heat, so no engine can be 100 percent efficient. The option blaming friction inside the engine reflects the misconception that friction destroys energy; friction only converts mechanical energy into thermal energy."
+  },
+  {
+    "id": "c3-q11",
+    "comp": 3,
+    "skill": 6,
+    "topic": "Potential vs kinetic energy",
+    "difficulty": 2,
+    "stem": "A roller coaster car is released from rest at the top of the first hill. Ignoring friction, at which point is the car's kinetic energy greatest?",
+    "choices": [
+      "At the top of the first hill, where it is released",
+      "Halfway down the first hill, where kinetic and potential energy are equal",
+      "At the lowest point of the track",
+      "At the top of the second hill"
+    ],
+    "answer": 2,
+    "explanation": "As the car descends, gravitational potential energy converts to kinetic energy, so kinetic energy peaks where height, and therefore potential energy, is lowest. The option placing it halfway down the first hill describes the point where the two forms are equal, which some students mistake for the maximum; kinetic energy keeps growing all the way to the bottom."
+  },
+  {
+    "id": "c3-q12",
+    "comp": 3,
+    "skill": 6,
+    "topic": "Potential vs kinetic energy",
+    "difficulty": 3,
+    "stem": "Car A has mass m and speed v. Car B has the same mass but is moving at speed 2v. How does the kinetic energy of Car B compare with that of Car A?",
+    "choices": [
+      "It is the same, because the masses are equal",
+      "It is twice as great",
+      "It is three times as great",
+      "It is four times as great"
+    ],
+    "answer": 3,
+    "explanation": "Kinetic energy is KE = (1/2)mv^2, so KE for Car B is (1/2)m(2v)^2 = (1/2)m(4v^2), which is 4 times Car A's (1/2)mv^2. The 'twice as great' choice reflects the misconception that kinetic energy grows in direct proportion to speed rather than with the square of speed."
+  },
+  {
+    "id": "c3-q13",
+    "comp": 3,
+    "skill": 7,
+    "topic": "Fission vs fusion",
+    "difficulty": 1,
+    "stem": "Which process produces the energy released by the Sun?",
+    "choices": [
+      "Fusion of hydrogen nuclei into helium",
+      "Fission of uranium nuclei into smaller nuclei",
+      "Combustion of hydrogen gas with oxygen",
+      "Radioactive beta decay of helium"
+    ],
+    "answer": 0,
+    "explanation": "In the Sun's core, enormous temperature and pressure force hydrogen nuclei to fuse into helium, converting a small amount of mass into a huge amount of energy. The combustion choice reflects the misconception that the Sun is 'burning' chemically; fission, the splitting of heavy nuclei like uranium, is what nuclear power plants use, not stars."
+  },
+  {
+    "id": "c3-q14",
+    "comp": 3,
+    "skill": 7,
+    "topic": "Nuclear reactions",
+    "difficulty": 2,
+    "stem": "Which statement identifies a key difference between nuclear reactions and chemical reactions?",
+    "choices": [
+      "Chemical reactions release more energy per atom than nuclear reactions",
+      "Nuclear reactions can change one element into another, while chemical reactions only rearrange atoms into new substances",
+      "Nuclear reactions involve only electrons, while chemical reactions involve the nucleus",
+      "Chemical reactions convert measurable mass into energy, while nuclear reactions conserve mass exactly"
+    ],
+    "answer": 1,
+    "explanation": "Nuclear reactions alter the nucleus itself, so the identity of the element can change, and they release roughly a million times more energy per atom than chemical reactions, which only rearrange electrons and bonds. The option assigning electrons to nuclear reactions reverses which particles are involved, and the one crediting chemical reactions with converting mass reverses which type of reaction turns a measurable amount of mass into energy via E = mc^2."
+  },
+  {
+    "id": "c3-q15",
+    "comp": 3,
+    "skill": 8,
+    "topic": "Electromagnetic spectrum",
+    "difficulty": 1,
+    "stem": "Which list places electromagnetic waves in order from lowest energy to highest energy?",
+    "choices": [
+      "Gamma rays, X-rays, ultraviolet, visible light",
+      "Visible light, infrared, microwaves, radio waves",
+      "Radio waves, infrared, visible light, X-rays",
+      "Infrared, radio waves, X-rays, visible light"
+    ],
+    "answer": 2,
+    "explanation": "The full order from lowest to highest energy is radio, microwave, infrared, visible, ultraviolet, X-ray, gamma; energy rises with frequency and falls with wavelength. The options that begin with gamma rays and with visible light list waves in decreasing energy order, a common mix-up when students memorize the spectrum in only one direction."
+  },
+  {
+    "id": "c3-q16",
+    "comp": 3,
+    "skill": 8,
+    "topic": "Electromagnetic spectrum",
+    "difficulty": 2,
+    "stem": "Ultraviolet light can damage skin cells and cause sunburn, while visible light does not. What property of ultraviolet light best explains this difference?",
+    "choices": [
+      "Its longer wavelength lets it penetrate deeper into the skin",
+      "It travels faster than visible light in a vacuum",
+      "Its greater amplitude carries more total energy",
+      "Its higher frequency means each photon carries more energy"
+    ],
+    "answer": 3,
+    "explanation": "Photon energy is proportional to frequency, so ultraviolet photons carry enough energy to damage molecules such as DNA, while visible photons do not. The longer wavelength option is wrong because UV actually has a shorter wavelength than visible light, and the claim that UV travels faster reflects the misconception that some electromagnetic waves travel faster; all travel at the same speed in a vacuum."
+  },
+  {
+    "id": "c3-q17",
+    "comp": 3,
+    "skill": 9,
+    "topic": "Light and optics",
+    "difficulty": 2,
+    "stem": "An eye doctor prescribes lenses for a nearsighted student who sees nearby objects clearly but distant objects as blurry. Which lens corrects this condition, and why?",
+    "choices": [
+      "A concave lens, because it spreads light rays so the image focuses farther back, directly on the retina",
+      "A convex lens, because it converges light rays to a point in front of the retina",
+      "A flat lens, because it blocks scattered light from entering the eye",
+      "A concave mirror, because it reflects extra light onto the retina"
+    ],
+    "answer": 0,
+    "explanation": "In nearsightedness the eye focuses distant images in front of the retina, so a diverging (concave) lens spreads incoming rays and moves the focal point back onto the retina. The convex lens choice reflects a common reversal: converging lenses correct farsightedness, where the image would focus behind the retina."
+  },
+  {
+    "id": "c3-q18",
+    "comp": 3,
+    "skill": 9,
+    "topic": "Light and optics",
+    "difficulty": 1,
+    "stem": "A straw standing in a glass of water appears bent at the water's surface. Which behavior of light causes this illusion?",
+    "choices": [
+      "Reflection of light off the surface of the straw",
+      "Refraction, as light changes speed when passing between water and air",
+      "Diffraction of light waves around the edges of the straw",
+      "Absorption of certain light wavelengths by the water"
+    ],
+    "answer": 1,
+    "explanation": "Light slows down in water and speeds up in air, bending at the boundary between the two media; the bent light path makes the submerged part of the straw appear offset. Reflection is how we see the straw at all but does not explain the bend, a distinction students often blur."
+  },
+  {
+    "id": "c3-q19",
+    "comp": 3,
+    "skill": 10,
+    "topic": "Work and power",
+    "difficulty": 2,
+    "stem": "A student lifts a 20 N box straight up through a distance of 1.5 m at constant speed. How much work does the student do on the box?",
+    "choices": [
+      "13.3 J",
+      "21.5 J",
+      "30 J",
+      "300 J"
+    ],
+    "answer": 2,
+    "explanation": "Work equals force times distance in the direction of motion: W = Fd = 20 N x 1.5 m = 30 J. The 13.3 J choice comes from dividing instead of multiplying, and 21.5 J comes from adding the numbers, both common errors when the formula is not firmly memorized."
+  },
+  {
+    "id": "c3-q20",
+    "comp": 3,
+    "skill": 10,
+    "topic": "Mechanical advantage",
+    "difficulty": 3,
+    "stem": "A mover uses a ramp 6 m long to raise furniture onto a platform 1 m high. Ignoring friction, how much force is needed to push a 300 N box up the ramp?",
+    "choices": [
+      "300 N, because a ramp does not change the force required",
+      "1800 N",
+      "6 N",
+      "50 N"
+    ],
+    "answer": 3,
+    "explanation": "The ideal mechanical advantage of an inclined plane is length divided by height: 6 m / 1 m = 6, so the required force is 300 N / 6 = 50 N. The trade-off is distance: the mover pushes 6 times farther, so the total work stays the same. The 300 N option reflects the misconception that simple machines provide no benefit, and 1800 N comes from multiplying instead of dividing."
+  },
+  {
+    "id": "c3-q21",
+    "comp": 3,
+    "skill": 10,
+    "topic": "Efficiency",
+    "difficulty": 3,
+    "stem": "A pulley system requires 500 J of input work to lift a load, and the load gains 400 J of gravitational potential energy. What is the efficiency of the system, and what happened to the remaining energy?",
+    "choices": [
+      "80 percent; the remainder became thermal energy through friction",
+      "125 percent; the machine multiplied the input energy",
+      "20 percent; the remainder was stored inside the pulley",
+      "80 percent; the remainder was destroyed by the weight of the load"
+    ],
+    "answer": 0,
+    "explanation": "Efficiency = (useful output / total input) x 100 = (400 J / 500 J) x 100 = 80 percent, and the missing 100 J became heat in the ropes and pulley wheels. The 125 percent choice reflects the misconception that machines can output more energy than they take in, which would violate conservation of energy; efficiency can never exceed 100 percent."
+  },
+  {
+    "id": "c3-q22",
+    "comp": 3,
+    "skill": 11,
+    "topic": "Conservation of mass",
+    "difficulty": 2,
+    "stem": "A log burns in a fireplace, and the ash left behind has far less mass than the original log. Which statement best explains this observation?",
+    "choices": [
+      "Mass was destroyed as the fire converted matter into heat",
+      "The missing mass escaped as gases such as carbon dioxide and water vapor",
+      "The fire converted most of the log's mass directly into light energy",
+      "The atoms in the log were broken apart into pure energy"
+    ],
+    "answer": 1,
+    "explanation": "In a chemical reaction, mass is conserved: if the escaping combustion gases and the oxygen consumed were all weighed, the totals before and after would match. The option saying mass was destroyed states the classic misconception that burning destroys matter; the atoms are all still there, just rearranged into gaseous products."
+  },
+  {
+    "id": "c3-q23",
+    "comp": 3,
+    "skill": 11,
+    "topic": "Conservation of energy",
+    "difficulty": 3,
+    "stem": "Trace the energy that allows a student's muscles to move during a race. Which chain correctly applies the law of conservation of energy?",
+    "choices": [
+      "Muscle cells create new energy from oxygen during cellular respiration",
+      "Food energy is used up and destroyed by muscle contraction",
+      "Sunlight was stored as chemical energy by plants, passed along through food, and transformed by respiration into kinetic energy and heat",
+      "The Sun's heat is stored directly in the student's muscles until it is needed"
+    ],
+    "answer": 2,
+    "explanation": "Photosynthesis stores light energy as chemical energy in glucose; that chemical energy moves through the food chain and is released by cellular respiration, becoming the kinetic energy of motion plus body heat. The option about muscle cells creating new energy reflects the misconception that cells create energy; respiration only transforms energy that was already stored, since energy can be neither created nor destroyed."
+  },
+  {
+    "id": "c3-q24",
+    "comp": 3,
+    "skill": 12,
+    "topic": "Electrical quantities",
+    "difficulty": 1,
+    "stem": "A technician measures how much electric charge flows past a point in a wire each second. Which quantity, with its unit, is being measured?",
+    "choices": [
+      "Voltage, in volts",
+      "Resistance, in ohms",
+      "Power, in watts",
+      "Current, in amperes"
+    ],
+    "answer": 3,
+    "explanation": "Current is the rate of charge flow, measured in amperes; one ampere equals one coulomb of charge passing per second. Voltage is often confused with current, but voltage measures the potential difference that pushes the charge, not the flow itself."
+  },
+  {
+    "id": "c3-q25",
+    "comp": 3,
+    "skill": 12,
+    "topic": "Electrical quantities",
+    "difficulty": 1,
+    "stem": "Which statement best describes voltage in an electric circuit?",
+    "choices": [
+      "It is the electrical potential difference that pushes charge through the circuit",
+      "It is the rate at which charge flows through the circuit",
+      "It is the opposition a material offers to the flow of charge",
+      "It is the number of electrons stored inside the battery"
+    ],
+    "answer": 0,
+    "explanation": "Voltage, measured in volts, is the difference in electrical potential energy per unit charge between two points; it acts like the 'push' driving current. The option about the rate at which charge flows defines current, and the one about opposition to charge flow defines resistance, the two quantities most often confused with voltage."
+  },
+  {
+    "id": "c3-q26",
+    "comp": 3,
+    "skill": 13,
+    "topic": "Series vs parallel",
+    "difficulty": 1,
+    "stem": "In an old string of holiday lights, when one bulb burns out, every bulb in the string goes dark. What does this behavior indicate about the circuit?",
+    "choices": [
+      "The bulbs are wired in parallel, so current has many separate paths",
+      "The bulbs are wired in series, so a single break stops current in the entire circuit",
+      "The power source shuts off automatically to protect the remaining bulbs",
+      "The bulbs are wired in parallel, and the break increased the voltage too much"
+    ],
+    "answer": 1,
+    "explanation": "In a series circuit there is only one path for current, so any break, such as a burned-out filament, opens the whole circuit. If the bulbs were wired in parallel, each branch would be independent and the other bulbs would stay lit, which is why modern light strings and household wiring use parallel circuits."
+  },
+  {
+    "id": "c3-q27",
+    "comp": 3,
+    "skill": 13,
+    "topic": "Conductors and insulators",
+    "difficulty": 2,
+    "stem": "Electrical cords are made of copper wire covered with a plastic coating. Why are these two materials chosen for these roles?",
+    "choices": [
+      "Copper blocks current while the plastic carries it safely",
+      "Both materials conduct well, which doubles the current",
+      "Copper's free electrons carry current easily, while plastic's tightly held electrons keep charge from escaping",
+      "Copper stores the charge, and the plastic releases it when a device is switched on"
+    ],
+    "answer": 2,
+    "explanation": "Metals like copper are conductors because their outer electrons move freely and carry charge; plastic is an insulator because its electrons are tightly bound, so it protects users from shocks. The option saying copper blocks current while plastic carries it swaps the roles of conductor and insulator, a frequent mix-up of the two terms."
+  },
+  {
+    "id": "c3-q28",
+    "comp": 3,
+    "skill": 14,
+    "topic": "Ohm's law",
+    "difficulty": 2,
+    "stem": "A 12 V battery is connected across a resistor with a resistance of 4 ohms. What is the current in the circuit?",
+    "choices": [
+      "48 A",
+      "0.33 A",
+      "8 A",
+      "3 A"
+    ],
+    "answer": 3,
+    "explanation": "By Ohm's law, I = V / R = 12 V / 4 ohms = 3 A. The 48 A choice comes from multiplying voltage by resistance instead of dividing, and 0.33 A comes from dividing in the wrong order (R / V), both signs of not anchoring the formula V = IR."
+  },
+  {
+    "id": "c3-q29",
+    "comp": 3,
+    "skill": 14,
+    "topic": "Electrical power and energy",
+    "difficulty": 3,
+    "stem": "A hair dryer draws 10 A of current from a 120 V outlet. If it runs for 30 minutes, how much electrical energy does it use in kilowatt-hours?",
+    "choices": [
+      "0.6 kWh",
+      "1.2 kWh",
+      "36 kWh",
+      "3.6 kWh"
+    ],
+    "answer": 0,
+    "explanation": "Power is P = IV = 10 A x 120 V = 1200 W = 1.2 kW, and energy is E = Pt = 1.2 kW x 0.5 h = 0.6 kWh. The 1.2 kWh choice forgets to convert 30 minutes to 0.5 hour, and 36 kWh treats the 30 minutes as 30 hours; time must be in hours when calculating kilowatt-hours."
+  },
+  {
+    "id": "c3-q30",
+    "comp": 3,
+    "skill": 14,
+    "topic": "Series circuit analysis",
+    "difficulty": 3,
+    "stem": "A 2 ohm resistor and a 4 ohm resistor are connected in series with a 12 V battery. What is the current through the circuit?",
+    "choices": [
+      "6 A",
+      "2 A",
+      "9 A",
+      "0.5 A"
+    ],
+    "answer": 1,
+    "explanation": "In series, resistances add: R total = 2 + 4 = 6 ohms, so I = V / R = 12 V / 6 ohms = 2 A, and that same current flows through both resistors. The 6 A choice uses only the 2 ohm resistor, reflecting the misconception that each resistor can be treated alone rather than combined first."
+  },
+  {
+    "id": "c4-q01",
+    "comp": 4,
+    "skill": 1,
+    "topic": "Plate boundaries",
+    "difficulty": 2,
+    "stem": "Volcanoes and deep earthquakes are common along the Pacific coast of South America, where an oceanic plate meets a continental plate. Which process explains this pattern?",
+    "choices": [
+      "The plates slide horizontally past one another, melting rock through friction",
+      "The plates pull apart, allowing magma to rise through the widening gap",
+      "The denser oceanic plate subducts beneath the continental plate, triggering melting and earthquakes",
+      "The continental plate sinks beneath the oceanic plate because continental crust is denser"
+    ],
+    "answer": 2,
+    "explanation": "At this convergent boundary, the dense oceanic plate is forced down into the mantle (subduction); fluids released from the sinking slab trigger melting that feeds the Andes volcanoes, and the grinding descent produces earthquakes. The option in which the continental plate sinks reverses the density relationship: continental crust is less dense than oceanic crust, which is why it does not subduct."
+  },
+  {
+    "id": "c4-q02",
+    "comp": 4,
+    "skill": 1,
+    "topic": "Plate boundaries",
+    "difficulty": 2,
+    "stem": "New oceanic crust continually forms at the Mid-Atlantic Ridge. What type of plate boundary is this, and what surface feature results?",
+    "choices": [
+      "Convergent; a deep ocean trench forms where crust is destroyed",
+      "Transform; a long horizontal fault zone forms",
+      "Convergent; a curved volcanic island arc forms",
+      "Divergent; an underwater mountain chain with a central rift valley forms"
+    ],
+    "answer": 3,
+    "explanation": "At divergent boundaries, plates separate and magma rises to fill the gap, building a mid-ocean ridge with a rift valley along its crest; this is seafloor spreading. Trenches and island arcs form where plates converge and crust is recycled, the opposite process, which is the misconception in the convergent choices."
+  },
+  {
+    "id": "c4-q03",
+    "comp": 4,
+    "skill": 2,
+    "topic": "Continental drift history",
+    "difficulty": 3,
+    "stem": "Alfred Wegener proposed continental drift in 1912, citing matching fossils, rock formations, and coastlines on continents separated by oceans, yet most scientists rejected his idea for decades. Which later discovery supplied the missing mechanism?",
+    "choices": [
+      "Identical dinosaur species found living today on separate continents",
+      "Seafloor spreading at mid-ocean ridges, recorded in symmetric magnetic stripes on the ocean floor",
+      "Photographs from space showing the continents visibly moving apart",
+      "Evidence that the continents float on a liquid ocean of magma"
+    ],
+    "answer": 1,
+    "explanation": "Wegener's evidence showed the continents had been joined but could not explain how they moved. Mid-century mapping of the seafloor revealed spreading ridges, and matching magnetic stripes on either side proved new crust forms there and moves outward, providing the engine that turned drift into plate tectonics. The option about continents floating on a liquid ocean of magma reflects the misconception that the mantle is liquid; it is nearly all solid rock that flows very slowly."
+  },
+  {
+    "id": "c4-q04",
+    "comp": 4,
+    "skill": 3,
+    "topic": "Geologic structures",
+    "difficulty": 2,
+    "stem": "Rock layers exposed in a road cut are bent into an upward arch. What is this structure, and what kind of stress created it?",
+    "choices": [
+      "An anticline, formed by compression squeezing the layers together",
+      "A syncline, formed by tension pulling the layers apart",
+      "A normal fault, formed by compression of the crust",
+      "An anticline, formed by tension stretching the crust"
+    ],
+    "answer": 0,
+    "explanation": "An upward arch of folded rock is an anticline, and folds form when compression squeezes rock layers, as happens where plates converge. A syncline is the opposite, a downward trough, and tension pulls rock apart to make normal faults rather than folds, the confusion behind the other choices."
+  },
+  {
+    "id": "c4-q05",
+    "comp": 4,
+    "skill": 3,
+    "topic": "Geologic structures",
+    "difficulty": 2,
+    "stem": "Along a fault, the block of rock above the inclined fault plane has slid downward relative to the block below it. What type of fault is this, and what stress produced it?",
+    "choices": [
+      "A reverse fault, produced by compression",
+      "A strike-slip fault, produced by shearing",
+      "A normal fault, produced by tension",
+      "A reverse fault, produced by tension"
+    ],
+    "answer": 2,
+    "explanation": "When the hanging wall (the block above the fault plane) drops down, the fault is normal, and normal faults form where tension stretches the crust, as at divergent boundaries. In a reverse fault the hanging wall is pushed up by compression; students often memorize the fault names without linking each to its characteristic stress."
+  },
+  {
+    "id": "c4-q06",
+    "comp": 4,
+    "skill": 4,
+    "topic": "Geologic eras",
+    "difficulty": 1,
+    "stem": "What evidence do geologists primarily use to mark the boundaries between geologic eras such as the Mesozoic and the Cenozoic?",
+    "choices": [
+      "Uniform thicknesses of rock layers found worldwide",
+      "Regular time intervals of exactly one hundred million years",
+      "Reversals in the direction of Earth's magnetic field",
+      "Major worldwide changes in the fossil record, such as mass extinctions"
+    ],
+    "answer": 3,
+    "explanation": "Era boundaries are drawn where the fossil record changes dramatically; the Mesozoic ends with the mass extinction that eliminated the nonavian dinosaurs, and the Paleozoic ends with the even larger Permian extinction. The option about regular hundred-million-year intervals reflects the misconception that the geologic time scale is divided into equal intervals; its divisions are based on events in the rock and fossil record, not fixed lengths of time."
+  },
+  {
+    "id": "c4-q07",
+    "comp": 4,
+    "skill": 5,
+    "topic": "Relative dating",
+    "difficulty": 1,
+    "stem": "In an undisturbed sequence of sedimentary rock layers, how can a geologist identify the oldest layer?",
+    "choices": [
+      "It is the layer at the bottom, according to the law of superposition",
+      "It is the layer at the top, where deposition first began",
+      "It is the thickest layer in the sequence",
+      "It is the layer containing the fewest fossils"
+    ],
+    "answer": 0,
+    "explanation": "The law of superposition states that in undisturbed layered rocks, each layer is older than the one above it, so the bottom layer was deposited first. The option naming the top layer reverses the principle, and thickness reflects how much sediment accumulated, not age, a common distractor on relative dating items."
+  },
+  {
+    "id": "c4-q08",
+    "comp": 4,
+    "skill": 5,
+    "topic": "Radiometric dating",
+    "difficulty": 3,
+    "stem": "A mineral contains a radioactive isotope with a half-life of 100 million years. Analysis shows that only 25 percent of the original parent isotope remains. Approximately how old is the mineral?",
+    "choices": [
+      "100 million years",
+      "200 million years",
+      "400 million years",
+      "25 million years"
+    ],
+    "answer": 1,
+    "explanation": "Each half-life cuts the parent isotope in half: 100 percent to 50 percent after one half-life, then 50 percent to 25 percent after a second. Two half-lives x 100 million years = 200 million years. The 100 million year choice reflects the misconception that reaching 25 percent takes only one half-life; decay halves the remaining amount each interval rather than removing a fixed amount."
+  },
+  {
+    "id": "c4-q09",
+    "comp": 4,
+    "skill": 6,
+    "topic": "Topographic maps",
+    "difficulty": 2,
+    "stem": "On a topographic map, the contour lines on the west side of a hill are spaced very close together, while those on the east side are far apart. What does this pattern indicate?",
+    "choices": [
+      "The west side sits at a lower elevation than the east side",
+      "A river flows down the west side of the hill",
+      "The east side of the hill is a vertical cliff",
+      "The west slope is steep and the east slope is gentle"
+    ],
+    "answer": 3,
+    "explanation": "Each contour line marks a set change in elevation, so closely spaced lines mean elevation changes quickly over a short horizontal distance: a steep slope. Widely spaced lines mean a gentle slope; a cliff would show lines nearly touching or merging, so the east side is the opposite of a cliff. Spacing shows steepness, not which side is higher."
+  },
+  {
+    "id": "c4-q10",
+    "comp": 4,
+    "skill": 6,
+    "topic": "Weather maps",
+    "difficulty": 1,
+    "stem": "A surface weather map shows a large area marked with an H centered over a state. What conditions does this symbol most likely indicate for that area?",
+    "choices": [
+      "Rising humid air producing heavy rainfall",
+      "A hurricane approaching the coastline",
+      "Sinking air, generally clear skies, and fair weather",
+      "A stationary front producing several days of clouds"
+    ],
+    "answer": 2,
+    "explanation": "H marks a high pressure center, where air slowly sinks; sinking air warms and dries, which suppresses cloud formation and brings fair weather. The hurricane choice reflects a simple symbol misreading; hurricanes are intense low pressure systems and are marked with their own symbol, not an H."
+  },
+  {
+    "id": "c4-q11",
+    "comp": 4,
+    "skill": 7,
+    "topic": "Ocean currents and climate",
+    "difficulty": 2,
+    "stem": "Northwestern Europe has much milder winters than parts of Canada located at the same latitude. Which factor best explains this difference?",
+    "choices": [
+      "The Gulf Stream and North Atlantic Current carry warm tropical water toward Europe, warming the air above",
+      "Europe receives more direct sunlight than Canada during the winter months",
+      "Cold ocean currents off Europe steer winter storms away from the coast",
+      "Europe's lower average elevation traps heat near the surface"
+    ],
+    "answer": 0,
+    "explanation": "The warm Gulf Stream flows up the North American coast and continues toward Europe as the North Atlantic Current, releasing heat that moderates the climate downwind. The sunlight choice reflects a misconception: locations at the same latitude receive the same solar angle and day length, so sunlight cannot explain the difference."
+  },
+  {
+    "id": "c4-q12",
+    "comp": 4,
+    "skill": 7,
+    "topic": "Ocean currents and climate",
+    "difficulty": 2,
+    "stem": "What is the primary force that drives large-scale surface ocean currents, such as the circular gyres in each ocean basin?",
+    "choices": [
+      "The gravitational pull of the Moon on ocean water",
+      "Global wind patterns blowing across the ocean surface, deflected by Earth's rotation",
+      "Large rivers pushing fresh water out to sea",
+      "Heat rising from volcanic vents on the seafloor"
+    ],
+    "answer": 1,
+    "explanation": "Steady prevailing winds drag surface water along, and the Coriolis effect from Earth's rotation bends the flow into huge circular gyres. The Moon's pull drives tides, not currents, a frequent confusion; deep ocean currents, by contrast, are driven by density differences from temperature and salinity."
+  },
+  {
+    "id": "c4-q13",
+    "comp": 4,
+    "skill": 8,
+    "topic": "Florida geology",
+    "difficulty": 1,
+    "stem": "What is the primary bedrock underlying most of Florida, and how did it form?",
+    "choices": [
+      "Granite, formed from magma cooling beneath ancient volcanoes",
+      "Basalt, formed from lava flows when the peninsula was volcanically active",
+      "Limestone, formed from the remains of marine organisms deposited in warm, shallow seas",
+      "Sandstone, formed from ancient desert dunes that hardened over time"
+    ],
+    "answer": 2,
+    "explanation": "Florida sits on a carbonate platform where shells, corals, and other marine remains accumulated in shallow seas over tens of millions of years, forming thick limestone. The igneous choices reflect the misconception that all bedrock is volcanic; Florida has no native igneous rock at the surface, since its igneous basement rocks are buried thousands of feet down."
+  },
+  {
+    "id": "c4-q14",
+    "comp": 4,
+    "skill": 8,
+    "topic": "Florida karst and sinkholes",
+    "difficulty": 2,
+    "stem": "Sinkholes are common in central Florida. Which process is most directly responsible for their formation?",
+    "choices": [
+      "Earthquakes fracturing the granite bedrock",
+      "Ocean waves carving tunnels beneath the peninsula",
+      "Volcanic activity collapsing underground lava tubes",
+      "Slightly acidic groundwater dissolving the limestone bedrock until the overlying ground collapses"
+    ],
+    "answer": 3,
+    "explanation": "Rainwater absorbs carbon dioxide and becomes weak carbonic acid, which slowly dissolves Florida's limestone and opens underground cavities; when a cavity's roof can no longer support the ground above, it collapses as a sinkhole. This dissolving-limestone landscape is called karst topography. The earthquake and volcano choices misapply processes that are essentially absent from Florida."
+  },
+  {
+    "id": "c4-q15",
+    "comp": 4,
+    "skill": 8,
+    "topic": "Florida geology",
+    "difficulty": 2,
+    "stem": "Fossilized shark teeth and marine shells are commonly found far inland in Florida, including in the phosphate deposits of the Bone Valley region. What do these findings indicate about Florida's past?",
+    "choices": [
+      "Much of the Florida peninsula was repeatedly covered by shallow seas when sea level was higher",
+      "Rivers carried the fossils inland from the modern coastline",
+      "The fossils formed underground from minerals and were never part of ocean life",
+      "Florida was once attached to the Pacific coast, where sharks were more common"
+    ],
+    "answer": 0,
+    "explanation": "As ice ages came and went, sea level rose and fell across the low, flat Florida Platform; during high stands much of the peninsula was submerged, so marine organisms lived and died over what is now dry land. During glacial low stands the exposed platform was roughly twice its current width. Rivers flow toward the sea and deposit near their mouths, so the river choice cannot explain widespread inland marine fossils."
+  },
+  {
+    "id": "c4-q16",
+    "comp": 4,
+    "skill": 9,
+    "topic": "Igneous rock formation",
+    "difficulty": 1,
+    "stem": "A geologist finds an igneous rock containing large, easily visible mineral crystals. What does the crystal size reveal about how the rock formed?",
+    "choices": [
+      "It cooled quickly at the surface after a volcanic eruption",
+      "It cooled slowly beneath the surface, giving crystals time to grow",
+      "It formed from sediments compacted and cemented under pressure",
+      "It formed when an existing rock was altered by heat and pressure"
+    ],
+    "answer": 1,
+    "explanation": "Large crystals mean slow cooling deep underground, producing intrusive igneous rock such as granite. Rapid surface cooling freezes the atoms in place before crystals can grow, giving extrusive rocks like basalt their fine grains, so the option about quick cooling at the surface describes exactly the opposite texture."
+  },
+  {
+    "id": "c4-q17",
+    "comp": 4,
+    "skill": 9,
+    "topic": "Rock cycle",
+    "difficulty": 2,
+    "stem": "Limestone that is deeply buried and subjected to intense heat and pressure, without melting, becomes marble. Which process and rock classification does this change illustrate?",
+    "choices": [
+      "Melting and cooling; marble is an igneous rock",
+      "Compaction and cementation; marble is a sedimentary rock",
+      "Weathering and erosion; marble is a mineral",
+      "Metamorphism; marble is a metamorphic rock"
+    ],
+    "answer": 3,
+    "explanation": "Heat and pressure recrystallize the calcite in limestone into marble without melting it, which is the definition of metamorphism. If the rock had fully melted and then cooled, the result would be classified as igneous, the distinction behind the melting and cooling option; compaction and cementation are how sedimentary rocks like the original limestone form."
+  },
+  {
+    "id": "c4-q18",
+    "comp": 4,
+    "skill": 10,
+    "topic": "Weathering vs erosion",
+    "difficulty": 1,
+    "stem": "Water seeps into a crack in a boulder, freezes overnight, and expands, widening the crack a little more each winter until pieces of rock break off. Which process does this describe?",
+    "choices": [
+      "Chemical weathering",
+      "Erosion",
+      "Physical weathering by ice wedging",
+      "Deposition"
+    ],
+    "answer": 2,
+    "explanation": "Ice wedging is physical (mechanical) weathering: the rock is broken into smaller pieces in place, with no change to its minerals. It is not erosion because nothing transports the fragments away, the distinction students most often miss; chemical weathering would require the rock's minerals to be altered, as when acid dissolves limestone."
+  },
+  {
+    "id": "c4-q19",
+    "comp": 4,
+    "skill": 10,
+    "topic": "Erosion and deposition",
+    "difficulty": 2,
+    "stem": "A river carries a load of sediment toward the ocean. Where does a delta form, and why?",
+    "choices": [
+      "At the river's mouth, because the water slows down and can no longer carry its sediment load",
+      "At the river's source, where the current is fastest",
+      "In the deepest part of the ocean, where all sediment eventually sinks",
+      "Along the upstream riverbanks, where the water speeds up"
+    ],
+    "answer": 0,
+    "explanation": "A stream's ability to carry sediment depends on its speed; when a river enters the still water of an ocean or lake, it slows abruptly and deposits its load, building a delta. Fast-moving water erodes and transports rather than deposits, which is why the choices placing deposition where water speeds up have the relationship backward."
+  },
+  {
+    "id": "c4-q20",
+    "comp": 4,
+    "skill": 11,
+    "topic": "Atmospheric layers",
+    "difficulty": 1,
+    "stem": "In which layer of the atmosphere does nearly all weather occur, and why?",
+    "choices": [
+      "The stratosphere, because the ozone layer traps storms beneath it",
+      "The troposphere, because it holds most of the atmosphere's water vapor and is heated from below, causing vertical mixing",
+      "The mesosphere, because it is the coldest layer",
+      "The thermosphere, because it absorbs the most solar energy"
+    ],
+    "answer": 1,
+    "explanation": "The troposphere, the lowest layer, contains most of the atmosphere's mass and nearly all its water vapor; because Earth's surface heats it from below, warm air rises and mixes, driving clouds and storms. The stratosphere above is stable and dry, which is why airliners cruise there to fly above the weather rather than because ozone traps storms."
+  },
+  {
+    "id": "c4-q21",
+    "comp": 4,
+    "skill": 11,
+    "topic": "Atmospheric layers",
+    "difficulty": 2,
+    "stem": "Unlike the troposphere, the stratosphere becomes warmer as altitude increases. What causes this temperature pattern?",
+    "choices": [
+      "Its greater closeness to the Sun heats its upper regions",
+      "Rising warm air from thunderstorms collects at the top of the stratosphere",
+      "Ozone in the stratosphere absorbs ultraviolet radiation from the Sun",
+      "Friction from jet aircraft warms the upper stratosphere"
+    ],
+    "answer": 2,
+    "explanation": "The ozone concentrated in the stratosphere absorbs incoming solar ultraviolet radiation and converts it to thermal energy, so temperature rises with height there. The closeness-to-the-Sun choice reflects a misconception of scale: a few kilometers of altitude is negligible compared with the distance to the Sun and cannot explain the warming."
+  },
+  {
+    "id": "c4-q22",
+    "comp": 4,
+    "skill": 12,
+    "topic": "Weather fronts",
+    "difficulty": 2,
+    "stem": "A fast-moving cold front is approaching a warm, humid region of Florida. What weather should residents expect as the front passes?",
+    "choices": [
+      "Several days of steady, light drizzle from low stratus clouds",
+      "Gradually warming temperatures and clearing skies",
+      "No change in the weather until the front stalls",
+      "A short period of heavy showers or thunderstorms, followed by cooler, drier air"
+    ],
+    "answer": 3,
+    "explanation": "Dense cold air wedges sharply under the warm, humid air, forcing it to rise rapidly and build cumulonimbus clouds; the result is a brief burst of heavy storms, then cooler, drier, clearer conditions behind the front. The steady-drizzle choice describes a warm front, whose gentle sloping boundary produces prolonged light precipitation, a classic front mix-up."
+  },
+  {
+    "id": "c4-q23",
+    "comp": 4,
+    "skill": 12,
+    "topic": "Pressure systems and humidity",
+    "difficulty": 3,
+    "stem": "Meteorologists observe falling barometric pressure and rising humidity as a low pressure system approaches. Why do low pressure systems typically bring clouds and precipitation?",
+    "choices": [
+      "Air converges and rises in a low, cooling until it reaches its dew point so that water vapor condenses",
+      "Air sinks in a low, compressing the air and squeezing its moisture out",
+      "Low pressure pulls moisture up from underground aquifers into the sky",
+      "The cold air inside a low can hold more water vapor, which then falls as rain"
+    ],
+    "answer": 0,
+    "explanation": "Surface air spirals into a low and is forced upward; rising air expands and cools, and once it cools to its dew point the vapor condenses into cloud droplets that can grow into precipitation. Sinking, compressing air actually warms and dries, which is high pressure behavior, and the option claiming cold air holds more water vapor inverts the real relationship: warm air holds more water vapor than cold air."
+  },
+  {
+    "id": "c4-q24",
+    "comp": 4,
+    "skill": 13,
+    "topic": "Climate factors",
+    "difficulty": 2,
+    "stem": "Two cities lie at the same latitude. City A is on the coast, and City B is 500 km inland. City A has cooler summers and milder winters than City B. What best explains the difference?",
+    "choices": [
+      "City A receives less sunlight because of persistent sea fog",
+      "Water's high specific heat lets the ocean moderate coastal temperatures year round",
+      "Salt in the ocean air prevents air temperatures from changing",
+      "Inland cities are always located at higher elevations"
+    ],
+    "answer": 1,
+    "explanation": "Water heats up and cools down slowly because of its high specific heat, so the nearby ocean absorbs heat in summer and releases it in winter, smoothing out the coastal city's temperature swings. The elevation choice reflects a misconception; elevation does affect climate, but nothing guarantees inland cities are higher, and the moderating effect of water is the reliable difference here."
+  },
+  {
+    "id": "c4-q25",
+    "comp": 4,
+    "skill": 13,
+    "topic": "Rain shadow effect",
+    "difficulty": 2,
+    "stem": "A mountain range lies between the ocean and an inland desert. Why is the inland side of the mountains so dry?",
+    "choices": [
+      "The desert's heat pushes rain clouds back toward the ocean",
+      "The mountains block the wind entirely, so no air ever reaches the desert",
+      "Moist ocean air sinks on the ocean side, so rain falls only offshore",
+      "Air rising over the mountains cools and drops its moisture on the windward side, leaving dry air to descend on the leeward side"
+    ],
+    "answer": 3,
+    "explanation": "Moist air forced up the windward slope expands, cools to its dew point, and rains itself out; the air descending the leeward slope compresses, warms, and dries, creating a rain shadow desert. The option saying the mountains block the wind entirely reflects the misconception that mountains stop air movement; the air crosses the range, but it arrives with its moisture already removed."
+  },
+  {
+    "id": "c4-q26",
+    "comp": 4,
+    "skill": 14,
+    "topic": "Water cycle",
+    "difficulty": 1,
+    "stem": "Which set of processes moves water from Earth's surface into the atmosphere and then back to the surface?",
+    "choices": [
+      "Condensation lifts water into the sky, and evaporation returns it as rain",
+      "Infiltration lifts water into the sky, and runoff returns it",
+      "Evaporation and transpiration move water into the air, condensation forms clouds, and precipitation returns it",
+      "Precipitation carries water upward, and deposition returns it"
+    ],
+    "answer": 2,
+    "explanation": "Solar energy evaporates water from surfaces and drives transpiration from plants; as moist air rises and cools, the vapor condenses into clouds, and precipitation returns the water as rain, snow, sleet, or hail. The option that has condensation lifting water into the sky swaps the roles of evaporation and condensation, a common reversal; infiltration and runoff describe what happens to water after it reaches the ground."
+  },
+  {
+    "id": "c4-q27",
+    "comp": 4,
+    "skill": 14,
+    "topic": "Precipitation types",
+    "difficulty": 1,
+    "stem": "During a winter storm, rain falls through a shallow layer of below-freezing air near the ground and freezes on contact with roads and power lines, coating them in a layer of ice. Which type of precipitation is this?",
+    "choices": [
+      "Freezing rain",
+      "Sleet",
+      "Hail",
+      "Snow"
+    ],
+    "answer": 0,
+    "explanation": "Freezing rain stays liquid (supercooled) until it strikes a cold surface, where it freezes instantly into a glaze of ice. Sleet is the common mix-up: in sleet, the shallow cold layer is deep enough that the drops freeze into ice pellets before reaching the ground. Hail forms only in thunderstorm updrafts, not winter storms."
+  },
+  {
+    "id": "c4-q28",
+    "comp": 4,
+    "skill": 15,
+    "topic": "Runoff and infiltration",
+    "difficulty": 2,
+    "stem": "A new shopping center replaces a grassy field with buildings and paved parking lots. After construction, nearby streams flood more often during heavy storms. Why?",
+    "choices": [
+      "The pavement absorbs storm water and then releases it into the streams all at once",
+      "The pavement prevents infiltration, so far more rainwater becomes immediate surface runoff",
+      "Construction lowered the water table, which pulled the streams higher",
+      "The pavement heats the rainwater, making it flow downhill faster"
+    ],
+    "answer": 1,
+    "explanation": "Grass and soil let rain soak in (infiltration), recharging groundwater and releasing water slowly; impervious pavement blocks infiltration, so storm water runs off immediately and streams receive a sudden surge. The option saying the pavement absorbs storm water has it backward, reflecting the misconception that pavement soaks up water; it is precisely because pavement absorbs almost nothing that runoff increases."
+  },
+  {
+    "id": "c4-q29",
+    "comp": 4,
+    "skill": 15,
+    "topic": "Karst groundwater vulnerability",
+    "difficulty": 3,
+    "stem": "In Florida's karst regions, fertilizer applied to lawns can appear in nearby springwater within a relatively short time. Which chain of processes best explains this?",
+    "choices": [
+      "Runoff carries the fertilizer to the ocean, where currents return it to the springs",
+      "Clay soils absorb the fertilizer and then release it during droughts",
+      "Evaporation lifts the nutrients into the air, and they fall back into the springs as rain",
+      "Water leaches the nutrients down through porous, sandy soil into dissolved cavities in the limestone aquifer that feed the springs"
+    ],
+    "answer": 3,
+    "explanation": "Florida's sandy soils let water and dissolved nutrients percolate down quickly (leaching), and the karst limestone below is riddled with dissolved conduits and sinkholes that connect the surface almost directly to the Floridan aquifer, which discharges at springs. This shortcut means little natural filtering occurs. The evaporation choice reflects a misconception: evaporating water leaves dissolved substances behind rather than carrying them into the air."
+  },
+  {
+    "id": "c4-q30",
+    "comp": 4,
+    "skill": 16,
+    "topic": "Aquifers",
+    "difficulty": 1,
+    "stem": "Much of Florida's drinking water is pumped from the Floridan aquifer. What is an aquifer?",
+    "choices": [
+      "An underground lake that sits in a hollow cavern and never touches rock",
+      "A surface reservoir created by damming a river",
+      "A body of permeable rock, such as porous limestone, that stores and transmits groundwater",
+      "A layer of clay that blocks water from moving underground"
+    ],
+    "answer": 2,
+    "explanation": "An aquifer is permeable rock or sediment whose pore spaces and cavities hold groundwater and let it flow; the Floridan aquifer's limestone makes it one of the most productive aquifers in the world. The underground-lake choice reflects a common mental picture, but most groundwater fills tiny spaces within rock; a clay layer that blocks flow is a confining layer, the opposite of an aquifer."
+  },
+  {
+    "id": "c4-q31",
+    "comp": 4,
+    "skill": 16,
+    "topic": "Watersheds",
+    "difficulty": 2,
+    "stem": "A drop of rain falls on farmland many kilometers from a river, yet the water eventually reaches that river. Which statement about watersheds explains this?",
+    "choices": [
+      "All land within a watershed drains downhill toward a common body of water",
+      "Rivers pull water uphill from the land that surrounds them",
+      "A watershed includes only the land directly touching the riverbank",
+      "Water can reach a river only by falling directly into its channel"
+    ],
+    "answer": 0,
+    "explanation": "A watershed is the entire land area, bounded by ridges called divides, that drains to a shared outlet; runoff and groundwater from anywhere inside it move downslope toward that river, lake, or estuary. The riverbank-only choice reflects the misconception that watersheds are narrow strips; in reality land use far from the channel still affects the river downstream."
+  },
+  {
+    "id": "c4-q32",
+    "comp": 4,
+    "skill": 17,
+    "topic": "Earth system interactions",
+    "difficulty": 3,
+    "stem": "A large volcanic eruption injects ash and sulfur gases high into the atmosphere. Global temperatures drop slightly for about two years, reducing plant growth worldwide. Which sequence of Earth's spheres does this interaction follow?",
+    "choices": [
+      "Biosphere to hydrosphere to geosphere",
+      "Geosphere to atmosphere to biosphere",
+      "Atmosphere to cryosphere to geosphere",
+      "Hydrosphere to atmosphere to geosphere"
+    ],
+    "answer": 1,
+    "explanation": "The eruption originates in the geosphere; the ash and sulfur aerosols enter the atmosphere, where they reflect sunlight and cool the planet; the cooling then reduces photosynthesis and plant growth in the biosphere. Tracking which sphere acts on which, in order, is the skill here; the other choices scramble that cause-and-effect chain."
+  },
+  {
+    "id": "c4-q33",
+    "comp": 4,
+    "skill": 17,
+    "topic": "Ice-albedo feedback",
+    "difficulty": 3,
+    "stem": "As Arctic sea ice melts, the darker ocean surface that is exposed absorbs more solar energy than the reflective ice did, warming the water and melting still more ice. What does this cycle illustrate?",
+    "choices": [
+      "A negative feedback that stabilizes the climate system",
+      "An interaction confined entirely to the hydrosphere",
+      "The cryosphere increasing Earth's albedo as it shrinks",
+      "A positive feedback among the cryosphere, hydrosphere, and atmosphere that amplifies warming"
+    ],
+    "answer": 3,
+    "explanation": "Because the initial change (melting ice) triggers effects that cause even more of the same change, this is a positive feedback loop linking the cryosphere (ice), hydrosphere (ocean), and atmosphere (warming air). The negative feedback option reflects a common confusion: a negative feedback would counteract the change and stabilize the system, but this loop amplifies it. Shrinking ice lowers albedo, the fraction of sunlight reflected, rather than raising it."
+  }
+]

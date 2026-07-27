@@ -1,0 +1,492 @@
+[
+  {
+    "id": "c7-f01",
+    "comp": 7,
+    "topic": "Nitrogen fixation",
+    "front": "Which step of the nitrogen cycle makes atmospheric nitrogen usable by plants, and what carries it out?",
+    "back": "Nitrogen fixation converts N2 gas into ammonia or ammonium. Most of it is done by bacteria, including Rhizobium in the root nodules of legumes such as beans and peanuts, plus free-living soil bacteria and cyanobacteria. Lightning fixes a small additional amount."
+  },
+  {
+    "id": "c7-f02",
+    "comp": 7,
+    "topic": "Nitrification",
+    "front": "Once ammonium is in the soil, what two-step conversion do soil bacteria perform, and why does it matter to plants?",
+    "back": "Nitrification: one group of bacteria oxidizes ammonium to nitrite, then another group oxidizes nitrite to nitrate. Nitrate is the form most plants absorb most readily through their roots, so this step links decay and fixation to plant uptake."
+  },
+  {
+    "id": "c7-f03",
+    "comp": 7,
+    "topic": "Denitrification",
+    "front": "Which nitrogen cycle step sends nitrogen back to the atmosphere, and under what soil conditions does it happen?",
+    "back": "Denitrification: anaerobic bacteria convert nitrate back into N2 gas. It occurs in oxygen-poor soil such as waterlogged fields, marshes, and wetlands, and it lowers soil fertility by exporting nitrogen that plants could have used."
+  },
+  {
+    "id": "c7-f04",
+    "comp": 7,
+    "topic": "Decomposers and ammonification",
+    "front": "What has to happen to the nitrogen in a dead leaf or in animal waste before a plant can use it again?",
+    "back": "Decomposers, mainly bacteria and fungi, break down the organic nitrogen and release ammonium, a step called ammonification or decay. That ammonium can then be absorbed directly or converted to nitrate by nitrifying bacteria."
+  },
+  {
+    "id": "c7-f05",
+    "comp": 7,
+    "topic": "Carbon and oxygen cycle",
+    "front": "What removes carbon dioxide from the air, what returns it, and how is the oxygen cycle tied to the same reactions?",
+    "back": "Photosynthesis removes CO2 and releases O2. Cellular respiration, decomposition, combustion of fuels, and volcanic activity return CO2, and the first three consume O2. Carbon and oxygen therefore move through the same two reactions running in opposite directions."
+  },
+  {
+    "id": "c7-f06",
+    "comp": 7,
+    "topic": "Water cycle",
+    "front": "List the main transfers in the water cycle, and name the one that moves water from inside plants into the air.",
+    "back": "Evaporation, transpiration, condensation, precipitation, runoff, infiltration, and groundwater flow. Transpiration is water vapor escaping through leaf stomata, and over a forest it can supply much of the moisture in the air above the canopy."
+  },
+  {
+    "id": "c7-f07",
+    "comp": 7,
+    "topic": "Ten percent rule",
+    "front": "About how much energy moves from one trophic level to the next, and where does the rest of it go?",
+    "back": "About 10 percent is stored as biomass at the next level. The other 90 percent powers the organism's own life processes and escapes as heat during respiration, or leaves in undigested waste. So 10,000 kcal of producers supports roughly 1,000 kcal of herbivores and 100 kcal of their predators."
+  },
+  {
+    "id": "c7-f08",
+    "comp": 7,
+    "topic": "Energy vs biomass pyramid",
+    "front": "Why can an energy pyramid never be inverted while a biomass pyramid sometimes is?",
+    "back": "Energy flows one way and shrinks at every transfer, so the energy pyramid always narrows upward. A biomass pyramid measures mass present at one instant, so in the open ocean, phytoplankton that reproduce and are eaten extremely fast can have less standing biomass than the zooplankton feeding on them."
+  },
+  {
+    "id": "c7-f09",
+    "comp": 7,
+    "topic": "Trophic levels",
+    "front": "In the chain grass to grasshopper to frog to hawk, name the role at each position.",
+    "back": "Grass is the producer (autotroph), the grasshopper is the primary consumer (herbivore), the frog is the secondary consumer, and the hawk is the tertiary consumer. Decomposers act on organisms at every level and return nutrients to the soil."
+  },
+  {
+    "id": "c7-f10",
+    "comp": 7,
+    "topic": "Primary succession",
+    "front": "What conditions define primary succession, and what colonizes first?",
+    "back": "Primary succession starts where there is no soil at all: a new lava flow, bare rock left by a retreating glacier, or a new sand dune. Pioneer species such as lichens and mosses weather the rock and add organic matter, slowly building the soil that later plants require."
+  },
+  {
+    "id": "c7-f11",
+    "comp": 7,
+    "topic": "Secondary succession",
+    "front": "How does secondary succession differ from primary succession, and what Florida events set it off?",
+    "back": "Secondary succession follows a disturbance that leaves the soil and usually the seed bank intact, so recovery is much faster. Fire in pine flatwoods, hurricane blowdown, and abandoned farm fields all start secondary succession."
+  },
+  {
+    "id": "c7-f12",
+    "comp": 7,
+    "topic": "Mutualism",
+    "front": "Define mutualism and give an example you could use with middle schoolers.",
+    "back": "Both species benefit. A bee gets nectar while carrying pollen between flowers, and reef-building corals shelter zooxanthellae algae that in return supply the coral with sugars made by photosynthesis."
+  },
+  {
+    "id": "c7-f13",
+    "comp": 7,
+    "topic": "Commensalism",
+    "front": "Define commensalism and give an example from Florida.",
+    "back": "One organism benefits and the other is essentially unaffected. Spanish moss uses a live oak branch only for support while taking water and nutrients from rain and air, and barnacles ride a whale's skin to reach new feeding grounds."
+  },
+  {
+    "id": "c7-f14",
+    "comp": 7,
+    "topic": "Parasitism",
+    "front": "Define parasitism and explain why a successful parasite usually does not kill its host quickly.",
+    "back": "The parasite benefits while the host is harmed, as with ticks, tapeworms, and mistletoe. A parasite that killed its host quickly would destroy its own food and habitat, so long-established parasites tend to weaken the host rather than eliminate it."
+  },
+  {
+    "id": "c7-f15",
+    "comp": 7,
+    "topic": "Carrying capacity",
+    "front": "What is carrying capacity, and what happens when a population overshoots it?",
+    "back": "Carrying capacity is the largest population an environment can sustain with the resources available. Past that point, limiting factors such as food shortage, disease, predation, and waste buildup raise death rates and lower birth rates until the population falls back toward that level."
+  },
+  {
+    "id": "c7-f16",
+    "comp": 7,
+    "topic": "Biotic vs abiotic",
+    "front": "Sort these pond factors: sunlight, bacteria, pH, dissolved oxygen, mosquito larvae, water temperature.",
+    "back": "Abiotic (nonliving): sunlight, pH, dissolved oxygen, water temperature. Biotic (living or once living): bacteria, mosquito larvae. Bacteria are the item students misfile most often, because they equate abiotic with anything too small to see."
+  },
+  {
+    "id": "c7-f17",
+    "comp": 7,
+    "topic": "World biomes",
+    "front": "Name the defining feature of tundra, taiga, temperate deciduous forest, grassland, desert, and tropical rainforest.",
+    "back": "Tundra: bitter cold, permafrost, low precipitation, no trees. Taiga: long cold winters, conifers. Temperate deciduous forest: four seasons, moderate rain, trees that drop leaves. Grassland: seasonal drought and fire, deep fertile soil. Desert: under about 25 cm of rain a year, wide daily temperature swings. Tropical rainforest: warm and wet year round, very high diversity, nutrient-poor soil."
+  },
+  {
+    "id": "c7-f18",
+    "comp": 7,
+    "topic": "Homeostasis",
+    "front": "What is homeostasis, and how do sweating and shivering illustrate it?",
+    "back": "Homeostasis is the maintenance of stable internal conditions through feedback despite changes outside the body. Evaporating sweat carries heat away and shivering generates heat through muscle activity, both pulling core temperature back toward its set point. An organism that cannot hold conditions inside its tolerance range does not survive."
+  },
+  {
+    "id": "c7-f19",
+    "comp": 7,
+    "topic": "Microorganisms in ecosystems",
+    "front": "Name three jobs microorganisms do in an ecosystem, and one way they can cause harm.",
+    "back": "They decompose dead matter and release nutrients, drive nitrogen cycle steps including fixation, nitrification, and denitrification, and form symbioses such as gut bacteria that digest cellulose for a cow. Harm: bacteria decomposing a dead algal bloom strip dissolved oxygen from the water and cause fish kills."
+  },
+  {
+    "id": "c7-f20",
+    "comp": 7,
+    "topic": "Everglades restoration",
+    "front": "Describe how water historically moved through the Everglades and what restoration is trying to accomplish.",
+    "back": "Water once moved as a broad, shallow sheet flowing slowly south from Lake Okeechobee through sawgrass marsh to Florida Bay. Canals, levees, and drainage for agriculture and development cut that flow, so restoration works to return the right quantity, quality, timing, and distribution of fresh water to the system."
+  },
+  {
+    "id": "c7-f21",
+    "comp": 7,
+    "topic": "Florida invasive animals",
+    "front": "Name two invasive animals harming Florida ecosystems and the specific damage each does.",
+    "back": "Burmese pythons in the Everglades, established from the pet trade, have driven steep declines in raccoons, opossums, and marsh rabbits that had no evolved defenses against them. Lionfish on Atlantic and Gulf reefs have venomous spines, few local predators, and consume large numbers of juvenile reef fish."
+  },
+  {
+    "id": "c7-f22",
+    "comp": 7,
+    "topic": "Florida invasive plants",
+    "front": "Name two invasive plants in Florida and describe how each changes the habitat it takes over.",
+    "back": "Melaleuca, brought from Australia, turns open sawgrass marsh into dense paperbark forest and dries out the ground. Brazilian pepper forms thickets that shade out native coastal and hammock plants. Both displace natives and reduce the habitat value of the land for Florida wildlife."
+  },
+  {
+    "id": "c7-f23",
+    "comp": 7,
+    "topic": "Red tide",
+    "front": "What organism causes Florida red tide, and what are its two best-known effects?",
+    "back": "The dinoflagellate Karenia brevis. Its brevetoxins kill fish, sea turtles, and marine mammals, and wave action puts the toxins into sea spray, which irritates the eyes, nose, and throat of people onshore. Decomposition of the die-off then drives dissolved oxygen down further."
+  },
+  {
+    "id": "c7-f24",
+    "comp": 7,
+    "topic": "Nutrient runoff and manatees",
+    "front": "Trace the chain from fertilizer and manure runoff to manatee starvation.",
+    "back": "Nitrogen and phosphorus from farms, lawns, and septic systems wash into waters such as Lake Okeechobee and the Indian River Lagoon and feed algal blooms. The blooms block sunlight, seagrass beds die back, and manatees that graze on seagrass lose their food, which contributed to a large manatee die-off beginning in 2020."
+  },
+  {
+    "id": "c7-f25",
+    "comp": 7,
+    "topic": "Mangroves",
+    "front": "Name Florida's three mangrove species by zone and state two services mangroves provide.",
+    "back": "Red mangrove with arching prop roots grows closest to the water, black mangrove with pencil-like pneumatophores sits slightly higher, and white mangrove grows farthest upland. They absorb wave energy and reduce storm surge during hurricanes, trap sediment, and serve as nursery habitat for fish, shrimp, and crabs."
+  },
+  {
+    "id": "c7-f26",
+    "comp": 7,
+    "topic": "Floridan aquifer",
+    "front": "What is the Floridan aquifer, and how does heavy coastal pumping cause saltwater intrusion?",
+    "back": "It is a vast limestone karst aquifer that supplies most of Florida's drinking water and feeds the state's springs. Fresh groundwater floats on denser salt water, so when pumping and drought lower the freshwater level, the salt wedge moves inland and upward and chloride rises in coastal wells."
+  },
+  {
+    "id": "c7-f27",
+    "comp": 7,
+    "topic": "Longleaf pine and fire",
+    "front": "Why is the longleaf pine ecosystem called fire dependent, and what happens when fire is kept out?",
+    "back": "Frequent low-intensity ground fires kill invading hardwood seedlings and expose the bare soil that pine seeds need, while young longleaf survive in a fire-resistant grass stage. Without fire, hardwoods and shrubs take over, pine regeneration fails, and species such as the gopher tortoise lose the open sunny habitat they depend on."
+  },
+  {
+    "id": "c7-f28",
+    "comp": 7,
+    "topic": "Coral bleaching",
+    "front": "What causes coral bleaching in the Florida Keys, and does a bleached coral mean a dead coral?",
+    "back": "Prolonged warm water stresses corals until they expel the zooxanthellae algae living in their tissues, leaving the white skeleton visible through clear tissue. The coral is still alive at that moment and can recover if temperatures drop soon enough, but it has lost most of its food supply and will die if the heat stress continues."
+  },
+  {
+    "id": "c8-f01",
+    "comp": 8,
+    "topic": "Safety Data Sheet",
+    "front": "What is a Safety Data Sheet, and which of its sections do you go to for an injury or a disposal question?",
+    "back": "An SDS is the standardized 16-section hazard document supplied with every hazardous chemical. Section 4 gives first aid measures, section 6 covers spill cleanup, section 7 handling and storage, section 8 personal protective equipment, and section 13 disposal considerations."
+  },
+  {
+    "id": "c8-f02",
+    "comp": 8,
+    "topic": "Hazard Communication Standard",
+    "front": "What four things does OSHA's Hazard Communication Standard require of an employer that keeps hazardous chemicals on site?",
+    "back": "A written hazard communication program, labels on containers showing product identifier, signal word, pictogram, and hazard statements, Safety Data Sheets readily accessible to employees during every work shift, and training on the hazards present before employees work with them."
+  },
+  {
+    "id": "c8-f03",
+    "comp": 8,
+    "topic": "Chemical hygiene plan",
+    "front": "What is a chemical hygiene plan and who oversees it?",
+    "back": "It is the written laboratory safety plan required by OSHA's laboratory standard, covering standard operating procedures, required PPE, engineering controls such as fume hoods, training, and emergency response. A designated chemical hygiene officer oversees it, and school labs follow it through district policy."
+  },
+  {
+    "id": "c8-f04",
+    "comp": 8,
+    "topic": "Secondary container labeling",
+    "front": "You pour dilute acid from a stock bottle into beakers for lab groups. What must you do, and what must you never do with the leftovers?",
+    "back": "Label every container with the chemical identity and its hazards, because people other than the person who poured it will handle them. Never pour unused chemical back into the stock bottle, since that contaminates the whole supply. Collect surplus for disposal following the SDS and district rules."
+  },
+  {
+    "id": "c8-f05",
+    "comp": 8,
+    "topic": "Chemical storage",
+    "front": "What is wrong with storing school chemicals in alphabetical order, and what should be done instead?",
+    "back": "Alphabetical order can place incompatible chemicals side by side, such as an oxidizer next to a flammable. Segregate by hazard class instead: flammables in an approved flammable cabinet, acids and bases in a corrosives cabinet, oxidizers away from organics, and all corrosives at or below eye level."
+  },
+  {
+    "id": "c8-f06",
+    "comp": 8,
+    "topic": "Eyewash and shower",
+    "front": "State the accessibility and flushing requirements for an emergency eyewash in a school lab.",
+    "back": "It must sit on an unobstructed path reachable in about ten seconds from the hazard, never behind a locked door, and must deliver a gentle flow of tepid water to both eyes continuously for 15 minutes so the user's hands stay free. Where corrosives are used, a drench shower is required as well."
+  },
+  {
+    "id": "c8-f07",
+    "comp": 8,
+    "topic": "Eye protection",
+    "front": "Who must wear eye protection during a Florida school lab, and when are safety glasses not enough?",
+    "back": "Florida requires industrial-quality eye-protective devices for students, teachers, and visitors in labs and shops where caustic or explosive chemicals, hot liquids or solids, or flying particles create a risk of eye injury, and the district furnishes them. Safety glasses are rated for impact only, so anything with splash potential requires sealed chemical splash goggles."
+  },
+  {
+    "id": "c8-f08",
+    "comp": 8,
+    "topic": "Live organisms in class",
+    "front": "State four rules for using live organisms in a K-12 science classroom.",
+    "back": "No surgery, vivisection, or procedures that cause pain, injury, or disease to live vertebrates. Never release classroom organisms outdoors, since that risks introducing an invasive species or pathogen. Provide humane care, food, and housing at all times including school breaks. Offer an alternative assignment to any student who objects to dissection."
+  },
+  {
+    "id": "c8-f09",
+    "comp": 8,
+    "topic": "Microbiology safety",
+    "front": "List the safety rules for a bacteria-culturing lab with middle school students.",
+    "back": "Use only known nonpathogenic cultures, incubate at room temperature rather than body temperature so human pathogens are not favored, tape plates shut and never reopen them after growth appears, use aseptic technique, and sterilize or bleach-disinfect every plate before disposal. Students wash hands before and after."
+  },
+  {
+    "id": "c8-f10",
+    "comp": 8,
+    "topic": "Safer substitutions",
+    "front": "What makes a good substitution when a planned lab material is too hazardous for middle school?",
+    "back": "It keeps students investigating the same phenomenon with the same reasoning while cutting the hazard: vinegar instead of concentrated hydrochloric acid on limestone, an alcohol or digital thermometer instead of mercury, or a simulation for a reaction that cannot be run safely. Simply canceling the hands-on portion gives up the learning goal."
+  },
+  {
+    "id": "c8-f11",
+    "comp": 8,
+    "topic": "Formative vs summative",
+    "front": "Distinguish formative from summative assessment by purpose, timing, and stakes.",
+    "back": "Formative assessment happens during instruction, is usually low stakes or ungraded, and exists to inform the next teaching move: exit tickets, whiteboard responses, quick concept probes. Summative assessment comes at the end of a unit and judges what was learned: unit tests, final projects, state exams."
+  },
+  {
+    "id": "c8-f12",
+    "comp": 8,
+    "topic": "Probing misconceptions",
+    "front": "Name three tools that reveal what students actually believe rather than what they can recite.",
+    "back": "A pre-unit drawing or concept sketch, a two-tier item that asks for an answer and then for the reasoning behind it, and a predict-observe-explain sequence built around a discrepant event. Each forces students to commit to their own model, so the misconception becomes visible and can be confronted with evidence."
+  },
+  {
+    "id": "c8-f13",
+    "comp": 8,
+    "topic": "5E instructional model",
+    "front": "Name the five stages of the 5E model in order, and state the rule about the placement of Explain.",
+    "back": "Engage, Explore, Explain, Elaborate, Evaluate. Explore comes before Explain: students investigate the phenomenon first and build the vocabulary and formal explanation afterward, which is the reverse of a lecture-then-lab sequence."
+  },
+  {
+    "id": "c8-f14",
+    "comp": 8,
+    "topic": "Levels of inquiry",
+    "front": "Rank confirmation, structured, guided, and open inquiry by how much the students decide.",
+    "back": "Confirmation: teacher supplies question, procedure, and a known result. Structured: teacher supplies question and procedure, students find the result. Guided: teacher supplies the question, students design the procedure. Open: students generate the question and the procedure themselves."
+  },
+  {
+    "id": "c9-f01",
+    "comp": 9,
+    "topic": "Independent variable",
+    "front": "What is the independent variable, and how do you spot it in a scenario?",
+    "back": "It is the one factor the investigator deliberately changes between groups. In a study of how fertilizer amount affects plant height, fertilizer amount is the independent variable, and it is plotted on the x-axis."
+  },
+  {
+    "id": "c9-f02",
+    "comp": 9,
+    "topic": "Dependent variable",
+    "front": "What is the dependent variable, and what memory hook keeps it straight?",
+    "back": "It is the outcome the investigator measures to see whether it responds, and it depends on the independent variable. In the fertilizer study it is plant height, and it is plotted on the y-axis."
+  },
+  {
+    "id": "c9-f03",
+    "comp": 9,
+    "topic": "Controlled variables",
+    "front": "What are controlled variables, and why does an investigation fail without them?",
+    "back": "They are every condition deliberately held the same across all groups: same soil, water, light, container size, and timing. If more than one factor differs between groups, the variables are confounded and no cause can be assigned to the result."
+  },
+  {
+    "id": "c9-f04",
+    "comp": 9,
+    "topic": "Control group",
+    "front": "What is a control group, and how is it different from a controlled variable?",
+    "back": "The control group is the set of subjects that receives no treatment, or the standard treatment, and provides the baseline for comparison, such as the plants given zero fertilizer. Controlled variables are conditions held constant; the control group is a group of subjects."
+  },
+  {
+    "id": "c9-f05",
+    "comp": 9,
+    "topic": "Hypothesis",
+    "front": "What makes a statement a scientific hypothesis rather than just an idea?",
+    "back": "It is a testable, falsifiable proposed explanation or prediction that evidence could contradict, often written as an if-then statement: if seedlings receive blue light, they will grow taller than seedlings under red light. A question is not a hypothesis, and a value claim such as 'plants are the most important organisms' cannot be tested."
+  },
+  {
+    "id": "c9-f06",
+    "comp": 9,
+    "topic": "Scientific theory",
+    "front": "What is a scientific theory, and how does it differ from the everyday use of the word?",
+    "back": "A theory is a broad, well-substantiated explanation of a large body of evidence that has survived repeated independent testing, such as plate tectonics, cell theory, or the theory of evolution. In everyday speech a theory means a hunch, which is close to the opposite of the scientific meaning."
+  },
+  {
+    "id": "c9-f07",
+    "comp": 9,
+    "topic": "Scientific law",
+    "front": "What does a scientific law do, and what does it not do?",
+    "back": "A law describes a relationship that holds consistently under stated conditions, often stated as an equation, such as the law of conservation of mass or the law of universal gravitation. It describes what happens but does not explain why; explanation is the work of a theory."
+  },
+  {
+    "id": "c9-f08",
+    "comp": 9,
+    "topic": "Theory vs law",
+    "front": "Does a theory become a law once enough experiments confirm it? Explain.",
+    "back": "No. They are different kinds of knowledge, not ranks in a ladder. Newton's law of universal gravitation describes the force between masses, while general relativity is the theory that explains why gravity behaves that way. Neither is a step toward the other."
+  },
+  {
+    "id": "c9-f09",
+    "comp": 9,
+    "topic": "Scientific models",
+    "front": "What are the benefits and the limits of a scientific model?",
+    "back": "Models represent something too large, small, slow, fast, or abstract to observe directly, and they let you explain and predict, as with a ball-and-stick molecule or a climate model. Every model simplifies: atoms are not solid colored balls and bonds are not rigid sticks, so using a model well means knowing what it leaves out."
+  },
+  {
+    "id": "c9-f10",
+    "comp": 9,
+    "topic": "Accuracy vs precision",
+    "front": "Four measurements of a block with a known mass of 50.0 g read 47.1, 47.2, 47.1, and 47.2 g. Accurate, precise, both, or neither?",
+    "back": "Precise but not accurate. Precision is agreement among repeated measurements; accuracy is closeness to the true value. Reading consistently about 3 g low points to an instrument that needs to be zeroed or calibrated, not to random error."
+  },
+  {
+    "id": "c9-f11",
+    "comp": 9,
+    "topic": "Qualitative vs quantitative",
+    "front": "Classify these two observations: 'the solution turned cloudy' and 'the temperature rose 8.5 degrees Celsius'.",
+    "back": "Cloudy is qualitative, a description of a quality with no number attached. The 8.5 degree rise is quantitative, a number with a unit taken from an instrument. Both are legitimate observations, but only quantitative data can be graphed and analyzed statistically."
+  },
+  {
+    "id": "c9-f12",
+    "comp": 9,
+    "topic": "Observation vs inference",
+    "front": "A student writes 'The beetle has six legs and is looking for food.' Split that into observation and inference.",
+    "back": "Observation: it has six legs, which was seen directly. Inference: it is looking for food, which is an interpretation of the movement rather than something observed. Being confident in an interpretation does not turn it into an observation."
+  },
+  {
+    "id": "c9-f13",
+    "comp": 9,
+    "topic": "Observational vs experimental",
+    "front": "If a scientist cannot manipulate the variable of interest, is the work still science? Give an example.",
+    "back": "Yes. Astronomy, geology, paleontology, and epidemiology test hypotheses by predicting what patterns should appear in observations and then checking, as when an astronomer compares thousands of stars at different ages. Experimental science, which manipulates one variable while holding others constant, is one method within science, not the definition of it."
+  },
+  {
+    "id": "c9-f14",
+    "comp": 9,
+    "topic": "SI base units",
+    "front": "Name the SI base units for length, mass, time, temperature, and amount of substance.",
+    "back": "Meter, kilogram, second, kelvin, and mole; the remaining two base units are the ampere and the candela. Watch the traps: the liter is a metric volume unit but not an SI base unit, and the SI base unit of temperature is the kelvin, not the degree Celsius."
+  },
+  {
+    "id": "c9-f15",
+    "comp": 9,
+    "topic": "Metric prefixes",
+    "front": "Give the multiplier for kilo, centi, milli, micro, and nano.",
+    "back": "Kilo = 1,000 (10^3), centi = one hundredth (10^-2), milli = one thousandth (10^-3), micro = one millionth (10^-6), nano = one billionth (10^-9). So 1 meter = 100 cm = 1,000 mm, and 1 mm = 1,000 micrometers."
+  },
+  {
+    "id": "c9-f16",
+    "comp": 9,
+    "topic": "Metric conversion",
+    "front": "Convert 45 micrometers to meters, and 2.5 kilograms to grams.",
+    "back": "45 micrometers = 45 x 10^-6 m = 4.5 x 10^-5 m. 2.5 kg = 2,500 g. Quick check: converting to a smaller unit gives a larger number, and converting to a larger unit gives a smaller number."
+  },
+  {
+    "id": "c9-f17",
+    "comp": 9,
+    "topic": "Significant figures",
+    "front": "You divide 12.5 g by 4.0 mL and the calculator reads 3.125. What do you report, and what is the rule?",
+    "back": "Report 3.1 g/mL. In multiplication and division the answer carries the fewest significant figures among the measurements used, and 4.0 has only two. For addition and subtraction, match the fewest decimal places instead."
+  },
+  {
+    "id": "c9-f18",
+    "comp": 9,
+    "topic": "Mean median mode range",
+    "front": "For the times 0.22, 0.23, 0.24, 0.25, and 0.95 s, which measure of center best describes typical performance, and why?",
+    "back": "The median, 0.24 s. The mean is about 0.38 s because the single 0.95 s outlier drags it upward, leaving it above four of the five values. The range is largest minus smallest, 0.73 s, and there is no mode here since no value repeats."
+  },
+  {
+    "id": "c9-f19",
+    "comp": 9,
+    "topic": "Line graph",
+    "front": "When is a line graph the right display?",
+    "back": "When both variables are continuous and you want to show how one changes with the other, especially change over time, such as water temperature recorded every two minutes as it cools. The line implies the values in between are meaningful, which is why it is wrong for separate categories."
+  },
+  {
+    "id": "c9-f20",
+    "comp": 9,
+    "topic": "Bar graph",
+    "front": "When is a bar graph the right display?",
+    "back": "When you are comparing amounts across separate, non-continuous categories, such as average plant height under red, blue, and green light, or annual rainfall by city. The bars stand apart because nothing continuous connects one category to the next."
+  },
+  {
+    "id": "c9-f21",
+    "comp": 9,
+    "topic": "Scatterplot",
+    "front": "What does a scatterplot show, and what caution goes with a strong pattern in one?",
+    "back": "It plots paired values from each subject to reveal the relationship between two variables, such as study time versus test score, and the trend may be positive, negative, or absent. A strong correlation does not establish causation, since a third variable may be driving both."
+  },
+  {
+    "id": "c9-f22",
+    "comp": 9,
+    "topic": "Circle graph and histogram",
+    "front": "When do you use a circle graph, and when do you use a histogram instead?",
+    "back": "A circle graph shows parts of one whole that add to 100 percent, such as the share of Earth's water that is fresh versus salt. A histogram shows the distribution of a single continuous variable by grouping values into equal intervals, such as how many students scored in each ten-point band."
+  },
+  {
+    "id": "c9-f23",
+    "comp": 9,
+    "topic": "Graph conventions",
+    "front": "Which variable goes on which axis, and what must every graph include?",
+    "back": "Independent variable on the x-axis (horizontal), dependent variable on the y-axis (vertical). Every graph needs a title, both axes labeled with the quantity and its unit, an evenly spaced and appropriate scale, and a key when more than one data set is plotted."
+  },
+  {
+    "id": "c9-f24",
+    "comp": 9,
+    "topic": "Replication",
+    "front": "Why is one trial per group not enough, and what does repeating trials accomplish?",
+    "back": "A single trial can reflect a fluke, a measurement error, or one unusual individual. Repeating trials and using a larger sample averages out random variation and shows whether the effect is consistent, and independent replication by other researchers is what finally makes a finding trustworthy."
+  },
+  {
+    "id": "c9-f25",
+    "comp": 9,
+    "topic": "Traits of scientists",
+    "front": "Name four habits of mind that shape how scientific knowledge develops.",
+    "back": "Curiosity, skepticism including toward one's own favored idea, honesty in reporting data even when the results disappoint, and willingness to revise a conclusion when the evidence demands it. Persistence and collaboration matter too, and peer review builds skepticism into the system rather than leaving it to individuals."
+  },
+  {
+    "id": "c9-f26",
+    "comp": 9,
+    "topic": "Assumptions of science",
+    "front": "State what science assumes about nature and what it assumes about its own conclusions.",
+    "back": "Nature is orderly, has natural causes, and follows patterns consistent enough that observations here and now apply elsewhere and later, which is what makes prediction and replication possible. Conclusions are durable because they rest on large bodies of evidence, yet always open to revision: continental drift was rejected for decades until seafloor evidence in the 1960s established plate tectonics."
+  },
+  {
+    "id": "c9-f27",
+    "comp": 9,
+    "topic": "Boundaries of science",
+    "front": "What kinds of questions fall outside science? Give one question that is inside and one that is outside.",
+    "back": "Questions of morality, aesthetics, purpose, and the supernatural cannot be settled by evidence. Inside: does caffeine raise resting heart rate in adults. Outside: is it morally right to keep dolphins in aquariums. The test is whether observation or measurement could in principle decide the answer."
+  },
+  {
+    "id": "c9-f28",
+    "comp": 9,
+    "topic": "Science and society",
+    "front": "How do science and society influence each other?",
+    "back": "Social, political, and economic priorities steer which questions get funded and studied, and ethical concerns limit which methods are permitted. Science in turn supplies evidence for decisions about health, energy, and the environment, but choosing a policy also weighs costs, fairness, and values that evidence alone cannot settle."
+  }
+]
