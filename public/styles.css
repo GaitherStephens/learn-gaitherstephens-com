@@ -609,6 +609,52 @@ footer.foot a { color: var(--muted); }
 .welcome .seg { width: 100%; }
 .welcome .seg button { flex: 1; justify-content: center; }
 
+/* ---------- help ---------- */
+
+/* Collapsed by default and placed on the screen it explains. An expanded
+   explainer on every visit becomes noise she scrolls past. */
+.helpbox {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  margin: 0 0 1rem;
+}
+.helpbox > summary {
+  cursor: pointer; list-style: none;
+  display: flex; align-items: center; gap: .45rem;
+  padding: .6rem .8rem; min-height: 44px;
+  font-size: .88rem; font-weight: 600; color: var(--muted);
+}
+.helpbox > summary::-webkit-details-marker { display: none; }
+.helpbox > summary .ico { color: var(--cyan); }
+.helpbox[open] > summary { color: var(--fg); border-bottom: 1px solid var(--line); }
+.helpbox-in { padding: .8rem; font-size: .89rem; }
+.helpbox-in p { margin: 0 0 .6rem; }
+.helpbox-in ul { margin: 0 0 .6rem; padding-left: 1.1rem; }
+.helpbox-in li { margin-bottom: .35rem; }
+
+.tip {
+  display: flex; gap: .5rem; align-items: flex-start;
+  background: var(--warn-bg); color: var(--warn);
+  border-radius: 8px; padding: .5rem .7rem; margin: 0;
+  font-size: .86rem;
+}
+.tip .ico { flex: none; margin-top: .1rem; }
+
+ol.howto, ul.howto { padding-left: 1.2rem; margin: 0 0 .5rem; }
+ol.howto li, ul.howto li { margin-bottom: .5rem; }
+
+.rhythm { display: grid; gap: .55rem; }
+.rhythm div {
+  display: grid; grid-template-columns: 11rem 1fr; gap: .3rem 1rem;
+  padding: .6rem .75rem; border: 1px solid var(--line); border-radius: 9px;
+}
+.rhythm b { color: var(--cyan); font-size: .88rem; }
+.rhythm span { font-size: .89rem; }
+@media (max-width: 640px) {
+  .rhythm div { grid-template-columns: 1fr; }
+}
+
 /* ---------- readiness evidence ---------- */
 
 .ready-band { margin-bottom: .2rem; }

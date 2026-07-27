@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="color-scheme" content="light dark">
 <title>FTCE Science 5-9 Study</title>
-<link rel="stylesheet" href="/styles.css?v=2026.07.27-1435">
+<link rel="stylesheet" href="/styles.css?v=2026.07.27-1447">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%94%AC%3C/text%3E%3C/svg%3E">
 <script>
 // Theme before first paint. Anything later and she gets a white flash on a
@@ -67,6 +67,8 @@
   <g id="i-list"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></g>
   <g id="i-pencil"><path d="M4 20h4L20 8a2.8 2.8 0 0 0-4-4L4 16Z"/><path d="M14 6l4 4"/></g>
   <g id="i-inbox"><path d="M3 13h5l1.5 3h5L16 13h5"/><path d="M5.5 5h13l2.5 8v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Z"/></g>
+  <g id="i-help"><circle cx="12" cy="12" r="9"/><path d="M9.4 9.4a2.7 2.7 0 0 1 5.2 1c0 1.8-2.6 2.3-2.6 3.7"/><path d="M12 17.5h.01"/></g>
+  <g id="i-bulb"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.8.9.9 1.6h5.2c.1-.7.4-1.2.9-1.6A6 6 0 0 0 12 3Z"/></g>
 </defs></svg>
 <!-- Pinned to the top of the document. The back-to-top button watches this
      with an IntersectionObserver, which reports correctly even when the scroll
@@ -76,6 +78,9 @@
   <div class="top-inner">
     <a class="wordmark" href="#/">FTCE <span>Science 5&ndash;9</span></a>
     <span class="sync-dot" id="sync" title="Progress sync"></span>
+    <button class="theme-btn" id="helpBtn" type="button" aria-label="How to use this site" title="How to use this site">
+      <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><use href="#i-help"></use></svg>
+    </button>
     <button class="theme-btn" id="themeBtn" type="button" aria-label="Change theme" title="Theme">
       <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><use href="#i-auto"></use></svg>
     </button>
@@ -89,7 +94,7 @@
 
 <footer class="foot">
   <p>Built for the Florida Middle Grades General Science 5&ndash;9 (004) exam: 80 multiple-choice questions, 2 hours 30 minutes, scaled score of 200 to pass. Practice questions here are original and modeled on the state competency framework; they are not actual test items.</p>
-  <p><a href="/logout">Sign out</a> &middot; <a href="https://www.fl.nesinc.com/testPage.asp?test=004" target="_blank" rel="noopener">Official test page</a> &middot; <a href="#" data-learn-flag="open">Report a problem</a> &middot; <span class="footer-version" data-learn-flag="open" title="Report a problem">v2026.07.27-1435</span></p>
+  <p><a href="/logout">Sign out</a> &middot; <a href="https://www.fl.nesinc.com/testPage.asp?test=004" target="_blank" rel="noopener">Official test page</a> &middot; <a href="#" data-learn-flag="open">Report a problem</a> &middot; <span class="footer-version" data-learn-flag="open" title="Report a problem">v2026.07.27-1447</span></p>
 </footer>
 
 <!-- Bottom-left: flag. Bottom-right: back to top. Network convention. -->
@@ -122,6 +127,6 @@
   <div class="flag-toast" id="flagToast" hidden></div>
 </dialog>
 
-<script src="/app.js?v=2026.07.27-1435"></script>
+<script src="/app.js?v=2026.07.27-1447"></script>
 </body>
 </html>

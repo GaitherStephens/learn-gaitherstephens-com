@@ -572,6 +572,7 @@
     "recall": recallSetup,
     "missed": missedStart,
     "progress": progressView,
+    "help": helpPage,
   };
 
   /* Navigate. If the target hash is what we are already on, assigning it fires
@@ -591,6 +592,233 @@
     const fn = routes[head] || home;
     window.scrollTo(0, 0);
     fn(rest);
+  }
+
+  /* ================= help ================= */
+
+  /* Help lives in two places on purpose: a full page for "what is all this",
+     and a collapsed box on each section for "what am I looking at right now".
+     Nobody reads a manual before starting, but people will open a one-line
+     explainer that is already on the screen they are stuck on. */
+
+  const HELP = {
+    cards: {
+      icon: "i-cards", title: "Flashcards",
+      what: "300 cards covering the whole test, shown on a schedule.",
+      when: "Your daily default. Ten minutes here beats an hour once a week.",
+      how: [
+        "Read the front and try to answer it in your head before you tap Show answer. The trying is the part that works.",
+        "Rate yourself honestly. Blank brings it back in this session, Shaky tomorrow, Got it in a few days, Easy in a week or more.",
+        "Rating everything Easy feels good and teaches you nothing. The schedule only helps if the ratings are true.",
+        "Formula cards make you type the answer instead of rating yourself, because the real test gives you no formula sheet.",
+      ],
+      tip: "Keyboard: space to reveal, then 1 to 4 to rate.",
+    },
+    quiz: {
+      icon: "i-quiz", title: "Topic quiz",
+      what: "Questions from one competency, with an explanation after every single one.",
+      when: "Right after you read a section of the concept guide, or when one area feels shaky.",
+      how: [
+        "Pick the competency, pick a length, start.",
+        "You get the explanation immediately, whether you were right or wrong. Read it even when you were right.",
+        "Tick 'prefer questions I have not seen' to push into new material instead of re-answering familiar ones.",
+      ],
+      tip: "Keyboard: A to D or 1 to 4 to answer, Enter for the next question.",
+    },
+    drill: {
+      icon: "i-shuffle", title: "Adaptive drill",
+      what: "Twenty questions chosen for you and deliberately jumbled across competencies.",
+      when: "When you do not know what to study. This is the safe default.",
+      how: [
+        "It weights toward competencies you are weak in, ones that carry more of the test, things you got wrong before, and anything you have not touched in weeks.",
+        "The mix is jumbled on purpose. Studying one topic in a block feels easier but sticks worse than mixing them.",
+        "If you set today's teaching topic on the home screen, that subject gets pulled in heavily.",
+      ],
+      tip: "Twenty questions is about twelve minutes.",
+    },
+    mini: {
+      icon: "i-clock", title: "Mini mock",
+      what: "Twenty questions on the real blueprint proportions, on the real clock, 37 minutes.",
+      when: "Once or twice a week once you are past the early stage.",
+      how: [
+        "No feedback until you submit, exactly like the real thing.",
+        "You can flag questions and jump around with the number grid at the bottom.",
+        "Afterwards you get your score by competency and your average seconds per question.",
+      ],
+      tip: "The real exam gives you 112 seconds per question. This one holds you to the same pace.",
+    },
+    exam: {
+      icon: "i-exam", title: "Full mock exam",
+      what: "All 80 questions, 2 hours 30 minutes, no feedback until you submit.",
+      when: "Sparingly. There are only about three of these in the bank before questions start repeating.",
+      how: [
+        "Sit it properly: one go, no notes, no phone. A practice test you interrupt tells you nothing useful.",
+        "Unanswered questions count as wrong when the clock runs out, same as the real exam.",
+        "Your result is a raw percentage in a band, not a predicted scaled score.",
+      ],
+      tip: "Use mini mocks for regular practice and save these to confirm you are ready.",
+    },
+    formulas: {
+      icon: "i-energy", title: "Formula drill",
+      what: "The formulas and ordered lists you have to produce from memory, typed rather than recognised.",
+      when: "Weekly, and every few days in the last fortnight before the test.",
+      how: [
+        "Type it however you normally would. Capitals, spaces and symbols are all forgiven, and 'lambda' works as well as the Greek letter.",
+        "If it marks you wrong but you know you had it right, tap 'I actually had this right' and it counts.",
+        "Getting one wrong sends it straight back to the start of the schedule. Formulas are all or nothing on the day.",
+      ],
+      tip: "There is no reference sheet on the real test. Recognising a formula is not the same as producing one.",
+    },
+    recall: {
+      icon: "i-brain", title: "Brain dump",
+      what: "You explain a whole competency from memory, then check yourself against the key points.",
+      when: "After reading a guide section, or before a mock exam to find the holes.",
+      how: [
+        "Say it out loud as if you were teaching it to your class. You do this for a living, so use that.",
+        "Typing is optional. The checklist afterwards is where the value is.",
+        "Be strict when you tick. 'I sort of knew that' is a no.",
+      ],
+      tip: "This is the hardest mode and the most revealing. Whatever you could not produce is a real gap.",
+    },
+    guide: {
+      icon: "i-book", title: "Concept guide",
+      what: "Every competency explained, with the formulas to memorise and the traps that catch people.",
+      when: "When something is genuinely new, or you got a question wrong because you never learned it.",
+      how: [
+        "Each section ends with a Trap box naming the misconception that makes people pick the wrong answer.",
+        "Reading is the weakest way to study on its own, so follow it with a quiz or a brain dump on the same competency.",
+      ],
+      tip: "Do not read this front to back. Come here when a question sends you.",
+    },
+    missed: {
+      icon: "i-redo", title: "Missed queue",
+      what: "Only the questions you have gotten wrong and not yet re-earned.",
+      when: "Whenever it has more than about ten in it.",
+      how: [
+        "A question leaves the queue when you get it right.",
+        "These are the cheapest points available to you, because you already know they are gaps.",
+      ],
+      tip: "Clearing this queue is usually the highest-value fifteen minutes in the app.",
+    },
+    skills: {
+      icon: "i-search", title: "Skill map",
+      what: "All 101 skills the state publishes, marked mastered, shaky, or not started.",
+      when: "When you want to know what you are still responsible for.",
+      how: [
+        "Mastered means at least two questions on that skill, all correct most recently. One lucky answer does not count.",
+        "Tap Practise on any line to drill just that skill.",
+      ],
+      tip: "This is the direct answer to 'what is actually on this test'.",
+    },
+    review: {
+      icon: "i-chart", title: "Last 50",
+      what: "How your recent answers actually went: accuracy, pace, calibration, and what kind of mistakes you make.",
+      when: "Once a week, or after a mock.",
+      how: [
+        "Sure but wrong is the number to watch. Those are things you believe and are wrong about, which is worse than knowing you do not know.",
+        "Calibration compares how confident you felt against how you actually did. Well calibrated means Certain is near 100 percent and Guess is near 25.",
+        "Average time is measured against the real 112 seconds per question.",
+      ],
+      tip: "If misread keeps showing up in why you missed things, that is the cheapest fix on the list.",
+    },
+    progress: {
+      icon: "i-list", title: "Progress and settings",
+      what: "Mastery by competency, exam history, and every setting.",
+      when: "Whenever you want to change something.",
+      how: [
+        "Set or change your test date, daily goal, name, theme, and the confidence prompt here.",
+        "Bars fade if a competency has gone untouched for weeks, because knowledge really does decay.",
+        "You can add a passkey so you sign in with Face ID instead of the PIN.",
+      ],
+      tip: "Erasing progress here cannot be undone, and it clears every device.",
+    },
+  };
+
+  function helpBox(key) {
+    const h = HELP[key];
+    if (!h) return "";
+    return `<details class="helpbox">
+      <summary>${icon("i-help")}<span>How this works</span></summary>
+      <div class="helpbox-in">
+        <p><strong>What it is.</strong> ${esc(h.what)}</p>
+        <p><strong>When to use it.</strong> ${esc(h.when)}</p>
+        <ul>${h.how.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
+        <p class="tip">${icon("i-bulb")}<span>${esc(h.tip)}</span></p>
+      </div>
+    </details>`;
+  }
+
+  function helpPage() {
+    session = null;
+    app.innerHTML = `
+      <div class="panel">
+        <h1>${icon("i-help")} How to use this</h1>
+        <p class="muted">Everything here aims at one thing: passing Middle Grades General Science 5&ndash;9. Nothing else matters, so if a section is not helping, skip it.</p>
+      </div>
+
+      <div class="panel">
+        <h2>${icon("i-play")} If you only read one thing</h2>
+        <ol class="howto">
+          <li><strong>Open the app and do what the plan says.</strong> The home screen works out your best next move. You do not have to decide anything.</li>
+          <li><strong>Answer honestly.</strong> The app can only help with what it can see. Rating a card Easy when you guessed, or skipping the confidence tap, makes it worse at its job.</li>
+          <li><strong>Short and often beats long and rare.</strong> Fifteen minutes a day will move you further than three hours on Sunday.</li>
+          <li><strong>Read the explanation even when you got it right.</strong> Being right for the wrong reason is the thing that fails you on the day.</li>
+        </ol>
+      </div>
+
+      <div class="panel">
+        <h2>${icon("i-calendar")} A rhythm that works</h2>
+        <div class="rhythm">
+          <div><b>Most days</b><span>Flashcards until the due pile is clear, then one adaptive drill. About 25 minutes.</span></div>
+          <div><b>Once or twice a week</b><span>A mini mock for timing, then clear whatever it puts in your missed queue.</span></div>
+          <div><b>Weekly</b><span>The formula drill, and a look at Last 50 to see what kind of mistakes you are making.</span></div>
+          <div><b>Every few weeks</b><span>A full mock exam. There are only about three, so do not spend them early.</span></div>
+          <div><b>Last two weeks</b><span>Mini mocks for pace, the missed queue, and formulas. Stop learning new material.</span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>${icon("i-quiz")} About the two extra taps</h2>
+        <p>After you answer, the app asks how sure you were, and if you got it wrong, why. It is about five seconds and it is the most useful thing you can give it.</p>
+        <ul class="howto">
+          <li><strong>Confident and wrong</strong> is the dangerous category. You will not go looking for those gaps yourself, because you do not know they are there. The app finds them and drills them.</li>
+          <li><strong>Why you missed it</strong> decides what happens next. Never learned it sends you to the guide. Forgot the formula sends you to the formula drill. Misread means slow down, not study more.</li>
+          <li>If it becomes annoying you can turn the confidence prompt off in Progress and settings, and nothing else breaks.</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h2>${icon("i-target")} What the numbers mean</h2>
+        <ul class="howto">
+          <li><strong>Exam readiness</strong> is a band, not a percentage, and it shows the evidence behind it. Pearson does not publish how raw scores convert to the 200 you need to pass, so a precise number would be made up.</li>
+          <li><strong>Mastery</strong> is held down until you have covered enough of a competency, so a short hot streak cannot read as mastery. It also fades if you have not touched an area in weeks.</li>
+          <li><strong>Daily goal</strong> counts cards and questions together. The streak keeps counting as long as you hit the goal today or yesterday, so one missed day does not wipe it.</li>
+        </ul>
+      </div>
+
+      ${Object.entries(HELP).map(([k, h]) => `<details class="sec">
+        <summary>${icon(h.icon)} ${esc(h.title)}</summary>
+        <div class="inner">
+          <p><strong>What it is.</strong> ${esc(h.what)}</p>
+          <p><strong>When to use it.</strong> ${esc(h.when)}</p>
+          <ul class="howto">${h.how.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
+          <p class="tip">${icon("i-bulb")}<span>${esc(h.tip)}</span></p>
+          <button data-open="${k}">${icon("i-arrow-right")}Go to ${esc(h.title.toLowerCase())}</button>
+        </div>
+      </details>`).join("")}
+
+      <div class="panel">
+        <h2>${icon("i-flame")} If something is wrong</h2>
+        <p>Tap the flag button in the bottom left corner on any screen. If a question looks wrong, an answer seems like it could be two things, or anything is broken or hard to read, flag it. It goes straight to Gaither.</p>
+        <button class="btn-primary" data-learn-flag="open">${icon("i-flame")}Report something now</button>
+      </div>
+
+      <div class="panel"><button onclick="__go('#/')">${icon("i-arrow-right")}Back to home</button></div>`;
+
+    const ROUTE_FOR = { cards: "#/cards", quiz: "#/quiz", drill: "#/drill", mini: "#/mini", exam: "#/exam", formulas: "#/formulas", recall: "#/recall", guide: "#/guide", missed: "#/missed", skills: "#/skills", review: "#/review", progress: "#/progress" };
+    app.querySelectorAll("[data-open]").forEach((b) => {
+      b.onclick = () => go(ROUTE_FOR[b.dataset.open] || "#/");
+    });
   }
 
   /* ================= welcome (first run) ================= */
@@ -639,6 +867,7 @@
           <button class="btn-primary" id="wStart">${icon("i-play")}Start studying</button>
           <button id="wSkip">Skip for now</button>
         </div>
+        <p class="small muted" style="margin:1rem 0 0">Not sure how any of this works? The <strong>?</strong> button at the top explains every section, and it is there on every screen.</p>
       </section>`;
 
     let goal = 20;
@@ -916,6 +1145,7 @@
     app.innerHTML = `
       <div class="panel">
         <h1>Flashcards</h1>
+        ${helpBox("cards")}
         <p class="muted">Cards are scheduled by how well you knew them. Rate honestly: marking something "easy" that you actually guessed is the fastest way to fail the real test.</p>
         <div class="opts">
           <label class="opt"><input type="radio" name="cscope" value="due" checked>
@@ -1324,6 +1554,7 @@
     app.innerHTML = `
       <div class="panel">
         <h1>Topic quiz</h1>
+        ${helpBox("quiz")}
         <p class="muted">One competency at a time, with an explanation after every question. Best used right after you read that section of the concept guide.</p>
         <div class="opts">
           ${DATA.comps.map((c) => {
@@ -1421,6 +1652,7 @@
     app.innerHTML = `
       <div class="panel">
         <h1>Mock exam</h1>
+        ${helpBox("exam")}
         <p class="muted">Eighty questions drawn on the real blueprint, 2 hours 30 minutes on the clock, no feedback until you submit. Sit it the way you would sit the real thing: one go, no notes, no phone.</p>
         <table class="body-md" style="font-size:.85rem;margin-bottom:1rem"><thead><tr><th>Competency</th><th>Items</th></tr></thead><tbody>
           ${DATA.comps.map((c) => `<tr><td>${c.comp}. ${esc(c.title)}</td><td>${BLUEPRINT[c.comp]}</td></tr>`).join("")}
@@ -1776,6 +2008,7 @@
     app.innerHTML = `
       <div class="panel">
         <h1>${icon("i-search")} Skill coverage</h1>
+        ${helpBox("skills")}
         <p class="muted">The state publishes ${total} individual skills under the nine competencies. This is the full list, and it is the direct answer to "what am I responsible for".</p>
         <div class="skill-sum">
           <span class="pill mastered">${icon("i-check-circle")}<b>${sum.mastered}</b> mastered</span>
@@ -1824,9 +2057,10 @@
   function reviewDashboard() {
     const r = (S.recent || []).slice(-50);
     if (r.length < 5) {
-      app.innerHTML = `<div class="panel"><h1>Last 50</h1>
+      app.innerHTML = `<div class="panel"><h1>${icon("i-chart")} Last 50</h1>
+        ${helpBox("review")}
         <p class="muted">Answer a few more questions and this fills in: accuracy, how well calibrated your confidence is, pace against the real clock, and which competencies you have been hitting.</p>
-        <button class="btn-primary" onclick="__go('#/drill')">Run a drill</button></div>`;
+        <button class="btn-primary" onclick="__go('#/drill')">${icon("i-shuffle")}Run a drill</button></div>`;
       return;
     }
     const acc = r.filter((x) => x.ok).length / r.length;
@@ -1845,6 +2079,7 @@
     app.innerHTML = `
       <div class="panel">
         <h1>${icon("i-chart")} Last ${r.length} questions</h1>
+        ${helpBox("review")}
         <div class="stat-row">
           <div class="stat"><b style="color:var(--${barTone(acc)})">${Math.round(acc * 100)}%</b><span>${icon("i-percent", "ico ico--sm")}Accuracy</span></div>
           <div class="stat"><b style="color:var(--${avgS && avgS > 112 ? "bad" : "fg"})">${avgS ? avgS.toFixed(0) + "s" : "&mdash;"}</b><span>${icon("i-clock", "ico ico--sm")}Avg time</span></div>
@@ -1924,6 +2159,7 @@
     app.innerHTML = `
       <div class="panel">
         <h1>Brain dump</h1>
+        ${helpBox("recall")}
         <p class="muted">Pick a competency, close everything else, and write down every single thing you can remember about it. Then check yourself against the key points. Pulling knowledge out cold is harder than rereading and that is exactly why it works better.</p>
         <div class="opts">
           ${compList.map((c) => `<label class="opt"><input type="radio" name="rc" value="${c.comp}" ${c.comp === 1 ? "checked" : ""}>
@@ -2019,6 +2255,7 @@
     app.innerHTML = `
       <div class="panel">
         <h1>Concept guide</h1>
+        ${helpBox("guide")}
         <p class="muted">Everything the state says is testable, competency by competency, with the formulas you have to memorize and the traps that catch teachers. There are no reference materials on the real test, so anything in a formula box has to be in your head.</p>
       </div>
       <div class="modes">
@@ -2066,6 +2303,7 @@
     app.innerHTML = `
       <div class="panel">
         <h1>Progress</h1>
+        ${helpBox("progress")}
         <div class="stat-row">
           <div class="stat"><b>${o.seen}/${o.total}</b><span>${icon("i-quiz", "ico ico--sm")}Questions tried</span></div>
           <div class="stat"><b>${o.seen ? Math.round(o.accuracy * 100) + "%" : "&mdash;"}</b><span>Accuracy</span></div>
@@ -2379,6 +2617,13 @@
     }
   });
 
+  document.getElementById("helpBtn").onclick = () => {
+    if (session && session.kind === "exam" && !confirm("Leave the exam? Your answers will be lost.")) return;
+    clearInterval(examTimer);
+    session = null;
+    go("#/help");
+  };
+
   document.getElementById("homeBtn").onclick = () => {
     if (session && session.kind === "exam" && !confirm("Leave the exam? Your answers will be lost.")) return;
     clearInterval(examTimer);
@@ -2650,7 +2895,7 @@
   (async () => {
     try {
       const [content] = await Promise.all([
-        fetch("/content.json?v=2026.07.27-1435").then((r) => {
+        fetch("/content.json?v=2026.07.27-1447").then((r) => {
           if (!r.ok) throw new Error("content " + r.status);
           return r.json();
         }),

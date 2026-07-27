@@ -222,7 +222,7 @@ function loginPage(error, nextPath) {
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><meta name="color-scheme" content="light dark">
 <title>Sign in : FTCE Science 5-9 Study</title>
-<link rel="stylesheet" href="/styles.css?v=2026.07.27-1404">
+<link rel="stylesheet" href="/styles.css?v=2026.07.27-1447">
 </head><body class="login-body">
 <main class="login-card">
   <div class="login-mark">FTCE</div>
@@ -502,7 +502,14 @@ export default {
 
     const isHtml = path === "/" || path.endsWith(".html") ||
       (out.headers.get("Content-Type") || "").startsWith("text/html");
-    if (isHtml) out.headers.set("Cache-Control", "no-cache");
+    if (isHtml) {
+      out.headers.set("Cache-Control", "no-cache");
+      // Browser `no-cache` alone was not enough: Cloudflare's edge still
+      // served a HIT, so a deploy could leave her on old HTML pointing at an
+      // old app.js. CDN-Cache-Control is the edge-specific directive and
+      // keeps the document out of the edge cache entirely.
+      out.headers.set("CDN-Cache-Control", "no-store");
+    }
     else if (url.searchParams.has("v")) out.headers.set("Cache-Control", "public, max-age=31536000, immutable");
     else out.headers.set("Cache-Control", "public, max-age=300");
     return out;
