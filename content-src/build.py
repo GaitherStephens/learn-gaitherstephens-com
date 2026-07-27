@@ -41,8 +41,17 @@ def main():
     errs = []
     seen = set()
     for q in Q:
-        if set(q) != {"id","comp","skill","topic","difficulty","stem","choices","answer","explanation"}:
-            errs.append(f"{q.get('id')}: wrong keys")
+        required = {"id","comp","skill","topic","difficulty","stem","choices","answer","explanation"}
+        extra = set(q) - required
+        if not set(q) >= required or extra - {"guide"}:
+            errs.append(f"{q.get('id')}: wrong keys ({sorted(set(q))})")
+        # `guide` is [competency, sectionIndex] and must point at a real section
+        gref = q.get("guide")
+        if gref is not None:
+            if (not isinstance(gref, list) or len(gref) != 2
+                    or str(gref[0]) not in {str(c["comp"]) for c in G}
+                    or not (0 <= gref[1] < len(next(c["sections"] for c in G if c["comp"] == gref[0])))):
+                errs.append(f"{q['id']}: guide link {gref} does not resolve to a section")
         if q["id"] in seen:
             errs.append(f"{q['id']}: duplicate id")
         seen.add(q["id"])

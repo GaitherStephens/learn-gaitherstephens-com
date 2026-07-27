@@ -740,6 +740,83 @@ ol.howto li, ul.howto li { margin-bottom: .5rem; }
 }
 .conf-tag.danger { background: var(--bad-bg); color: var(--bad); }
 
+/* ---------- diagrams ----------
+   Every diagram is drawn with theme variables so one SVG serves light and
+   dark. Labels are real text, so they scale, stay selectable, and are read
+   by a screen reader; nothing depends on colour alone. */
+
+.diagram {
+  margin: 1.1rem 0;
+  padding: .9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+.diagram h4 {
+  display: flex; align-items: center; gap: .4rem;
+  margin: 0 0 .6rem; font-size: .9rem; font-weight: 700;
+}
+.diagram h4 .ico { color: var(--cyan); }
+/* Direct child only. A bare `.diagram svg` also caught the icon inside the
+   heading and inflated it to the full width of the card. */
+.diagram > svg { width: 100%; height: auto; display: block; }
+.diagram figcaption { margin-top: .6rem; font-size: .84rem; color: var(--muted); line-height: 1.5; }
+
+.diagram .d-lbl { font-family: var(--sans); font-size: 9px; fill: var(--muted); }
+.diagram .d-key { fill: var(--fg); font-weight: 700; }
+.diagram .d-line { stroke: var(--fg); stroke-width: 2; fill: none; }
+.diagram .d-axis { stroke: var(--line-strong); stroke-width: 1.5; }
+.diagram .d-dim { stroke: var(--cyan); stroke-width: 1.5; }
+.diagram .d-arrow { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.diagram .d-arrowhead { fill: var(--muted); stroke: none; }
+.diagram .d-hi { stroke: var(--cyan); stroke-width: 4; stroke-linecap: round; }
+.diagram .d-ground { fill: var(--muted); }
+.diagram .d-moon-lit { fill: #e8e6df; }
+.diagram .d-moon-dark { fill: #2a3138; }
+.diagram .d-chloro { fill: #2e8b57; }
+
+/* Four tints of the brand colour, distinguishable in both themes and never
+   the only thing carrying meaning: each region is also labelled. */
+.diagram .d-fill-1 { fill: color-mix(in srgb, var(--cyan) 55%, var(--card-bg)); }
+.diagram .d-fill-2 { fill: color-mix(in srgb, var(--cyan) 38%, var(--card-bg)); }
+.diagram .d-fill-3 { fill: color-mix(in srgb, var(--cyan) 22%, var(--card-bg)); }
+.diagram .d-fill-4 { fill: color-mix(in srgb, var(--cyan) 10%, var(--card-bg)); }
+
+@media (max-width: 640px) {
+  .diagram { padding: .7rem; }
+  .diagram .d-lbl { font-size: 10px; }
+}
+
+/* ---------- learn more (after a wrong answer) ---------- */
+
+.learn-more {
+  border: 1px solid var(--cyan);
+  border-radius: var(--radius);
+  padding: .8rem;
+  margin-bottom: 1rem;
+  background: color-mix(in srgb, var(--cyan) 7%, transparent);
+}
+.lm-h {
+  display: flex; align-items: center; gap: .4rem;
+  font-weight: 700; font-size: .92rem; margin: 0 0 .55rem;
+}
+.lm-h .ico { color: var(--cyan); }
+.lm-acts { display: grid; gap: .4rem; }
+.lm-acts button {
+  display: flex; align-items: center; gap: .55rem;
+  width: 100%; text-align: left;
+  padding: .65rem .75rem; font-size: .89rem; font-weight: 500;
+  min-height: 44px;
+}
+.lm-acts button .ico { color: var(--cyan); flex: none; }
+.lm-acts button b { font-weight: 700; }
+.lm-acts button span { min-width: 0; }
+.lm-acts button .go { margin-left: auto; color: var(--muted); }
+
+/* A deep-linked guide section gets a brief highlight so it is obvious which
+   one the link meant. */
+details.sec.targeted { border-color: var(--cyan); box-shadow: 0 0 0 2px color-mix(in srgb, var(--cyan) 25%, transparent); }
+
 /* ---------- typed formula drill ---------- */
 
 .typed-in {

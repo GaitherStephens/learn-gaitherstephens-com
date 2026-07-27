@@ -23,8 +23,9 @@ BUILD="${1:-$(date +%Y.%m.%d)-$(date +%H%M)}"
 # public/ gets uploaded as a public asset. Edit in place, no backups.
 sed -i -E "s|/styles\.css\?v=[^\"]*|/styles.css?v=$BUILD|g" public/index.html src/worker.js
 sed -i -E "s|/app\.js(\?v=[^\"]*)?\"|/app.js?v=$BUILD\"|g" public/index.html
+sed -i -E "s|/diagrams\.js(\?v=[^\"]*)?\"|/diagrams.js?v=$BUILD\"|g" public/index.html
 sed -i -E "s|/content\.json(\?v=[^\"]*)?\"|/content.json?v=$BUILD\"|g" public/app.js
 sed -i -E "s|(class=\"footer-version\"[^>]*>)v[^<]*|\1v$BUILD|" public/index.html
 
 echo "stamped build $BUILD"
-grep -oE '(styles\.css|app\.js|content\.json)\?v=[^"]*' public/index.html src/worker.js public/app.js
+grep -oE '(styles\.css|app\.js|diagrams\.js|content\.json)\?v=[^"]*' public/index.html src/worker.js public/app.js

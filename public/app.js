@@ -600,6 +600,16 @@
 
       const only = block.match(/^FENCE_(\d+)_END$/);
       if (only) { html += `<pre>${esc(fences[Number(only[1])])}</pre>`; continue; }
+
+      // [[diagram:key]] renders an original inline SVG for that concept.
+      const dia = block.match(/^\[\[diagram:([a-z]+)\]\]$/);
+      if (dia) {
+        const d = (window.DIAGRAMS || {})[dia[1]];
+        html += d
+          ? `<figure class="diagram"><h4>${icon("i-eye")}${esc(d.title)}</h4>${d.svg}<figcaption>${esc(d.caption)}</figcaption></figure>`
+          : "";
+        continue;
+      }
       if (/^\*\*Trap:\*\*/.test(block)) {
         html += `<div class="trap">${inline(block)}</div>`;
         continue;
@@ -1491,6 +1501,7 @@
             s.conf ? ` <span class="conf-tag${!wasRight && s.conf >= 3 ? " danger" : ""}">${icon(CONF_ICON[s.conf], "ico ico--sm")}${esc(CONF.find((c) => c.v === s.conf).label)}</span>` : ""}</p>
           ${!wasRight && s.conf >= 3 ? `<p class="warn-note">${icon("i-alert")}<span>You were sure and it was wrong. That is the kind of gap that costs points, so this one is worth a second look.</span></p>` : ""}
           <div class="explain">${esc(q.explanation)}</div>
+          ${!wasRight ? learnMore(q) : ""}
           ${!wasRight && s.why === null ? `
             <div class="ask">
               <p class="ask-q">${icon("i-quiz")}Why did you miss it?</p>
@@ -1509,12 +1520,52 @@
     if (!picked) {
       app.querySelectorAll(".choice").forEach((b) => { b.onclick = () => pickAnswer(Number(b.dataset.pos)); });
     }
+    if (revealed && !wasRight) wireLearnMore(q);
     app.querySelectorAll("[data-conf]").forEach((b) => { b.onclick = () => setConfidence(Number(b.dataset.conf)); });
     app.querySelectorAll("[data-why]").forEach((b) => {
       b.onclick = () => { session.why = b.dataset.why; commitAttempt(); renderRunQuestion(); };
     });
     const nx = $("#next");
     if (nx) nx.onclick = () => nextRunQuestion();
+  }
+
+  /* After a wrong answer, offer the next step rather than just the reason it
+     was wrong. Requested via a flag from her phone: "make sure the user can
+     click somewhere to learn about the thing they got wrong." The guide link
+     is precomputed per question at build time, so it lands on the exact
+     section rather than the top of a competency. */
+  function learnMore(q) {
+    const g = q.guide;
+    const sec = g && DATA.guide.find((x) => x.comp === g[0])?.sections[g[1]];
+    const cards = DATA.cards.filter((c) => c.topic === q.topic).length;
+    return `<div class="learn-more">
+      <p class="lm-h">${icon("i-bulb")}Learn this one</p>
+      <div class="lm-acts">
+        ${sec ? `<button data-lm="guide">${icon("i-book")}<span>Read <b>${esc(sec.h)}</b></span>${icon("i-arrow-right", "ico go")}</button>` : ""}
+        <button data-lm="skill">${icon("i-target")}<span>Practise more like this</span>${icon("i-arrow-right", "ico go")}</button>
+        ${cards ? `<button data-lm="cards">${icon("i-cards")}<span>${pluralize(cards, "flashcard", "flashcards")} on ${esc(q.topic.toLowerCase())}</span>${icon("i-arrow-right", "ico go")}</button>` : ""}
+      </div>
+    </div>`;
+  }
+
+  function wireLearnMore(q) {
+    app.querySelectorAll("[data-lm]").forEach((b) => {
+      b.onclick = () => {
+        const what = b.dataset.lm;
+        if (what === "guide" && q.guide) { go(`#/guide/${q.guide[0]}/${q.guide[1]}`); return; }
+        if (what === "skill") {
+          const pool = DATA.questions.filter((x) => x.comp === q.comp && x.skill === q.skill && x.id !== q.id);
+          if (pool.length) startQuestionRun(shuffle(pool), `More on ${q.topic.toLowerCase()}`);
+          else go(`#/guide/${q.guide?.[0] ?? q.comp}/${q.guide?.[1] ?? 0}`);
+          return;
+        }
+        if (what === "cards") {
+          const pool = DATA.cards.filter((c) => c.topic === q.topic);
+          session = { queue: shuffle(pool), i: 0, shown: false, done: 0, again: [] };
+          renderCard();
+        }
+      };
+    });
   }
 
   function pickAnswer(pos) {
@@ -2334,7 +2385,9 @@
   /* ================= concept guide ================= */
 
   function guideIndex(rest) {
-    if (rest && rest[0]) return guideComp(Number(rest[0]));
+    // #/guide/<comp>/<sectionIndex> deep-links straight to one section, which
+    // is what a "learn this" link from a wrong answer needs.
+    if (rest && rest[0]) return guideComp(Number(rest[0]), rest[1] !== undefined ? Number(rest[1]) : undefined);
     app.innerHTML = `
       <div class="panel">
         <h1>Concept guide</h1>
@@ -2349,7 +2402,7 @@
       </div>`;
   }
 
-  function guideComp(comp) {
+  function guideComp(comp, openIndex) {
     const g = DATA.guide.find((x) => x.comp === comp);
     if (!g) return guideIndex();
     app.innerHTML = `
@@ -2361,16 +2414,28 @@
           <button onclick="__go('#/guide')">All competencies</button>
         </div>
       </div>
-      ${g.sections.map((sec, i) => `<details class="sec" ${i === 0 ? "open" : ""}>
+      ${g.sections.map((sec, i) => {
+        const target = openIndex !== undefined && i === openIndex;
+        return `<details class="sec ${target ? "targeted" : ""}" id="sec-${i}" ${target || (openIndex === undefined && i === 0) ? "open" : ""}>
         <summary>${esc(sec.h)}</summary>
-        <div class="inner body-md">${md(sec.body)}</div></details>`).join("")}
-      <div class="panel" style="margin-top:1rem">
+        <div class="inner body-md">${md(sec.body)}</div></details>`;
+      }).join("")}
+      <div class="panel" style="margin-top:1rem" id="guideFoot">
         <p class="small muted">Reading is the weakest form of study on its own. Follow this with a brain dump or a topic quiz while it is still fresh.</p>
         <div class="actions">
           <button class="btn-primary" onclick="__go('#/recall')">Brain dump this competency</button>
           ${comp < 9 ? `<button onclick="__go('#/guide/${comp + 1}')">Next competency</button>` : ""}
         </div>
       </div>`;
+
+    // Scroll the deep-linked section into view once it has rendered.
+    if (openIndex !== undefined) {
+      const el = $(`#sec-${openIndex}`);
+      if (el) requestAnimationFrame(() => el.scrollIntoView({
+        behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        block: "start",
+      }));
+    }
   }
 
   /* ================= progress ================= */
@@ -3012,7 +3077,7 @@
   (async () => {
     try {
       const [content] = await Promise.all([
-        fetch("/content.json?v=2026.07.27-1521").then((r) => {
+        fetch("/content.json?v=2026.07.27-1955").then((r) => {
           if (!r.ok) throw new Error("content " + r.status);
           return r.json();
         }),
