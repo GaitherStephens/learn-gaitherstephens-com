@@ -569,11 +569,19 @@ footer.foot a { color: var(--muted); }
 .ring .track { stroke: var(--line); }
 .ring .fill { stroke: var(--cyan); transition: stroke-dasharray .6s ease; }
 .ring .fill.done { stroke: var(--good); }
+/* Flex row, not grid: a grid with two children puts the count and the "/20"
+   on separate rows, which read as a broken fraction. */
+/* Flex ROW so the count and the "/20" sit side by side (a grid put them on
+   separate rows, which read as a broken fraction), and align CENTER so the
+   text is centred in the ring. `baseline` here pushed a lone number to the
+   top of the 78px box. The small denominator gets a nudge so it still looks
+   like it is sitting on the number's baseline. */
 .ring b {
   position: absolute; inset: 0;
-  display: grid; place-items: center;
+  display: flex; align-items: center; justify-content: center; gap: 1px;
   font-family: var(--serif); font-size: 1.15rem; line-height: 1;
 }
+.ring b .of { font-size: .62rem; color: var(--muted); align-self: center; margin-top: .3em; }
 .today-copy { min-width: 0; flex: 1 1 12rem; }
 .today-copy h3 { margin-bottom: .15rem; display: flex; align-items: center; gap: .4rem; }
 .today-copy p { margin: 0; font-size: .87rem; color: var(--muted); }

@@ -582,17 +582,24 @@
   /* ================= tiny markdown ================= */
 
   function md(src) {
-    const blocks = String(src).split(/\n{2,}/);
+    /* Pull fenced code blocks out FIRST, before splitting on blank lines.
+       Formula boxes routinely contain a blank line between the equation and
+       its symbol key; splitting first tore those in half and left a stray
+       ``` rendered as literal text in eleven guide sections. */
+    const fences = [];
+    let text = String(src).replace(/```[a-z]*\n([\s\S]*?)```/g, (_, body) => {
+      fences.push(body.replace(/\s+$/, ""));
+      return "\n\nFENCE_" + (fences.length - 1) + "_END\n\n";
+    });
+
+    const blocks = text.split(/\n{2,}/);
     let html = "";
     for (let block of blocks) {
       block = block.trim();
       if (!block) continue;
 
-      if (block.startsWith("```")) {
-        const body = block.replace(/^```[a-z]*\n?/, "").replace(/```$/, "");
-        html += `<pre>${esc(body.trim())}</pre>`;
-        continue;
-      }
+      const only = block.match(/^FENCE_(\d+)_END$/);
+      if (only) { html += `<pre>${esc(fences[Number(only[1])])}</pre>`; continue; }
       if (/^\*\*Trap:\*\*/.test(block)) {
         html += `<div class="trap">${inline(block)}</div>`;
         continue;
@@ -1017,11 +1024,11 @@
         <div class="today">
           <div class="ring">
             <svg viewBox="0 0 80 80" aria-hidden="true">
-              <circle class="track" cx="40" cy="40" r="${R}"></circle>
-              <circle class="fill ${pctGoal >= 1 ? "done" : ""}" cx="40" cy="40" r="${R}"
+              <circle class="track" cx="40" cy="40" r="${RAD}"></circle>
+              <circle class="fill ${pctGoal >= 1 ? "done" : ""}" cx="40" cy="40" r="${RAD}"
                 style="stroke-dasharray:${(C * pctGoal).toFixed(1)} ${C.toFixed(1)}"></circle>
             </svg>
-            <b>${doneToday}<span style="font-size:.62rem;color:var(--muted)">/${target}</span></b>
+            <b>${doneToday}${pctGoal >= 1 ? "" : `<span class="of">/${target}</span>`}</b>
           </div>
           <div class="today-copy">
             <h3>${pctGoal >= 1 ? `${icon("i-check")} Goal met today` : "Today's goal"}</h3>
@@ -3005,7 +3012,7 @@
   (async () => {
     try {
       const [content] = await Promise.all([
-        fetch("/content.json?v=2026.07.27-1506").then((r) => {
+        fetch("/content.json?v=2026.07.27-1521").then((r) => {
           if (!r.ok) throw new Error("content " + r.status);
           return r.json();
         }),
