@@ -258,6 +258,44 @@ button.mode.rail,
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M12 2a5 5 0 0 0-5 5v3M7 10a5 5 0 0 1 10 0v2M4 14c0-1 .4-2 1-2.7M12 22c-1.5-2-2-4.5-2-7M16 21c.7-1.6 1-3.3 1-5M20 17c.3-1.3.4-2.6.4-4'/%3E%3C/svg%3E");
 }
 
+.demo-wrap { margin-top: 1.25rem; padding-top: 1.1rem; border-top: 1px solid var(--line); }
+.demo-or {
+  display: block; text-align: center; font-size: .78rem;
+  text-transform: uppercase; letter-spacing: .08em; color: var(--muted);
+  margin-bottom: .7rem;
+}
+.demo-btn {
+  display: block; text-align: center; text-decoration: none;
+  font-weight: 600; font-size: .95rem;
+  padding: .7rem 1rem; min-height: 44px;
+  border: 1px solid var(--line-strong); border-radius: 10px;
+  color: var(--fg); background: var(--card-bg);
+}
+.demo-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.demo-note { font-size: .78rem; color: var(--muted); margin: .6rem 0 0; text-align: center; line-height: 1.45; }
+
+.login-legal {
+  max-width: 380px; margin: 1.2rem auto 0;
+  font-size: .72rem; line-height: 1.5; color: var(--muted);
+  text-align: center;
+}
+
+/* Demo banner inside the app */
+/* Deliberately NOT sticky: the header already sticks to top 0, and two
+   sticky bars fight for the same offset and overlap on scroll. */
+.demo-bar {
+  display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
+  padding: .5rem .8rem;
+  background: var(--warn-bg); color: var(--warn);
+  font-size: .84rem; font-weight: 600;
+}
+.demo-bar .ico { flex: none; }
+.demo-bar span { flex: 1 1 12rem; font-weight: 400; }
+.demo-bar a {
+  color: inherit; font-weight: 700; text-decoration: underline;
+  padding: .3rem 0; white-space: nowrap;
+}
+
 .login-error {
   background: var(--bad-bg);
   color: var(--bad);

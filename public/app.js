@@ -28,12 +28,12 @@
   const RECENT_CAP = 300;
 
   function loadLocal() {
-    try { return { ...emptyState(), ...JSON.parse(localStorage.getItem(LS_KEY) || "{}") }; }
+    try { return { ...emptyState(), ...JSON.parse(localStorage.getItem(lsKey()) || "{}") }; }
     catch { return emptyState(); }
   }
 
   function writeLocal() {
-    try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch { /* quota */ }
+    try { localStorage.setItem(lsKey(), JSON.stringify(S)); } catch { /* quota */ }
   }
 
   function setSync(cls, title) {
@@ -43,9 +43,16 @@
 
   /* Push to the server, debounced. Server merges per record by timestamp and
      returns the merged truth, so a stale device cannot wipe the other's work. */
+  /* Demo mode. The server already refuses to read or write the real account
+     for a demo caller; this side just keeps the demo's own progress in a
+     separate localStorage key and never sends it anywhere. */
+  let DEMO = false;
+  const lsKey = () => (DEMO ? "ftce004.demo.v1" : LS_KEY);
+
   function save() {
     S.updatedAt = Date.now();
     writeLocal();
+    if (DEMO) { setSync("ok", "Demo mode: progress is not saved"); return; }
     clearTimeout(saveTimer);
     setSync("busy", "Saving...");
     saveTimer = setTimeout(async () => {
@@ -69,7 +76,19 @@
     try {
       const res = await fetch("/api/state", { cache: "no-store" });
       if (!res.ok) throw new Error(res.status);
-      const server = { ...emptyState(), ...(await res.json()) };
+      const raw = await res.json();
+      if (raw.demo) {
+        // Only flag it here. Seeding needs DATA, which is still being fetched
+        // in parallel with this call, so it happens in boot once content is
+        // in. Seeding here threw on a null DATA and silently fell through to
+        // an empty state, which showed a visitor the first-run wizard.
+        DEMO = true;
+        document.body.classList.add("is-demo");
+        S = loadLocal();
+        setSync("ok", "Demo mode: progress is not saved");
+        return;
+      }
+      const server = { ...emptyState(), ...raw };
       const local = loadLocal();
       // Same merge rule the server uses, so an offline session survives the pull.
       const mergeRec = (a, b) => {
@@ -117,6 +136,63 @@
       S = loadLocal();
       setSync("err", "Offline: using this device's saved progress");
     }
+  }
+
+  /* Build a plausible few weeks of study so a visitor sees a working app
+     rather than a wall of empty charts. Deterministic, so the demo looks the
+     same to everyone, and shaped to be honestly mid-progress: strong in a
+     couple of competencies, weak in others, a few confidently-wrong answers
+     to make the diagnostics show their point. */
+  function seedDemo() {
+    const st = emptyState();
+    const t = Date.now();
+    const day = 86400000;
+
+    // Rough accuracy per competency, so the mastery bars differ meaningfully.
+    const skill = { 1: 0.86, 2: 0.62, 3: 0.55, 4: 0.78, 5: 0.9, 6: 0.7, 7: 0.8, 8: 0.92, 9: 0.66 };
+    let seed = 7;
+    const rnd = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+
+    const pool = DATA.questions.filter((_, i) => i % 3 !== 2);   // ~2/3 of the bank
+    for (const q of pool) {
+      const ok = rnd() < (skill[q.comp] ?? 0.7);
+      const at = t - Math.floor(rnd() * 21) * day;
+      const conf = ok ? (rnd() < 0.6 ? 4 : 3) : (rnd() < 0.35 ? 4 : rnd() < 0.6 ? 2 : 1);
+      const ms = 25000 + Math.floor(rnd() * 90000);
+      st.questions[q.id] = { seen: 1, correct: ok ? 1 : 0, wrong: ok ? 0 : 1, lastCorrect: ok, conf, ms, at };
+      st.recent.push({ qid: q.id, comp: q.comp, skill: q.skill, ok, conf, ms, why: ok ? "" : ["never", "mixed", "misread", "formula"][Math.floor(rnd() * 4)], at });
+    }
+    st.recent.sort((a, b) => a.at - b.at);
+    st.recent = st.recent.slice(-120);
+
+    for (const c of DATA.cards.filter((_, i) => i % 2 === 0)) {
+      const box = 1 + Math.floor(rnd() * 4);
+      st.cards[c.id] = { box, due: t + (rnd() < 0.3 ? -day : days(BOXES[box])), seen: 1 + Math.floor(rnd() * 3), at: t - Math.floor(rnd() * 14) * day };
+    }
+
+    st.exams.push(
+      { at: t - 12 * day, raw: 51, total: 80, minutes: 141, byComp: {}, mini: false },
+      { at: t - 5 * day, raw: 14, total: 20, minutes: 33, byComp: {}, mini: true },
+      { at: t - 2 * day, raw: 15, total: 20, minutes: 31, byComp: {}, mini: true },
+    );
+
+    for (let i = 0; i < 9; i++) {
+      const d = new Date(t - i * day);
+      if (i === 3) continue;                       // one missed day, honestly
+      st.days[dayKey(d)] = { q: 12 + Math.floor(rnd() * 20), c: 8 + Math.floor(rnd() * 15), at: t - i * day };
+    }
+
+    const exam = new Date(t + 26 * day);
+    st.prefs = {
+      name: "Sam",
+      examDate: `${exam.getFullYear()}-${String(exam.getMonth() + 1).padStart(2, "0")}-${String(exam.getDate()).padStart(2, "0")}`,
+      dailyGoal: 20,
+      askConfidence: true,
+      onboarded: true,
+    };
+    st.prefsAt = t;
+    st.updatedAt = t;
+    return st;
   }
 
   /* ================= helpers ================= */
@@ -2448,6 +2524,13 @@
     });
 
     $("#resetAll").onclick = async () => {
+      if (DEMO) {
+        S = seedDemo();
+        writeLocal();
+        go("#/");
+        router();
+        return;
+      }
       if (!confirm("Erase all progress on every device? This cannot be undone.")) return;
       S = emptyState();
       writeLocal();
@@ -2514,6 +2597,16 @@
   }
 
   function initSecurityPanel() {
+    // The demo has no account, and the auth endpoints refuse it, so replace
+    // the panel rather than let it fail against a 403.
+    if (DEMO) {
+      const panel = $("#securityPanel");
+      if (panel) {
+        panel.innerHTML = `<h2>${icon("i-lock")} Sign-in</h2>
+          <p class="small muted">The real app is private: a PIN, with an optional passkey so you can sign in with Face ID. There is no account in the demo, so there is nothing to configure here.</p>`;
+      }
+      return;
+    }
     refreshPasskeys();
     const add = $("#addPasskey");
     if (add && window.PublicKeyCredential) {
@@ -2890,18 +2983,39 @@
     };
   }
 
+  function initDemoBar() {
+    const bar = document.createElement("div");
+    bar.className = "demo-bar";
+    bar.innerHTML = `${icon("i-eye")}<strong>Demo</strong>
+      <span>Everything works, with sample progress for a made-up learner. Nothing is saved and no real account is visible.</span>
+      <a href="#" id="demoReset">Start over</a>
+      <a href="/exit-demo">Exit</a>`;
+    document.body.insertBefore(bar, document.querySelector("header.top"));
+    bar.querySelector("#demoReset").onclick = (e) => {
+      e.preventDefault();
+      S = seedDemo();
+      writeLocal();
+      go("#/");
+      router();
+    };
+  }
+
   /* ================= boot ================= */
 
   (async () => {
     try {
       const [content] = await Promise.all([
-        fetch("/content.json?v=2026.07.27-1447").then((r) => {
+        fetch("/content.json?v=2026.07.27-1506").then((r) => {
           if (!r.ok) throw new Error("content " + r.status);
           return r.json();
         }),
         pull(),
       ]);
       DATA = content;
+      if (DEMO) {
+        if (!S.prefs?.onboarded) { S = seedDemo(); writeLocal(); }
+        initDemoBar();
+      }
       initTheme();
       router();
       initFlag();

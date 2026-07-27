@@ -10,6 +10,8 @@ import {
 } from "./webauthn.js";
 
 const COOKIE = "learn_session";
+const DEMO_COOKIE = "learn_demo";
+const DEMO_HOURS = 6;
 const SESSION_DAYS = 60;
 const MAX_ATTEMPTS = 6;          // per window, per hashed IP
 const ATTEMPT_WINDOW_MIN = 15;
@@ -222,7 +224,7 @@ function loginPage(error, nextPath) {
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><meta name="color-scheme" content="light dark">
 <title>Sign in : FTCE Science 5-9 Study</title>
-<link rel="stylesheet" href="/styles.css?v=2026.07.27-1447">
+<link rel="stylesheet" href="/styles.css?v=2026.07.27-1506">
 </head><body class="login-body">
 <main class="login-card">
   <div class="login-mark">FTCE</div>
@@ -239,7 +241,14 @@ function loginPage(error, nextPath) {
     <button type="button" id="passkeyBtn" hidden>Sign in with a passkey</button>
     <p class="login-error" id="passkeyErr" hidden></p>
   </div>
+
+  <div class="demo-wrap">
+    <span class="demo-or">or</span>
+    <a class="demo-btn" href="/demo">Take a look around</a>
+    <p class="demo-note">A full working demo with sample progress. Nothing you do is saved, and it cannot see anyone's real account.</p>
+  </div>
 </main>
+<p class="login-legal">An independent study tool. Not affiliated with, endorsed by, or connected to the Florida Department of Education or Pearson. FTCE is their trademark, used here only to say which exam this prepares for. All questions and explanations are original; no actual test items appear here.</p>
 <script>
 (() => {
   const btn = document.getElementById("passkeyBtn");
@@ -387,6 +396,29 @@ export default {
       });
     }
 
+    /* --- demo mode ---
+       A read-only tour. It grants access to the app shell and the study
+       content, but it never touches D1: the demo's progress lives only in
+       that browser's localStorage and is thrown away. There is no path from
+       a demo cookie to the real account's data. */
+    if (path === "/demo") {
+      return new Response(null, {
+        status: 303,
+        headers: {
+          Location: "/#/",
+          "Set-Cookie": `${DEMO_COOKIE}=1; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${DEMO_HOURS * 3600}`,
+          ...SEC_HEADERS,
+        },
+      });
+    }
+
+    if (path === "/exit-demo") {
+      return new Response(null, {
+        status: 303,
+        headers: { Location: "/login", "Set-Cookie": `${DEMO_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`, ...SEC_HEADERS },
+      });
+    }
+
     if (path === "/logout") {
       return new Response(null, {
         status: 303,
@@ -401,12 +433,28 @@ export default {
     const PUBLIC_ASSETS = new Set(["/styles.css", "/favicon.ico"]);
 
     const authed = await sessionValid(env, getCookie(request, COOKIE));
-    if (!authed && !PUBLIC_ASSETS.has(path)) {
+    const isDemo = !authed && getCookie(request, DEMO_COOKIE) === "1";
+
+    if (!authed && !isDemo && !PUBLIC_ASSETS.has(path)) {
       if (path.startsWith("/api/")) return json({ error: "unauthorized" }, 401);
       return new Response(null, {
         status: 303,
         headers: { Location: `/login?next=${encodeURIComponent(path)}`, ...SEC_HEADERS },
       });
+    }
+
+    /* Demo callers get the app and the content, and nothing else. Every API
+       that reads or writes the real account is answered here, before any of
+       the handlers below can reach D1. Deny by default: only /api/state is
+       given a synthetic response, everything else is refused outright. */
+    if (isDemo && path.startsWith("/api/")) {
+      // GET /api/state is the ONE thing a demo may call, and it returns a
+      // synthetic empty state, never a D1 read. The client seeds its own demo
+      // progress locally. Everything else, including any write, is refused.
+      if (path === "/api/state" && method === "GET") {
+        return json({ ...EMPTY_STATE, demo: true });
+      }
+      return json({ error: "not available in demo", demo: true }, 403);
     }
 
     /* --- passkey management (auth required) --- */
