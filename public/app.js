@@ -574,7 +574,16 @@
     "progress": progressView,
   };
 
-  function go(hash) { location.hash = hash; }
+  /* Navigate. If the target hash is what we are already on, assigning it fires
+     no hashchange and the click does nothing, which is how "Go again" on the
+     formula drill and re-tapping a mode you are already in ended up silently
+     dead. Re-render explicitly in that case. */
+  function go(hash) {
+    if (location.hash === hash) router();
+    else location.hash = hash;
+  }
+  // Inline onclick handlers in template strings run in global scope.
+  window.__go = go;
 
   function router() {
     const raw = (location.hash || "#/").replace(/^#\/?/, "");
@@ -584,10 +593,84 @@
     fn(rest);
   }
 
+  /* ================= welcome (first run) ================= */
+
+  const userName = () => (S.prefs?.name || "").trim();
+
+  function greeting() {
+    const h = new Date().getHours();
+    const part = h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+    const n = userName();
+    return n ? `${part}, ${n}` : part;
+  }
+
+  /* One short screen, asked once. Three questions, all skippable, because a
+     wall of setup between her and the first question is its own kind of
+     frustration. The name is only for the greeting; nothing depends on it. */
+  function welcome() {
+    const today = new Date();
+    const min = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    app.innerHTML = `
+      <section class="panel welcome">
+        <div class="welcome-mark">${icon("i-lab", "ico ico--lg")}</div>
+        <h1>Welcome</h1>
+        <p class="muted">Three quick things, then you can start. You can change any of them later.</p>
+
+        <label class="wfield">
+          <span>${icon("i-pencil")}What should I call you?</span>
+          <input type="text" id="wName" maxlength="24" placeholder="Your name" autocomplete="given-name">
+        </label>
+
+        <label class="wfield">
+          <span>${icon("i-calendar")}When is your test? <em>optional</em></span>
+          <input type="date" id="wDate" min="${min}">
+          <small class="muted">This turns on the countdown and the daily plan.</small>
+        </label>
+
+        <div class="wfield">
+          <span>${icon("i-target")}Daily goal</span>
+          <div class="seg" role="group" aria-label="Daily goal">
+            ${[10, 20, 30, 50].map((n) => `<button type="button" data-wgoal="${n}" aria-pressed="${n === 20}">${n}</button>`).join("")}
+          </div>
+          <small class="muted">Cards and questions both count. Twenty is about fifteen minutes.</small>
+        </div>
+
+        <div class="actions" style="margin-top:1.2rem">
+          <button class="btn-primary" id="wStart">${icon("i-play")}Start studying</button>
+          <button id="wSkip">Skip for now</button>
+        </div>
+      </section>`;
+
+    let goal = 20;
+    app.querySelectorAll("[data-wgoal]").forEach((b) => {
+      b.onclick = () => {
+        goal = Number(b.dataset.wgoal);
+        app.querySelectorAll("[data-wgoal]").forEach((x) => x.setAttribute("aria-pressed", String(Number(x.dataset.wgoal) === goal)));
+      };
+    });
+    const finish = (withValues) => {
+      S.prefs = {
+        ...(S.prefs || {}),
+        name: withValues ? ($("#wName").value || "").trim().slice(0, 24) : "",
+        examDate: withValues ? ($("#wDate").value || null) : null,
+        dailyGoal: withValues ? goal : 20,
+        onboarded: true,
+      };
+      S.prefsAt = Date.now();
+      save();
+      go("#/");
+      router();
+    };
+    $("#wStart").onclick = () => finish(true);
+    $("#wSkip").onclick = () => finish(false);
+    $("#wName").focus();
+  }
+
   /* ================= home ================= */
 
   function home() {
     session = null;
+    if (!S.prefs?.onboarded) return welcome();
     const o = overall();
     const due = dueCards().length;
     const missed = missedQuestions().length;
@@ -624,6 +707,7 @@
     else resume = { hash: "#/drill", icon: "i-shuffle", title: "Run an adaptive drill", sub: "Twenty questions aimed at your weak spots" };
 
     app.innerHTML = `
+      <h1 class="greet">${esc(greeting())}</h1>
       <section class="hero">
         <div class="today">
           <div class="ring">
@@ -646,40 +730,23 @@
         </div>
       </section>
 
-      <button class="resume" onclick="location.hash='${resume.hash}'">
+      ${dLeft !== null && dLeft >= 0 ? `
+      <section class="panel">
+        <div class="crumb"><span class="chip">${icon("i-clock")} ${esc(ph.label)}</span>
+          <span class="prog">${dLeft === 0 ? "Test is today" : `${dLeft} day${dLeft === 1 ? "" : "s"} to go`}</span></div>
+        <h2 style="margin-bottom:.2rem">Plan for today</h2>
+        <p class="small muted">Short on purpose. A plan you finish beats an ideal one you abandon.</p>
+        <ul class="plan">
+          ${plan.map((p, i) => `<li><button data-plan="${p.hash}" class="${i === 0 ? "first" : ""}">${icon(p.icon)}<span>${esc(p.label)}</span>${icon("i-arrow-right", "ico go")}</button></li>`).join("")}
+        </ul>
+      </section>`
+      : `
+      <button class="resume" onclick="__go('${resume.hash}')">
         ${icon(resume.icon, "ico ico--lg")}
         <span><b>${esc(resume.title)}</b><small>${esc(resume.sub)}</small></span>
         ${icon("i-arrow-right", "ico go")}
       </button>
 
-      <section class="panel teach">
-        ${teaching ? `
-          <h3>${compIcon(teaching.comp)} Teaching ${esc(compTitle(teaching.comp).toLowerCase())} today</h3>
-          <p class="small muted">Tonight's practice is weighted toward it. You already did the hard part of activating this material in front of a class, so it will stick for much less effort now.</p>
-          <div class="actions">
-            <button class="btn-primary" id="teachDrill">${icon("i-shuffle")} Drill it</button>
-            <button id="teachCards">${icon("i-cards")} Cards</button>
-            <button id="teachClear" class="small">Change</button>
-          </div>`
-        : `
-          <h3>${icon("i-lab")} What are you teaching today?</h3>
-          <p class="small muted">Optional, five seconds. Practising tonight what you taught today is the cheapest retention you will ever get, and no prep course can do this for you.</p>
-          <div class="teach-opts">
-            ${DATA.comps.map((c) => `<button class="teach-opt" data-teach="${c.comp}">${compIcon(c.comp)}${esc(c.title)}</button>`).join("")}
-            <button class="teach-opt" data-teach="0">Not teaching science today</button>
-          </div>`}
-      </section>
-
-      ${dLeft !== null && dLeft >= 0 ? `
-      <section class="panel">
-        <div class="crumb"><span class="chip">${icon("i-clock")} ${esc(ph.label)}</span>
-          <span class="prog">${dLeft === 0 ? "Today" : `${dLeft} day${dLeft === 1 ? "" : "s"}`}</span></div>
-        <h2 style="margin-bottom:.2rem">Plan for today</h2>
-        <p class="small muted">Short on purpose. A plan you finish beats an ideal one you abandon.</p>
-        <ul class="plan">
-          ${plan.map((p) => `<li><button data-plan="${p.hash}">${icon(p.icon)}<span>${esc(p.label)}</span>${icon("i-arrow-right", "ico go")}</button></li>`).join("")}
-        </ul>
-      </section>` : `
       <section class="panel">
         <h3>${icon("i-clock")} When is your test?</h3>
         <p class="small muted">Set the date and this becomes a countdown with a plan that changes as it gets closer. Without it the app cannot pace anything.</p>
@@ -688,6 +755,25 @@
           <button class="btn-primary" id="examDateSave">Set date</button>
         </div>
       </section>`}
+
+      <section class="panel teach">
+        ${teaching ? `
+          <h3>${compIcon(teaching.comp)} Teaching ${esc(compTitle(teaching.comp).toLowerCase())} today</h3>
+          <p class="small muted">Tonight's practice is weighted toward it. You already did the hard part of activating this material in front of a class.</p>
+          <div class="actions">
+            <button class="btn-primary" id="teachDrill">${icon("i-shuffle")} Drill it</button>
+            <button id="teachCards">${icon("i-cards")} Cards</button>
+            <button id="teachClear" class="small">Change</button>
+          </div>`
+        : `
+          <details class="teach-details">
+            <summary>${icon("i-lab")}<span><b>What are you teaching today?</b><small>Optional. Practising tonight what you taught today is the cheapest retention there is.</small></span></summary>
+            <div class="teach-opts">
+              ${DATA.comps.map((c) => `<button class="teach-opt c${c.comp} rail" data-teach="${c.comp}">${compIcon(c.comp)}${esc(c.title)}</button>`).join("")}
+              <button class="teach-opt" data-teach="0">Not teaching science today</button>
+            </div>
+          </details>`}
+      </section>
 
       <section class="panel">
         <div class="crumb"><span class="chip">${icon("i-target")} Exam readiness</span>
@@ -704,90 +790,93 @@
         </div>
         <p class="small muted" style="margin:.8rem 0 0">A band rather than a number on purpose: Pearson does not publish how raw scores convert to the 200 scaled pass mark, so a precise percentage would be false precision.</p>
         <div class="actions" style="margin-top:.8rem">
-          <button onclick="location.hash='#/skills'">${icon("i-search")} Skill map</button>
-          <button onclick="location.hash='#/review'">${icon("i-chart")} Last 50</button>
+          <button onclick="__go('#/skills')">${icon("i-search")} Skill map</button>
+          <button onclick="__go('#/review')">${icon("i-chart")} Last 50</button>
         </div>
       </section>
 
-      <h2>Ways to study</h2>
+      <h2 class="sec-h">${icon("i-play")}Practise</h2>
+      <p class="sec-sub">Little and often. This is where most of your points come from.</p>
       <div class="modes">
-        <button class="mode" onclick="location.hash='#/cards'">
+        <button class="mode" onclick="__go('#/cards')">
           <span class="tagline">${icon("i-cards")} Spaced repetition</span>
           <h3>Flashcards</h3>
-          <p>300 cards on a Leitner schedule. Cards you miss come back fast, cards you know go quiet.</p>
+          <p>Cards you miss come back fast, cards you know go quiet.</p>
           ${due ? `<span class="badge">${due} due now</span>` : ""}
         </button>
-        <button class="mode" onclick="location.hash='#/quiz'">
-          <span class="tagline">${icon("i-quiz")} Retrieval practice</span>
-          <h3>Topic quiz</h3>
-          <p>Pick one competency and answer questions with an explanation after every single one.</p>
-        </button>
-        <button class="mode" onclick="location.hash='#/drill'">
-          <span class="tagline">${icon("i-shuffle")} Interleaving</span>
+        <button class="mode" onclick="__go('#/drill')">
+          <span class="tagline">${icon("i-shuffle")} Mixed practice</span>
           <h3>Adaptive drill</h3>
-          <p>Twenty mixed questions, weighted toward your weak competencies and things you got wrong before.</p>
+          <p>Twenty questions aimed at your weak spots and past mistakes.</p>
         </button>
-        <button class="mode" onclick="location.hash='#/mini'">
-          <span class="tagline">${icon("i-clock")} Timed practice</span>
-          <h3>Mini mock</h3>
-          <p>Twenty questions on the real blueprint and the real clock, done in 37 minutes. Cheap enough to sit twice a week.</p>
+        <button class="mode" onclick="__go('#/quiz')">
+          <span class="tagline">${icon("i-quiz")} One topic</span>
+          <h3>Topic quiz</h3>
+          <p>Pick one competency, with an explanation after every question.</p>
         </button>
-        <button class="mode" onclick="location.hash='#/exam'">
-          <span class="tagline">${icon("i-exam")} Test simulation</span>
-          <h3>Full mock exam</h3>
-          <p>Eighty questions, 2:30 clock, no feedback until you submit. Save these: there are only three in the bank.</p>
-        </button>
-        <button class="mode" onclick="location.hash='#/formulas'">
-          <span class="tagline">${icon("i-energy")} Typed recall</span>
-          <h3>Formula drill</h3>
-          <p>${typedCards().length} formulas typed from memory, not self-graded. The real test gives you no reference sheet.</p>
-        </button>
-        <button class="mode" onclick="location.hash='#/skills'">
-          <span class="tagline">${icon("i-search")} Coverage</span>
-          <h3>Skill map</h3>
-          <p>All ${SKILL_COUNT()} published skills, marked mastered, shaky, or untouched. This is what you are responsible for.</p>
-        </button>
-        <button class="mode" onclick="location.hash='#/review'">
-          <span class="tagline">${icon("i-chart")} Diagnostics</span>
-          <h3>Last 50</h3>
-          <p>Accuracy, pace against the 112-second budget, how well calibrated your confidence is, and what kind of mistakes you make.</p>
-        </button>
-        <button class="mode" onclick="location.hash='#/recall'">
-          <span class="tagline">${icon("i-brain")} Free recall</span>
-          <h3>Brain dump</h3>
-          <p>Write everything you know about a topic from memory, then check yourself against the key points.</p>
-        </button>
-        <button class="mode" onclick="location.hash='#/guide'">
-          <span class="tagline">${icon("i-book")} Reference</span>
-          <h3>Concept guide</h3>
-          <p>Every competency explained, with the formulas you have to memorize and the traps that catch people.</p>
-        </button>
-        <button class="mode" onclick="location.hash='#/missed'">
-          <span class="tagline">${icon("i-redo")} Error log</span>
+        <button class="mode" onclick="__go('#/missed')">
+          <span class="tagline">${icon("i-redo")} Second chances</span>
           <h3>Missed queue</h3>
-          <p>Only the questions you have gotten wrong. They leave the queue when you get them right.</p>
+          <p>Only what you got wrong. They leave when you get them right.</p>
           ${missed ? `<span class="badge">${missed} waiting</span>` : ""}
         </button>
-        <button class="mode" onclick="location.hash='#/progress'">
-          <span class="tagline">${icon("i-chart")} Diagnostics</span>
-          <h3>Progress</h3>
-          <p>Mastery by competency, exam history, and what to spend your next session on.</p>
+        <button class="mode" onclick="__go('#/formulas')">
+          <span class="tagline">${icon("i-energy")} Typed from memory</span>
+          <h3>Formula drill</h3>
+          <p>${typedCards().length} formulas you have to produce, not just recognise.</p>
         </button>
       </div>
 
-      <div class="mastery">
-        <h2>Mastery by competency</h2>
-        ${DATA.comps.map((c) => {
-          const m = compMastery(c.comp);
-          const dec = decayFactor(compLastTouched(c.comp));
-          const eff = m.score * dec;
-          const pct = Math.round(eff * 100);
-          return `<div class="mrow c${c.comp} rail"><span class="lbl">${compIcon(c.comp)} ${c.comp}. ${esc(c.title)}</span>
-            <span class="val">${m.seen ? `<span style="color:var(--${barTone(eff)})">${pct}%</span>` : "not started"}${dec < 0.99 ? ` ${icon("i-trend-down", "ico ico--sm")}fading` : ""} &middot; ${c.pct}% of test</span></div>
-            <div class="bar c${c.comp} rail-bar"><i class="${barClass(eff)}" style="width:${Math.max(pct, m.seen ? 2 : 0)}%"></i></div>`;
-        }).join("")}
-        <p class="small muted">Bars fade if a competency has gone untouched for weeks. Knowledge decays, and a display that only ever grows would quietly lie to you.</p>
+      <h2 class="sec-h">${icon("i-clock")}Test yourself</h2>
+      <p class="sec-sub">Under the real clock, with no feedback until you finish.</p>
+      <div class="modes">
+        <button class="mode" onclick="__go('#/mini')">
+          <span class="tagline">${icon("i-clock")} 37 minutes</span>
+          <h3>Mini mock</h3>
+          <p>Twenty questions on the real blueprint. Short enough to do often.</p>
+        </button>
+        <button class="mode" onclick="__go('#/exam')">
+          <span class="tagline">${icon("i-exam")} 2 hours 30</span>
+          <h3>Full mock exam</h3>
+          <p>All eighty questions. Save these, there are only three in the bank.</p>
+        </button>
+      </div>
+
+      <h2 class="sec-h">${icon("i-book")}Learn it</h2>
+      <p class="sec-sub">For material that is genuinely new, or gone cold.</p>
+      <div class="modes">
+        <button class="mode" onclick="__go('#/guide')">
+          <span class="tagline">${icon("i-book")} Reference</span>
+          <h3>Concept guide</h3>
+          <p>Every competency explained, with the formulas and the usual traps.</p>
+        </button>
+        <button class="mode" onclick="__go('#/recall')">
+          <span class="tagline">${icon("i-brain")} Free recall</span>
+          <h3>Brain dump</h3>
+          <p>Explain a topic from memory, then check yourself against the key points.</p>
+        </button>
+      </div>
+
+      <h2 class="sec-h">${icon("i-chart")}Where you stand</h2>
+      <p class="sec-sub">What you have covered, and what still needs work.</p>
+      <div class="modes">
+        <button class="mode" onclick="__go('#/skills')">
+          <span class="tagline">${icon("i-search")} ${SKILL_COUNT()} skills</span>
+          <h3>Skill map</h3>
+          <p>Everything the state can test you on, marked off one by one.</p>
+        </button>
+        <button class="mode" onclick="__go('#/review')">
+          <span class="tagline">${icon("i-chart")} Recent work</span>
+          <h3>Last 50</h3>
+          <p>Accuracy, pace, and whether your confidence matches your results.</p>
+        </button>
+        <button class="mode" onclick="__go('#/progress')">
+          <span class="tagline">${icon("i-list")} Everything</span>
+          <h3>Progress and settings</h3>
+          <p>Mastery by competency, exam history, test date, theme, sign-in.</p>
+        </button>
       </div>`;
+
 
     app.querySelectorAll("[data-teach]").forEach((b) => {
       b.onclick = () => { const c = Number(b.dataset.teach); setTeaching(c || null); router(); };
@@ -802,7 +891,7 @@
     };
     const tcl = $("#teachClear");
     if (tcl) tcl.onclick = () => { S.prefs = { ...(S.prefs || {}), teaching: null }; S.prefsAt = Date.now(); save(); router(); };
-    app.querySelectorAll("[data-plan]").forEach((b) => { b.onclick = () => { location.hash = b.dataset.plan; }; });
+    app.querySelectorAll("[data-plan]").forEach((b) => { b.onclick = () => go(b.dataset.plan); });
     const eds = $("#examDateSave");
     if (eds) eds.onclick = () => {
       const v = $("#examDateQuick").value;
@@ -838,7 +927,7 @@
         </div>
         <div class="actions">
           <button class="btn-primary" id="startCards">Start</button>
-          <button onclick="location.hash='#/'">Back</button>
+          <button onclick="__go('#/')">Back</button>
         </div>
       </div>`;
 
@@ -864,6 +953,12 @@
     const rec = S.cards[c.id];
     const total = s.queue.length;
 
+    // A formula card asks her to WRITE the answer, so it must offer a box to
+    // write in wherever it appears. Showing "Write the formula..." above a
+    // self-graded "Show answer" button is the kind of small mismatch that
+    // makes an app feel careless.
+    if (c.drill === "type") return renderCardTyped(c, rec, total);
+
     app.innerHTML = `
       <div class="panel">
         <div class="crumb">
@@ -886,7 +981,7 @@
             <button data-g="3" class="g3">${icon("i-star")}Easy<small>next week+</small></button>
           </div>`
         : `<div class="actions"><button class="btn-primary" id="reveal">Show answer</button>
-             <button onclick="location.hash='#/'">Stop</button></div>`}
+             <button onclick="__go('#/')">Stop</button></div>`}
         <p class="small muted" style="margin:1rem 0 0">${s.shown ? "Keys 1-4" : "Space or Enter"} to answer</p>
       </div>`;
 
@@ -897,6 +992,67 @@
         b.onclick = () => gradeCard(c, Number(b.dataset.g));
       });
     }
+  }
+
+  /* Typed card inside the ordinary flashcard deck. Same schedule, same flow,
+     but she produces the answer instead of judging herself. */
+  function renderCardTyped(c, rec, total) {
+    const s = session;
+    const graded = s.typedStage === "right" || s.typedStage === "wrong";
+
+    app.innerHTML = `
+      <div class="panel">
+        <div class="crumb">
+          ${compChip(c.comp)}
+          <span class="small muted">${icon("i-energy", "ico ico--sm")}${esc(c.topic)}</span>
+          <span class="prog">${s.i + 1} of ${total} &middot; ${rec ? `${icon("i-layers", "ico ico--sm")}box ${rec.box}` : `${icon("i-seed", "ico ico--sm")}new`}</span>
+        </div>
+        <p class="stem">${esc(c.front)}</p>
+        <input id="cardTypedIn" class="typed-in" type="text" autocomplete="off" autocapitalize="off"
+          autocorrect="off" spellcheck="false" placeholder="Type it from memory"
+          ${graded ? "disabled" : ""} value="${esc(s.typedValue || "")}">
+        ${graded ? `
+          <p class="verdict ${s.typedStage === "right" ? "ok" : "no"}">${icon(s.typedStage === "right" ? "i-check-circle" : "i-x-circle")}${s.typedStage === "right" ? "Correct" : "Not a match"}</p>
+          <div class="explain">${esc(c.back)}</div>
+          ${s.typedStage === "wrong" ? `<p class="small muted">Accepted forms include <code>${esc(c.answers[0])}</code>.</p>
+            <div class="actions" style="margin-bottom:.6rem"><button id="cardOverride">${icon("i-check")}I actually had this right</button></div>` : ""}
+          <div class="actions">
+            <button class="btn-primary" id="cardTypedNext">Next card</button>
+            <button onclick="__go('#/')">Stop</button>
+          </div>`
+        : `<div class="actions">
+            <button class="btn-primary" id="cardTypedCheck">Check</button>
+            <button id="cardTypedSkip">I do not know it</button>
+          </div>`}
+      </div>`;
+
+    const inp = $("#cardTypedIn");
+    if (inp && !graded) {
+      inp.focus();
+      inp.onkeydown = (e) => { if (e.key === "Enter") { e.preventDefault(); gradeCardTyped(c, inp.value, false); } };
+    }
+    const chk = $("#cardTypedCheck");
+    if (chk) chk.onclick = () => gradeCardTyped(c, $("#cardTypedIn").value, false);
+    const skip = $("#cardTypedSkip");
+    if (skip) skip.onclick = () => gradeCardTyped(c, "", true);
+    const ov = $("#cardOverride");
+    if (ov) ov.onclick = () => { s.typedStage = "right"; scheduleTyped(c, true); save(); renderCard(); };
+    const nx = $("#cardTypedNext");
+    if (nx) nx.onclick = () => {
+      if (s.typedStage === "wrong") s.again.push(c);
+      s.done++; s.i++; s.typedStage = null; s.typedValue = ""; s.shown = false;
+      renderCard();
+    };
+  }
+
+  function gradeCardTyped(card, value, skipped) {
+    const s = session;
+    s.typedValue = value;
+    const ok = !skipped && answerMatches(value, card.answers);
+    s.typedStage = ok ? "right" : "wrong";
+    scheduleTyped(card, ok);
+    save();
+    renderCard();
   }
 
   function gradeCard(card, grade) {
@@ -929,8 +1085,8 @@
         <h1>Deck clear</h1>
         <p class="muted">${pluralize(session.done, "card", "cards")} reviewed. ${dueCards().length ? `${dueCards().length} still due elsewhere.` : "Nothing else due right now."}</p>
         <div class="actions" style="justify-content:center">
-          <button class="btn-primary" onclick="location.hash='#/cards'">Another deck</button>
-          <button onclick="location.hash='#/'">Home</button>
+          <button class="btn-primary" onclick="__go('#/cards')">Another deck</button>
+          <button onclick="__go('#/')">Home</button>
         </div>
       </div>`;
     session = null;
@@ -941,7 +1097,7 @@
   function startQuestionRun(questions, label, opts = {}) {
     if (!questions.length) {
       app.innerHTML = `<div class="panel"><h1>Nothing to do</h1><p class="muted">No questions match that.</p>
-        <button class="btn-primary" onclick="location.hash='#/'">Home</button></div>`;
+        <button class="btn-primary" onclick="__go('#/')">Home</button></div>`;
       return;
     }
     session = {
@@ -1031,7 +1187,7 @@
             </div>` : ""}
           <div class="actions">
             <button class="btn-primary" id="next">${s.i + 1 >= s.qs.length ? "See results" : "Next question"}</button>
-            <button onclick="location.hash='#/'">Stop here</button>
+            <button onclick="__go('#/')">Stop here</button>
           </div>` : ""}
 
         ${!picked ? `<p class="small muted">Keys A-D or 1-4 to answer</p>` : ""}
@@ -1155,8 +1311,8 @@
             <div class="bar"><i class="${barClass(p)}" style="width:${Math.round(p * 100)}%"></i></div>`;
         }).join("")}
         <div class="actions" style="margin-top:1rem">
-          ${missedQuestions().length ? `<button class="btn-primary" onclick="location.hash='#/missed'">Review what you missed</button>` : ""}
-          <button onclick="location.hash='#/'">Home</button>
+          ${missedQuestions().length ? `<button class="btn-primary" onclick="__go('#/missed')">Review what you missed</button>` : ""}
+          <button onclick="__go('#/')">Home</button>
         </div>
       </div>`;
     session = null;
@@ -1178,18 +1334,18 @@
               <span class="meta">${n} q &middot; ${m.seen ? Math.round(m.accuracy * 100) + "%" : "new"}</span></label>`;
           }).join("")}
         </div>
-        <label class="small muted" style="display:block;margin-bottom:.6rem">Length
-          <select id="qlen" style="font:inherit;margin-left:.5rem;padding:.3rem;border-radius:8px;background:var(--bg);color:var(--fg);border:1px solid var(--line-strong)">
+        <label class="field-row">${icon("i-list")}<span>Length</span>
+          <select id="qlen" class="sel">
             <option value="10">10 questions</option>
             <option value="15" selected>15 questions</option>
             <option value="25">25 questions</option>
             <option value="999">Everything in this competency</option>
           </select></label>
-        <label class="small muted" style="display:block;margin-bottom:1rem">
-          <input type="checkbox" id="qfresh" style="accent-color:var(--cyan)"> Prefer questions I have not seen yet</label>
+        <label class="check-row">
+          <input type="checkbox" id="qfresh"> <span>Prefer questions I have not seen yet</span></label>
         <div class="actions">
           <button class="btn-primary" id="startQuiz">Start quiz</button>
-          <button onclick="location.hash='#/'">Back</button>
+          <button onclick="__go('#/')">Back</button>
         </div>
       </div>`;
 
@@ -1251,8 +1407,8 @@
       app.innerHTML = `<div class="panel" style="text-align:center"><h1>Queue is empty</h1>
         <p class="muted">Nothing you have missed is still outstanding. That is a good place to be.</p>
         <div class="actions" style="justify-content:center">
-          <button class="btn-primary" onclick="location.hash='#/drill'">Run a drill instead</button>
-          <button onclick="location.hash='#/'">Home</button></div></div>`;
+          <button class="btn-primary" onclick="__go('#/drill')">Run a drill instead</button>
+          <button onclick="__go('#/')">Home</button></div></div>`;
       return;
     }
     startQuestionRun(shuffle(missed).slice(0, 25), "Missed queue");
@@ -1271,7 +1427,7 @@
         </tbody></table>
         <div class="actions">
           <button class="btn-primary" id="startExam">Begin timed exam</button>
-          <button onclick="location.hash='#/'">Back</button>
+          <button onclick="__go('#/')">Back</button>
         </div>
       </div>
       ${hist.length ? `<div class="panel"><h2>Previous attempts</h2>
@@ -1440,7 +1596,7 @@
         <p style="margin-top:1rem"><strong>Spend your next sessions on:</strong> ${weak.map((w) => esc(compTitle(w.c).toLowerCase())).join(", ")}.</p>
         <div class="actions">
           <button class="btn-primary" id="reviewWrong" ${wrong.length ? "" : "disabled"}>Review the ${wrong.length} you missed</button>
-          <button onclick="location.hash='#/'">Home</button>
+          <button onclick="__go('#/')">Home</button>
         </div>
       </div>`;
 
@@ -1538,8 +1694,8 @@
           <p><span class="verdict-band ${band(s.right / s.queue.length).cls}">${pct}% typed from memory</span></p>
           <p class="small muted" style="max-width:42ch;margin:.6rem auto 0">There are no reference materials on the real test. Producing a formula cold is a different skill from recognising it, which is why these are typed.</p>
           <div class="actions" style="justify-content:center">
-            <button class="btn-primary" onclick="location.hash='#/formulas'">Go again</button>
-            <button onclick="location.hash='#/'">Home</button>
+            <button class="btn-primary" onclick="__go('#/formulas')">Go again</button>
+            <button onclick="__go('#/')">Home</button>
           </div>
         </div>`;
       session = null;
@@ -1568,7 +1724,7 @@
             </div>` : ""}
           <div class="actions">
             <button class="btn-primary" id="nextTyped">${s.i + 1 >= s.queue.length ? "See results" : "Next"}</button>
-            <button onclick="location.hash='#/'">Stop</button>
+            <button onclick="__go('#/')">Stop</button>
           </div>`
         : `<div class="actions"><button class="btn-primary" id="checkTyped">Check</button>
             <button id="skipTyped">I do not know it</button></div>`}
@@ -1652,7 +1808,7 @@
             </ol>
           </div></details>`;
       }).join("")}
-      <div class="panel"><button onclick="location.hash='#/'">Home</button></div>`;
+      <div class="panel"><button onclick="__go('#/')">Home</button></div>`;
 
     app.querySelectorAll("[data-skill]").forEach((b) => {
       b.onclick = () => {
@@ -1670,7 +1826,7 @@
     if (r.length < 5) {
       app.innerHTML = `<div class="panel"><h1>Last 50</h1>
         <p class="muted">Answer a few more questions and this fills in: accuracy, how well calibrated your confidence is, pace against the real clock, and which competencies you have been hitting.</p>
-        <button class="btn-primary" onclick="location.hash='#/drill'">Run a drill</button></div>`;
+        <button class="btn-primary" onclick="__go('#/drill')">Run a drill</button></div>`;
       return;
     }
     const acc = r.filter((x) => x.ok).length / r.length;
@@ -1741,7 +1897,7 @@
           return `<div class="mrow c${c} rail"><span class="lbl">${compIcon(Number(c))} ${c}. ${esc(compTitle(Number(c)))}</span><span class="val">${v.ok}/${v.n}</span></div>
             <div class="bar c${c} rail-bar"><i class="${barClass(p)}" style="width:${Math.round(p * 100)}%"></i></div>`;
         }).join("")}
-        <button onclick="location.hash='#/'" style="margin-top:.8rem">Home</button>
+        <button onclick="__go('#/')" style="margin-top:.8rem">Home</button>
       </div>`;
 
     const db = $("#drillDangerous");
@@ -1776,7 +1932,7 @@
         </div>
         <div class="actions">
           <button class="btn-primary" id="startRecall">Start</button>
-          <button onclick="location.hash='#/'">Back</button>
+          <button onclick="__go('#/')">Back</button>
         </div>
       </div>`;
 
@@ -1803,7 +1959,7 @@
           <textarea class="recall" id="dump" placeholder="Optional. Talking through it out loud works just as well."></textarea>
           <div class="actions" style="margin-top:.8rem">
             <button class="btn-primary" id="doneWriting">Done, show the key points</button>
-            <button onclick="location.hash='#/'">Stop</button>
+            <button onclick="__go('#/')">Stop</button>
           </div>
         </div>`;
       const ta = $("#dump");
@@ -1848,10 +2004,10 @@
           <p class="muted small">These are your real gaps. Read them now, then run the flashcards for this competency.</p>
           <ul class="keypoints">${missedTopics.map((t) => `<li><span><strong>${esc(t.topic)}</strong><br><span class="small">${esc(t.back)}</span></span></li>`).join("")}</ul>
           <div class="actions">
-            <button class="btn-primary" onclick="location.hash='#/cards'">Drill these with flashcards</button>
-            <button onclick="location.hash='#/guide/${s.comp}'">Read the guide section</button>
+            <button class="btn-primary" onclick="__go('#/cards')">Drill these with flashcards</button>
+            <button onclick="__go('#/guide/${s.comp}')">Read the guide section</button>
           </div></div>` : `<div class="panel"><p>Clean sweep. Nothing missing.</p>
-            <button class="btn-primary" onclick="location.hash='#/'">Home</button></div>`}`;
+            <button class="btn-primary" onclick="__go('#/')">Home</button></div>`}`;
       session = null;
     };
   }
@@ -1866,7 +2022,7 @@
         <p class="muted">Everything the state says is testable, competency by competency, with the formulas you have to memorize and the traps that catch teachers. There are no reference materials on the real test, so anything in a formula box has to be in your head.</p>
       </div>
       <div class="modes">
-        ${DATA.guide.map((g) => `<button class="mode c${g.comp} rail" onclick="location.hash='#/guide/${g.comp}'">
+        ${DATA.guide.map((g) => `<button class="mode c${g.comp} rail" onclick="__go('#/guide/${g.comp}')">
           <span class="tagline">${compIcon(g.comp)} ${g.pct}% of test</span>
           <h3>${g.comp}. ${esc(g.title)}</h3>
           <p>${pluralize(g.sections.length, "section", "sections")} &middot; ${statusPill(skillSummary && DATA.skills[String(g.comp)] ? (DATA.skills[String(g.comp)].every((_, i) => skillStatus(g.comp, i + 1).state === "mastered") ? "mastered" : DATA.skills[String(g.comp)].some((_, i) => skillStatus(g.comp, i + 1).state !== "untouched") ? "shaky" : "untouched") : "untouched")}</p></button>`).join("")}
@@ -1881,8 +2037,8 @@
         <div class="crumb"><span class="chip">Competency ${g.comp}</span><span class="small muted">${g.pct}% of the test</span></div>
         <h1 style="font-family:var(--serif)">${esc(g.title)}</h1>
         <div class="actions">
-          <button class="btn-primary" onclick="location.hash='#/quiz'">Quiz myself on this</button>
-          <button onclick="location.hash='#/guide'">All competencies</button>
+          <button class="btn-primary" onclick="__go('#/quiz')">Quiz myself on this</button>
+          <button onclick="__go('#/guide')">All competencies</button>
         </div>
       </div>
       ${g.sections.map((sec, i) => `<details class="sec" ${i === 0 ? "open" : ""}>
@@ -1891,8 +2047,8 @@
       <div class="panel" style="margin-top:1rem">
         <p class="small muted">Reading is the weakest form of study on its own. Follow this with a brain dump or a topic quiz while it is still fresh.</p>
         <div class="actions">
-          <button class="btn-primary" onclick="location.hash='#/recall'">Brain dump this competency</button>
-          ${comp < 9 ? `<button onclick="location.hash='#/guide/${comp + 1}'">Next competency</button>` : ""}
+          <button class="btn-primary" onclick="__go('#/recall')">Brain dump this competency</button>
+          ${comp < 9 ? `<button onclick="__go('#/guide/${comp + 1}')">Next competency</button>` : ""}
         </div>
       </div>`;
   }
@@ -1922,7 +2078,7 @@
         <h2>Where to spend the next session</h2>
         ${untouched.length ? `<p>Not enough data yet on: ${untouched.map((r) => esc(r.title.toLowerCase())).join(", ")}. Run a topic quiz on each so the drill can target properly.</p>` : ""}
         ${weak.length ? `<ol>${weak.map((r) => `<li><strong>${esc(r.title)}</strong> (${r.pct}% of the test): ${Math.round(r.m.accuracy * 100)}% accurate over ${r.m.seen} questions.</li>`).join("")}</ol>` : ""}
-        <div class="actions"><button class="btn-primary" onclick="location.hash='#/drill'">Adaptive drill</button></div>
+        <div class="actions"><button class="btn-primary" onclick="__go('#/drill')">Adaptive drill</button></div>
       </div>
 
       <div class="panel">
@@ -1951,6 +2107,15 @@
         <div class="seg" role="group" aria-label="Theme">
           ${THEMES.map((t) => `<button type="button" data-theme-opt="${t}" aria-pressed="false">
             <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><use href="#${THEME_ICON[t]}"></use></svg>${THEME_LABEL[t]}</button>`).join("")}
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>${icon("i-pencil")} Your name</h2>
+        <p class="small muted">Only used for the greeting on the home screen.</p>
+        <div class="actions">
+          <input type="text" id="nameIn" class="date-in" maxlength="24" placeholder="Your name" value="${esc(userName())}" style="flex:1 1 12rem">
+          <button class="btn-primary" id="nameSet">Save</button>
         </div>
       </div>
 
@@ -2005,6 +2170,13 @@
     app.querySelectorAll("[data-theme-opt]").forEach((b) => {
       b.onclick = () => { applyTheme(b.dataset.themeOpt); save(); };
     });
+    const nSet = $("#nameSet");
+    if (nSet) nSet.onclick = () => {
+      S.prefs = { ...(S.prefs || {}), name: ($("#nameIn").value || "").trim().slice(0, 24) };
+      S.prefsAt = Date.now();
+      save();
+      progressView();
+    };
     const eSet = $("#examDateSet");
     if (eSet) eSet.onclick = () => {
       const v = $("#examDateIn").value;
@@ -2176,6 +2348,9 @@
     if (!session) return;
 
     if (session.queue) {                       // flashcards
+      // A typed card owns the keyboard: she is writing an answer, so space
+      // must insert a space and digits must type digits.
+      if (session.queue[session.i]?.drill === "type") return;
       if (!session.shown && (e.key === " " || e.key === "Enter")) {
         e.preventDefault(); session.shown = true; renderCard();
       } else if (session.shown && ["1", "2", "3", "4"].includes(e.key)) {
@@ -2475,7 +2650,7 @@
   (async () => {
     try {
       const [content] = await Promise.all([
-        fetch("/content.json?v=2026.07.27-1418").then((r) => {
+        fetch("/content.json?v=2026.07.27-1435").then((r) => {
           if (!r.ok) throw new Error("content " + r.status);
           return r.json();
         }),

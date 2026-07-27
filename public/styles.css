@@ -324,6 +324,17 @@ header.top {
 .stat span { font-size: .78rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; display: inline-flex; align-items: center; gap: .25rem; }
 .stat span .ico { opacity: .8; }
 
+.greet { font-family: var(--serif); font-size: 1.5rem; margin: .2rem 0 .9rem; }
+
+/* Grouped mode sections. Thirteen equal cards in one grid is a wall; four
+   labelled groups of two to five is a menu. */
+.sec-h {
+  display: flex; align-items: center; gap: .45rem;
+  margin: 1.9rem 0 .1rem; font-size: 1.1rem;
+}
+.sec-h .ico { color: var(--cyan); }
+.sec-sub { font-size: .86rem; color: var(--muted); margin: 0 0 .7rem; }
+
 .modes { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .85rem; }
 .mode {
   display: block;
@@ -575,6 +586,29 @@ footer.foot a { color: var(--muted); }
   background: var(--fg); opacity: .55;
 }
 
+/* ---------- welcome ---------- */
+
+.welcome { max-width: 30rem; margin: 1.5rem auto; }
+.welcome-mark { color: var(--cyan); margin-bottom: .4rem; }
+.welcome h1 { font-family: var(--serif); margin-bottom: .25rem; }
+.wfield { display: block; margin-top: 1.15rem; }
+.wfield > span {
+  display: flex; align-items: center; gap: .4rem;
+  font-weight: 600; font-size: .92rem; margin-bottom: .35rem;
+}
+.wfield > span .ico { color: var(--cyan); }
+.wfield > span em { font-style: normal; font-weight: 400; color: var(--muted); font-size: .82rem; }
+.wfield input[type="text"], .wfield input[type="date"] {
+  width: 100%; font: inherit;
+  padding: .65rem .8rem;
+  border: 1px solid var(--line-strong); border-radius: 10px;
+  background: var(--bg); color: var(--fg);
+  min-height: 44px;
+}
+.wfield small { display: block; margin-top: .3rem; font-size: .8rem; }
+.welcome .seg { width: 100%; }
+.welcome .seg button { flex: 1; justify-content: center; }
+
 /* ---------- readiness evidence ---------- */
 
 .ready-band { margin-bottom: .2rem; }
@@ -628,6 +662,30 @@ footer.foot a { color: var(--muted); }
   color: var(--fg);
 }
 
+/* Native controls need explicit sizing: a default select is ~30px tall with a
+   13px font, which is both under the 44px touch floor and small enough that
+   iOS zooms the page when it gains focus. */
+.field-row {
+  display: flex; align-items: center; gap: .5rem;
+  margin-bottom: .6rem; font-size: .9rem;
+}
+.field-row .ico { color: var(--cyan); }
+.field-row > span { font-weight: 600; }
+.sel {
+  flex: 1; min-width: 0;
+  font: inherit; font-size: max(16px, 1rem);
+  min-height: 44px; padding: .5rem .7rem;
+  border-radius: 10px;
+  background: var(--bg); color: var(--fg);
+  border: 1px solid var(--line-strong);
+}
+.check-row {
+  display: flex; align-items: center; gap: .55rem;
+  min-height: 44px; margin-bottom: .6rem;
+  font-size: .9rem; cursor: pointer;
+}
+.check-row input { width: 1.15rem; height: 1.15rem; accent-color: var(--cyan); flex: none; }
+
 .date-in {
   font: inherit;
   padding: .55rem .7rem;
@@ -649,10 +707,27 @@ footer.foot a { color: var(--muted); }
 }
 .plan button .ico { color: var(--cyan); }
 .plan button .go { margin-left: auto; color: var(--muted); }
+/* The first plan item is the recommended next action, so it reads as the
+   primary button rather than one of five equal choices. */
+.plan button.first { border-color: var(--cyan); font-weight: 600; }
 
 /* ---------- teaching today ---------- */
 
 .teach h3 { display: flex; align-items: center; gap: .45rem; margin-bottom: .25rem; }
+
+/* Collapsed by default. It is optional, and nine competency buttons expanded
+   on every visit pushed the actual plan below the fold. */
+.teach-details > summary {
+  cursor: pointer; list-style: none;
+  display: flex; align-items: flex-start; gap: .55rem;
+  min-height: 44px;
+}
+.teach-details > summary::-webkit-details-marker { display: none; }
+.teach-details > summary .ico { color: var(--cyan); flex: none; margin-top: .15rem; }
+.teach-details > summary b { display: block; font-size: .95rem; }
+.teach-details > summary small { color: var(--muted); font-size: .84rem; }
+.teach-details[open] > summary { margin-bottom: .3rem; }
+
 .teach-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .4rem; margin-top: .7rem; }
 .teach-opt {
   display: flex; align-items: center; gap: .5rem;
