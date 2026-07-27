@@ -60,6 +60,32 @@ One shared account. All progress lives in a single `state` row as JSON, mirrored
 
 Merge is **per-record last-write-wins**, not blob last-write-wins: each card/question/recall record carries an `at` timestamp and the newer one survives. Implemented identically in `mergeState` (worker) and `pull` (client), so a phone session and a laptop session cannot clobber each other. Exams are appended and de-duplicated on `at:raw:total`. If you change one merge implementation, change the other.
 
+## Theme and icons
+
+Three themes, **system is the default**. `data-theme` on `<html>` is `"light"`, `"dark"`, or absent for system. Dark tokens are declared twice in `styles.css`, once under `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])` and once under `:root[data-theme="dark"]`. That repetition is intentional: it is cheaper than adding a build step to a site that has none. An inline script in `<head>` sets the attribute before first paint so there is no white flash. The choice is stored in `localStorage` and also mirrored into synced `prefs` so a new device inherits it.
+
+Icons are an inline SVG sprite in `index.html`, referenced with `<use href="#i-name">`.
+
+- **Every `<use>` wrapper needs `viewBox="0 0 24 24"`.** Without it the sprite draws at 1:1 user units into a ~17px box and the icon appears cropped or blank.
+- **The `icon()` helper takes the full sprite id** (`icon("i-cards")`), not a stem. It used to prepend `i-`, which produced `#i-i-cards` and every dynamic icon rendered empty with no console error.
+
+## Motivation layer
+
+Daily goal ring, streak, seven-day strip, resume card, session celebration, readiness score. Patterns borrowed from Duolingo/Khan/Udemy with the coercive parts deliberately left out: no points, no leaderboard, no lives, no loss aversion, no notifications.
+
+Two rules worth preserving:
+
+- The **streak counts a run ending today OR yesterday**, so an unfinished today never displays as broken. That display choice is the part of streak mechanics that makes people quit.
+- **Readiness and mastery are deliberately pessimistic** (scaled down by coverage) and readiness is hidden below 15 questions. Never replace them with a fake predicted scaled score: Pearson does not publish the raw-to-scaled conversion, and inventing one would be lying to the person whose job depends on it.
+
+Daily counters live in `state.days` keyed by **local** calendar day and merge by **max**, not by timestamp, so a phone day and a laptop day cannot erase each other.
+
+`CRITIQUE-BRIEF.md` is a self-contained description of the design for external review.
+
+## Mobile
+
+She studies on her phone more than anything else. Verified at 390px: zero horizontal overflow, no tap target under 44px. Safe-area insets on the floating buttons, 16px minimum input text so iOS does not zoom on focus, hover styles suppressed under `@media (hover: none)`, static header in short landscape.
+
 ## Study modes
 
 Flashcards (Leitner, `BOXES` intervals in days), topic quiz, adaptive drill (weights competency by test share x mastery gap, interleaved), 80-question timed mock exam on the real blueprint, brain dump (free recall then self-scored checklist), concept guide (markdown rendered by the small renderer in `app.js`), missed queue, progress dashboard.

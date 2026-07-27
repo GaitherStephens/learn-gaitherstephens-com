@@ -119,7 +119,7 @@ async function clearAttempts(env, ipHash) {
 
 /* ---------- progress state ---------- */
 
-const EMPTY_STATE = { cards: {}, questions: {}, exams: [], recall: {}, prefs: {}, updatedAt: 0 };
+const EMPTY_STATE = { cards: {}, questions: {}, exams: [], recall: {}, days: {}, prefs: {}, updatedAt: 0 };
 
 async function loadState(env) {
   try {
@@ -153,10 +153,25 @@ function mergeState(server, client) {
   const seen = new Set(exams.map(examKey));
   for (const e of client.exams || []) if (!seen.has(examKey(e))) { exams.push(e); seen.add(examKey(e)); }
   exams.sort((a, b) => a.at - b.at);
+  // Daily activity counters merge by MAX, not by timestamp. If she answers 10
+  // questions on her phone and 5 on the laptop without syncing between, the
+  // truthful-ish answer is 10, not whichever device wrote last. Undercounting
+  // beats a device silently erasing the other's day.
+  const days = { ...(server.days || {}) };
+  for (const [d, v] of Object.entries(client.days || {})) {
+    const cur = days[d] || {};
+    days[d] = {
+      q: Math.max(cur.q || 0, v.q || 0),
+      c: Math.max(cur.c || 0, v.c || 0),
+      at: Math.max(cur.at || 0, v.at || 0),
+    };
+  }
+
   return {
     cards: mergeRecords(server.cards, client.cards),
     questions: mergeRecords(server.questions, client.questions),
     recall: mergeRecords(server.recall, client.recall),
+    days,
     exams: exams.slice(-200),
     prefs: (client.prefsAt ?? 0) >= (server.prefsAt ?? 0) ? (client.prefs || {}) : (server.prefs || {}),
     prefsAt: Math.max(client.prefsAt ?? 0, server.prefsAt ?? 0),
@@ -191,7 +206,7 @@ function loginPage(error, nextPath) {
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><meta name="color-scheme" content="light dark">
 <title>Sign in : FTCE Science 5-9 Study</title>
-<link rel="stylesheet" href="/styles.css?v=2026.07.27-1329">
+<link rel="stylesheet" href="/styles.css?v=2026.07.27-1340">
 </head><body class="login-body">
 <main class="login-card">
   <div class="login-mark">FTCE</div>

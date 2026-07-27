@@ -6,10 +6,48 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="color-scheme" content="light dark">
 <title>FTCE Science 5-9 Study</title>
-<link rel="stylesheet" href="/styles.css?v=2026.07.27-1329">
+<link rel="stylesheet" href="/styles.css?v=2026.07.27-1340">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%94%AC%3C/text%3E%3C/svg%3E">
+<script>
+// Theme before first paint. Anything later and she gets a white flash on a
+// dark phone at 6am. Kept inline and tiny for exactly that reason.
+(function(){try{var t=localStorage.getItem("ftce004.theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();
+</script>
 </head>
 <body>
+
+<!-- Icon sprite. Inline so there is no extra request and icons inherit
+     currentColor for free across all three themes. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <g id="i-cards"><rect x="3" y="7" width="14" height="12" rx="2"/><path d="M7 7V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2"/></g>
+  <g id="i-quiz"><circle cx="12" cy="12" r="9"/><path d="M9.2 9.3a3 3 0 0 1 5.6 1.2c0 2-2.8 2.5-2.8 4"/><path d="M12 17.5h.01"/></g>
+  <g id="i-shuffle"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></g>
+  <g id="i-exam"><path d="M8 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="m9 13 2 2 4-4"/></g>
+  <g id="i-brain"><path d="M12 5a3 3 0 0 0-6 .6A3 3 0 0 0 4 8.5a3 3 0 0 0 1 2.2A3 3 0 0 0 6.5 16 3 3 0 0 0 12 18Z"/><path d="M12 5a3 3 0 0 1 6 .6 3 3 0 0 1 2 2.9 3 3 0 0 1-1 2.2 3 3 0 0 1-1.5 5.3A3 3 0 0 1 12 18Z"/><path d="M12 5v13"/></g>
+  <g id="i-book"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><path d="M9 7h7"/><path d="M9 11h5"/></g>
+  <g id="i-redo"><path d="M3 2v6h6"/><path d="M3.5 14a9 9 0 1 0 2.1-9.4L3 8"/></g>
+  <g id="i-chart"><path d="M3 3v18h18"/><path d="m7 15 3.5-4 3 2.5L20 7"/></g>
+  <g id="i-flame"><path d="M12 22c4 0 6.5-2.6 6.5-6 0-4.4-4.2-6.3-4.2-9.7 0-1-.3-2-1.1-3.3-1.9 3-4 3.9-4 7 0 1.4.6 2.4.6 2.4S9 11 8 11c-1.4 0-2.5 1.9-2.5 5 0 3.4 2.5 6 6.5 6Z"/></g>
+  <g id="i-target"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/></g>
+  <g id="i-check"><path d="m4 12.5 5 5L20 6.5"/></g>
+  <g id="i-play"><path d="M6 4.5v15l13-7.5Z"/></g>
+  <g id="i-clock"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.5l3.5 2"/></g>
+  <g id="i-sun"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.2 4.2l1.5 1.5M18.3 18.3l1.5 1.5M2 12h2M20 12h2M4.2 19.8l1.5-1.5M18.3 5.7l1.5-1.5"/></g>
+  <g id="i-moon"><path d="M20 13.5A8.5 8.5 0 0 1 10.5 4a8.5 8.5 0 1 0 9.5 9.5Z"/></g>
+  <g id="i-auto"><rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></g>
+  <g id="i-atom"><circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="9.5" ry="4" /><ellipse cx="12" cy="12" rx="9.5" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9.5" ry="4" transform="rotate(120 12 12)"/></g>
+  <g id="i-motion"><path d="M3 17h4l3-9 3 13 3-9h5"/></g>
+  <g id="i-energy"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></g>
+  <g id="i-earth"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18Z"/></g>
+  <g id="i-space"><circle cx="12" cy="12" r="4"/><ellipse cx="12" cy="12" rx="10.5" ry="4" transform="rotate(-25 12 12)"/></g>
+  <g id="i-life"><path d="M11 20c0-7 2-11 8-13-1 8-3.5 11-8 13Z"/><path d="M11 20c0-5-1.5-8-6-9.5 1 5.5 2.5 8 6 9.5Z"/><path d="M11 20v2"/></g>
+  <g id="i-eco"><path d="M4 20c0-6 4-10 10-10"/><path d="M20 6c0 7-4 11-10 11H5c0-6 4-9 9-9"/></g>
+  <g id="i-lab"><path d="M9 3v6.5L4.5 18A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.8-3L15 9.5V3"/><path d="M8 3h8"/><path d="M7.5 15h9"/></g>
+  <g id="i-search"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></g>
+  <g id="i-lock"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></g>
+  <g id="i-trash"><path d="M4 7h16M10 7V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/></g>
+  <g id="i-arrow-right"><path d="M5 12h14M13 6l6 6-6 6"/></g>
+</defs></svg>
 <!-- Pinned to the top of the document. The back-to-top button watches this
      with an IntersectionObserver, which reports correctly even when the scroll
      position changes without a scroll event (restored scroll, route render). -->
@@ -18,7 +56,10 @@
   <div class="top-inner">
     <a class="wordmark" href="#/">FTCE <span>Science 5&ndash;9</span></a>
     <span class="sync-dot" id="sync" title="Progress sync"></span>
-    <button id="homeBtn" class="small" style="padding:.35rem .7rem">Home</button>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Change theme" title="Theme">
+      <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><use href="#i-auto"></use></svg>
+    </button>
+    <button id="homeBtn" class="small" style="padding:.4rem .75rem">Home</button>
   </div>
 </header>
 
@@ -28,7 +69,7 @@
 
 <footer class="foot">
   <p>Built for the Florida Middle Grades General Science 5&ndash;9 (004) exam: 80 multiple-choice questions, 2 hours 30 minutes, scaled score of 200 to pass. Practice questions here are original and modeled on the state competency framework; they are not actual test items.</p>
-  <p><a href="/logout">Sign out</a> &middot; <a href="https://www.fl.nesinc.com/testPage.asp?test=004" target="_blank" rel="noopener">Official test page</a> &middot; <a href="#" data-learn-flag="open">Report a problem</a> &middot; <span class="footer-version" data-learn-flag="open" title="Report a problem">v2026.07.27-1329</span></p>
+  <p><a href="/logout">Sign out</a> &middot; <a href="https://www.fl.nesinc.com/testPage.asp?test=004" target="_blank" rel="noopener">Official test page</a> &middot; <a href="#" data-learn-flag="open">Report a problem</a> &middot; <span class="footer-version" data-learn-flag="open" title="Report a problem">v2026.07.27-1340</span></p>
 </footer>
 
 <!-- Bottom-left: flag. Bottom-right: back to top. Network convention. -->
@@ -61,6 +102,6 @@
   <div class="flag-toast" id="flagToast" hidden></div>
 </dialog>
 
-<script src="/app.js?v=2026.07.27-1329"></script>
+<script src="/app.js?v=2026.07.27-1340"></script>
 </body>
 </html>

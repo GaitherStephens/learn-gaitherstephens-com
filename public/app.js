@@ -24,7 +24,7 @@
 
   /* ================= state ================= */
 
-  const emptyState = () => ({ cards: {}, questions: {}, exams: [], recall: {}, prefs: {}, prefsAt: 0, updatedAt: 0 });
+  const emptyState = () => ({ cards: {}, questions: {}, exams: [], recall: {}, days: {}, prefs: {}, prefsAt: 0, updatedAt: 0 });
 
   function loadLocal() {
     try { return { ...emptyState(), ...JSON.parse(localStorage.getItem(LS_KEY) || "{}") }; }
@@ -83,10 +83,17 @@
       const seen = new Set(exams.map(key));
       for (const e of local.exams || []) if (!seen.has(key(e))) exams.push(e);
       exams.sort((a, b) => a.at - b.at);
+      // Mirror of the server rule: daily counters merge by max, not timestamp.
+      const days = { ...(server.days || {}) };
+      for (const [d, v] of Object.entries(local.days || {})) {
+        const cur = days[d] || {};
+        days[d] = { q: Math.max(cur.q || 0, v.q || 0), c: Math.max(cur.c || 0, v.c || 0), at: Math.max(cur.at || 0, v.at || 0) };
+      }
       S = {
         cards: mergeRec(server.cards, local.cards),
         questions: mergeRec(server.questions, local.questions),
         recall: mergeRec(server.recall, local.recall),
+        days,
         exams,
         prefs: (local.prefsAt ?? 0) >= (server.prefsAt ?? 0) ? local.prefs : server.prefs,
         prefsAt: Math.max(local.prefsAt ?? 0, server.prefsAt ?? 0),
@@ -121,6 +128,126 @@
   function sample(arr, n) { return shuffle(arr).slice(0, n); }
 
   function pluralize(n, one, many) { return `${n} ${n === 1 ? one : many}`; }
+
+  // `name` is the full sprite id ("i-cards"), not a bare stem. Prefixing here
+  // as well produced "#i-i-cards" and every icon silently rendered empty.
+  const icon = (name, cls = "ico") => `<svg viewBox="0 0 24 24" class="${cls}" aria-hidden="true"><use href="#${name}"></use></svg>`;
+
+  const COMP_ICON = { 1: "i-atom", 2: "i-motion", 3: "i-energy", 4: "i-earth", 5: "i-space", 6: "i-life", 7: "i-eco", 8: "i-lab", 9: "i-search" };
+  const compIcon = (n) => `<svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><use href="#${COMP_ICON[n] || "i-book"}"></use></svg>`;
+
+  /* ================= theme ================= */
+
+  const THEMES = ["system", "light", "dark"];
+  const THEME_ICON = { system: "i-auto", light: "i-sun", dark: "i-moon" };
+  const THEME_LABEL = { system: "Match my device", light: "Light", dark: "Dark" };
+
+  function currentTheme() {
+    try { return localStorage.getItem("ftce004.theme") || "system"; } catch { return "system"; }
+  }
+
+  function applyTheme(t) {
+    const root = document.documentElement;
+    if (t === "light" || t === "dark") root.setAttribute("data-theme", t);
+    else root.removeAttribute("data-theme");
+    try { localStorage.setItem("ftce004.theme", t); } catch { /* private mode */ }
+    // Also ride along in synced prefs so a new device inherits the choice.
+    S.prefs = { ...(S.prefs || {}), theme: t };
+    S.prefsAt = Date.now();
+    const btn = $("#themeBtn");
+    if (btn) {
+      btn.innerHTML = `<svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><use href="#${THEME_ICON[t]}"></use></svg>`;
+      btn.title = `Theme: ${THEME_LABEL[t]}`;
+      btn.setAttribute("aria-label", `Theme: ${THEME_LABEL[t]}. Tap to change.`);
+    }
+    document.querySelectorAll("[data-theme-opt]").forEach((b) => {
+      b.setAttribute("aria-pressed", String(b.dataset.themeOpt === t));
+    });
+  }
+
+  function initTheme() {
+    // A synced pref from another device wins on first load only if this device
+    // has never chosen; a local choice is what she just tapped, so it stays.
+    let t = currentTheme();
+    let hasLocal = true;
+    try { hasLocal = localStorage.getItem("ftce004.theme") !== null; } catch { hasLocal = false; }
+    if (!hasLocal && S.prefs?.theme && THEMES.includes(S.prefs.theme)) t = S.prefs.theme;
+    applyTheme(t);
+    const btn = $("#themeBtn");
+    if (btn) {
+      btn.onclick = () => {
+        const next = THEMES[(THEMES.indexOf(currentTheme()) + 1) % THEMES.length];
+        applyTheme(next);
+        save();
+      };
+    }
+  }
+
+  /* ================= daily goal + streak ================= */
+
+  // Local calendar day, not UTC. A 9pm study session in Florida must not count
+  // as tomorrow.
+  function dayKey(d = new Date()) {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  }
+
+  const goalTarget = () => Number(S.prefs?.dailyGoal) || 20;
+
+  function bump(kind) {
+    const k = dayKey();
+    const d = S.days[k] || { q: 0, c: 0, at: 0 };
+    if (kind === "q") d.q++; else d.c++;
+    d.at = now();
+    S.days[k] = d;
+  }
+
+  const dayTotal = (k) => { const d = S.days[k]; return d ? (d.q || 0) + (d.c || 0) : 0; };
+  const todayCount = () => dayTotal(dayKey());
+  const goalMet = (k) => dayTotal(k) >= goalTarget();
+
+  // Streak counts consecutive days meeting the goal, ending today or yesterday.
+  // Yesterday still counts so an unfinished today does not read as "broken",
+  // which is the part of streak mechanics that makes people quit.
+  function streak() {
+    const d = new Date();
+    if (!goalMet(dayKey(d))) d.setDate(d.getDate() - 1);
+    let n = 0;
+    for (;;) {
+      if (!goalMet(dayKey(d))) break;
+      n++;
+      d.setDate(d.getDate() - 1);
+      if (n > 400) break;
+    }
+    return n;
+  }
+
+  function lastSevenDays() {
+    const out = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      out.push({ key: dayKey(d), label: "SMTWTFS"[d.getDay()], met: goalMet(dayKey(d)), isToday: i === 0 });
+    }
+    return out;
+  }
+
+  /* Readiness: one number she can watch move. Deliberately conservative,
+     blending per-competency mastery by the real blueprint weights with how
+     much of the bank she has actually covered, so it cannot read high off a
+     handful of lucky answers. */
+  function readiness() {
+    let score = 0, weight = 0;
+    for (const c of DATA.comps) {
+      const m = compMastery(c.comp);
+      score += c.pct * m.score;
+      weight += c.pct;
+    }
+    const base = weight ? score / weight : 0;
+    const o = overall();
+    const coverage = o.total ? o.seen / o.total : 0;
+    const confidence = Math.min(1, coverage / 0.5);   // needs ~half the bank seen
+    return Math.round(base * confidence * 100);
+  }
 
   /* ================= scoring model ================= */
 
@@ -273,60 +400,106 @@
     else if (weakest) nudge = `Weakest area right now: ${weakest.title.toLowerCase()}. An adaptive drill will feed you more of it.`;
     else nudge = "Run an adaptive drill to keep everything warm.";
 
+    const target = goalTarget();
+    const doneToday = todayCount();
+    const pctGoal = Math.min(1, doneToday / target);
+    const st = streak();
+    const R = 34, C = 2 * Math.PI * R;
+    const ready = readiness();
+
+    // Resume: the single highest-value next click, as one big obvious button.
+    let resume;
+    if (due > 0) resume = { hash: "#/cards", icon: "i-cards", title: `Review ${pluralize(due, "card", "cards")}`, sub: "Due today on your schedule" };
+    else if (missed >= 5) resume = { hash: "#/missed", icon: "i-redo", title: `Clear ${missed} missed questions`, sub: "The fastest points you can gain" };
+    else if (o.seen < 20) resume = { hash: "#/quiz", icon: "i-quiz", title: "Take your first topic quiz", sub: "Find out where you actually stand" };
+    else resume = { hash: "#/drill", icon: "i-shuffle", title: "Run an adaptive drill", sub: "Twenty questions aimed at your weak spots" };
+
     app.innerHTML = `
       <section class="hero">
-        <h1>Middle Grades General Science 5&ndash;9</h1>
-        <p class="muted" style="margin-bottom:0">80 questions &middot; 2 hours 30 minutes &middot; scaled score 200 to pass</p>
-        <div class="stat-row">
-          <div class="stat"><b>${o.seen}<span style="font-size:1rem;color:var(--muted)">/${o.total}</span></b><span>Questions tried</span></div>
-          <div class="stat"><b>${o.seen ? Math.round(o.accuracy * 100) + "%" : "&mdash;"}</b><span>Current accuracy</span></div>
-          <div class="stat"><b>${due}</b><span>Cards due</span></div>
-          <div class="stat"><b>${lastExam ? Math.round((lastExam.raw / lastExam.total) * 100) + "%" : "&mdash;"}</b><span>Last mock exam</span></div>
+        <div class="today">
+          <div class="ring">
+            <svg viewBox="0 0 80 80" aria-hidden="true">
+              <circle class="track" cx="40" cy="40" r="${R}"></circle>
+              <circle class="fill ${pctGoal >= 1 ? "done" : ""}" cx="40" cy="40" r="${R}"
+                style="stroke-dasharray:${(C * pctGoal).toFixed(1)} ${C.toFixed(1)}"></circle>
+            </svg>
+            <b>${doneToday}<span style="font-size:.62rem;color:var(--muted)">/${target}</span></b>
+          </div>
+          <div class="today-copy">
+            <h3>${pctGoal >= 1 ? `${icon("i-check")} Goal met today` : "Today's goal"}</h3>
+            <p>${pctGoal >= 1
+              ? "Anything past this is a bonus. Stop whenever you want."
+              : `${target - doneToday} more ${target - doneToday === 1 ? "card or question" : "cards or questions"} to go.`}</p>
+            <div class="week">${lastSevenDays().map((d) =>
+              `<i class="${d.met ? "hit" : ""} ${d.isToday ? "today" : ""}" title="${d.key}">${d.label}</i>`).join("")}</div>
+          </div>
+          <span class="streak ${st ? "" : "cold"}">${icon("i-flame")}${st ? `${st} day${st === 1 ? "" : "s"}` : "No streak yet"}</span>
         </div>
-        <p style="margin:1rem 0 0;padding-top:1rem;border-top:1px solid var(--line);font-size:.92rem"><strong>Next:</strong> ${esc(nudge)}</p>
+      </section>
+
+      <button class="resume" onclick="location.hash='${resume.hash}'">
+        ${icon(resume.icon, "ico ico--lg")}
+        <span><b>${esc(resume.title)}</b><small>${esc(resume.sub)}</small></span>
+        ${icon("i-arrow-right", "ico go")}
+      </button>
+
+      <section class="panel">
+        <div class="crumb"><span class="chip">${icon("i-target")} Exam readiness</span></div>
+        <div class="ready-num">${o.seen < 15 ? "&mdash;" : ready + "%"}</div>
+        <div class="ready-bar"><i style="width:${o.seen < 15 ? 0 : ready}%"></i><span class="mark" style="left:80%" title="Target"></span></div>
+        <p class="small muted" style="margin:0">${o.seen < 15
+          ? "Answer about 15 questions and this starts tracking."
+          : ready >= 80 ? "At or above the line. Sit a full mock exam to confirm."
+          : `The mark at 80% is the target before booking the seat. ${esc(nudge)}`}</p>
+        <div class="stat-row" style="margin-top:1rem">
+          <div class="stat"><b>${o.seen}<span style="font-size:1rem;color:var(--muted)">/${o.total}</span></b><span>Questions tried</span></div>
+          <div class="stat"><b>${o.seen ? Math.round(o.accuracy * 100) + "%" : "&mdash;"}</b><span>Accuracy</span></div>
+          <div class="stat"><b>${due}</b><span>Cards due</span></div>
+          <div class="stat"><b>${lastExam ? Math.round((lastExam.raw / lastExam.total) * 100) + "%" : "&mdash;"}</b><span>Last mock</span></div>
+        </div>
       </section>
 
       <h2>Ways to study</h2>
       <div class="modes">
         <button class="mode" onclick="location.hash='#/cards'">
-          <span class="tagline">Spaced repetition</span>
+          <span class="tagline">${icon("i-cards")} Spaced repetition</span>
           <h3>Flashcards</h3>
           <p>300 cards on a Leitner schedule. Cards you miss come back fast, cards you know go quiet.</p>
           ${due ? `<span class="badge">${due} due now</span>` : ""}
         </button>
         <button class="mode" onclick="location.hash='#/quiz'">
-          <span class="tagline">Retrieval practice</span>
+          <span class="tagline">${icon("i-quiz")} Retrieval practice</span>
           <h3>Topic quiz</h3>
           <p>Pick one competency and answer questions with an explanation after every single one.</p>
         </button>
         <button class="mode" onclick="location.hash='#/drill'">
-          <span class="tagline">Interleaving</span>
+          <span class="tagline">${icon("i-shuffle")} Interleaving</span>
           <h3>Adaptive drill</h3>
           <p>Twenty mixed questions, weighted toward your weak competencies and things you got wrong before.</p>
         </button>
         <button class="mode" onclick="location.hash='#/exam'">
-          <span class="tagline">Test simulation</span>
+          <span class="tagline">${icon("i-exam")} Test simulation</span>
           <h3>Mock exam</h3>
           <p>Eighty questions on the real blueprint, on a 2:30 clock, no feedback until you submit.</p>
         </button>
         <button class="mode" onclick="location.hash='#/recall'">
-          <span class="tagline">Free recall</span>
+          <span class="tagline">${icon("i-brain")} Free recall</span>
           <h3>Brain dump</h3>
           <p>Write everything you know about a topic from memory, then check yourself against the key points.</p>
         </button>
         <button class="mode" onclick="location.hash='#/guide'">
-          <span class="tagline">Reference</span>
+          <span class="tagline">${icon("i-book")} Reference</span>
           <h3>Concept guide</h3>
           <p>Every competency explained, with the formulas you have to memorize and the traps that catch people.</p>
         </button>
         <button class="mode" onclick="location.hash='#/missed'">
-          <span class="tagline">Error log</span>
+          <span class="tagline">${icon("i-redo")} Error log</span>
           <h3>Missed queue</h3>
           <p>Only the questions you have gotten wrong. They leave the queue when you get them right.</p>
           ${missed ? `<span class="badge">${missed} waiting</span>` : ""}
         </button>
         <button class="mode" onclick="location.hash='#/progress'">
-          <span class="tagline">Diagnostics</span>
+          <span class="tagline">${icon("i-chart")} Diagnostics</span>
           <h3>Progress</h3>
           <p>Mastery by competency, exam history, and what to spend your next session on.</p>
         </button>
@@ -337,7 +510,7 @@
         ${DATA.comps.map((c) => {
           const m = compMastery(c.comp);
           const pct = Math.round(m.score * 100);
-          return `<div class="mrow"><span class="lbl">${c.comp}. ${esc(c.title)}</span>
+          return `<div class="mrow"><span class="lbl">${compIcon(c.comp)} ${c.comp}. ${esc(c.title)}</span>
             <span class="val">${m.seen ? pct + "%" : "not started"} &middot; ${c.pct}% of test</span></div>
             <div class="bar"><i class="${barClass(m.score)}" style="width:${Math.max(pct, m.seen ? 2 : 0)}%"></i></div>`;
         }).join("")}
@@ -438,6 +611,7 @@
     else if (grade === 2) box = Math.min(BOXES.length - 1, prev.box + 1);
     else box = Math.min(BOXES.length - 1, prev.box + 2);
 
+    bump("c");
     S.cards[card.id] = {
       box,
       due: now() + days(BOXES[box]),
@@ -537,6 +711,7 @@
   }
 
   function recordQuestion(q, correct) {
+    bump("q");
     const prev = S.questions[q.id] || { seen: 0, correct: 0, wrong: 0 };
     S.questions[q.id] = {
       seen: prev.seen + 1,
@@ -557,11 +732,22 @@
       byComp[q.comp].n++;
       if (S.questions[q.id]?.lastCorrect) byComp[q.comp].r++;
     }
+    // Celebration, but honest: praise the act of showing up, not a bad score.
+    const goalJustMet = todayCount() >= goalTarget();
+    const cheer = pct >= 90 ? "Excellent." : pct >= 75 ? "Solid work." : pct >= 55 ? "Good practice." : "That is useful information.";
+    const cheerSub = pct >= 75
+      ? "Keep this pace and the real thing will feel familiar."
+      : "Every one you missed is now in your missed queue, which is exactly where the easy points are.";
+
     app.innerHTML = `
-      <div class="panel" style="text-align:center">
+      <div class="panel celebrate">
+        <div class="big">${icon(pct >= 75 ? "i-check" : "i-target", "ico ico--lg")}</div>
         <p class="small muted" style="margin-bottom:.3rem">${esc(s.label)}</p>
         <div class="score-big">${s.right}<span style="font-size:1.5rem;color:var(--muted)">/${s.qs.length}</span></div>
         <p><span class="verdict-band ${b.cls}">${pct}% &middot; ${b.label}</span></p>
+        <h2 style="margin-top:.6rem">${cheer}</h2>
+        <p class="small muted" style="max-width:40ch;margin:0 auto">${cheerSub}</p>
+        ${goalJustMet ? `<p style="margin-top:.9rem"><span class="streak">${icon("i-flame")}Daily goal met, ${pluralize(streak(), "day", "days")} running</span></p>` : ""}
       </div>
       <div class="panel">
         <h2>By competency</h2>
@@ -1033,8 +1219,25 @@
         ${recalls.map((r) => `<div class="mrow"><span class="lbl">Competency ${r.comp}: ${esc(compTitle(r.comp))}</span>
           <span class="val">${r.got}/${r.total} &middot; ${new Date(r.at).toLocaleDateString()}</span></div>`).join("")}</div>` : ""}
 
+      <div class="panel">
+        <h2>${icon("i-sun")} Appearance</h2>
+        <p class="small muted">Matching your device is the default, so it goes dark at night on its own.</p>
+        <div class="seg" role="group" aria-label="Theme">
+          ${THEMES.map((t) => `<button type="button" data-theme-opt="${t}" aria-pressed="false">
+            <svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><use href="#${THEME_ICON[t]}"></use></svg>${THEME_LABEL[t]}</button>`).join("")}
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>${icon("i-target")} Daily goal</h2>
+        <p class="small muted">Cards and questions both count. Pick something you will actually hit on a bad day: a streak you can keep beats an ambitious one you break.</p>
+        <div class="seg" role="group" aria-label="Daily goal">
+          ${[10, 20, 30, 50].map((n) => `<button type="button" data-goal="${n}" aria-pressed="${goalTarget() === n}">${n}</button>`).join("")}
+        </div>
+      </div>
+
       <div class="panel" id="securityPanel">
-        <h2>Sign-in</h2>
+        <h2>${icon("i-lock")} Sign-in</h2>
         <div id="pkList" class="small muted">Loading passkeys&hellip;</div>
         <p class="small muted" id="pkHelp">A passkey lets you sign in with Face ID, Touch ID, or your device PIN instead of typing the code. The PIN keeps working either way.</p>
         <div class="actions">
@@ -1051,6 +1254,19 @@
       </div>`;
 
     initSecurityPanel();
+    applyTheme(currentTheme());
+
+    app.querySelectorAll("[data-theme-opt]").forEach((b) => {
+      b.onclick = () => { applyTheme(b.dataset.themeOpt); save(); };
+    });
+    app.querySelectorAll("[data-goal]").forEach((b) => {
+      b.onclick = () => {
+        S.prefs = { ...(S.prefs || {}), dailyGoal: Number(b.dataset.goal) };
+        S.prefsAt = Date.now();
+        save();
+        app.querySelectorAll("[data-goal]").forEach((x) => x.setAttribute("aria-pressed", String(Number(x.dataset.goal) === goalTarget())));
+      };
+    });
 
     $("#resetAll").onclick = async () => {
       if (!confirm("Erase all progress on every device? This cannot be undone.")) return;
@@ -1488,13 +1704,14 @@
   (async () => {
     try {
       const [content] = await Promise.all([
-        fetch("/content.json?v=2026.07.27-1329").then((r) => {
+        fetch("/content.json?v=2026.07.27-1340").then((r) => {
           if (!r.ok) throw new Error("content " + r.status);
           return r.json();
         }),
         pull(),
       ]);
       DATA = content;
+      initTheme();
       router();
       initFlag();
       initBackToTop();

@@ -1,5 +1,11 @@
 /* learn.gaitherstephens.com */
 
+/* Theme: three modes. `data-theme` on <html> is "light", "dark", or absent /
+   "system". Dark tokens are declared twice on purpose, once for the system
+   preference (unless the user explicitly chose light) and once for the explicit
+   dark choice. A preprocessor would DRY this up; a 20-line repeat is cheaper
+   than a build step for a site with no build step. */
+
 :root {
   --cyan: #0099cc;
   --fg: #1a1a1a;
@@ -14,6 +20,8 @@
   --bad-bg: #fbeaee;
   --warn: #8a5a00;
   --warn-bg: #fdf3e0;
+  --flame: #d2601a;
+  --on-cyan: #06222c;
   --sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
   --radius: 12px;
@@ -21,7 +29,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --cyan: #01ccff;
     --fg: #e8e6df;
     --muted: #a8a59c;
@@ -35,8 +43,29 @@
     --bad-bg: #3a1a22;
     --warn: #f0c674;
     --warn-bg: #3a2f18;
+    --flame: #ffa24d;
+    --on-cyan: #06222c;
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.25);
   }
+}
+
+:root[data-theme="dark"] {
+  --cyan: #01ccff;
+  --fg: #e8e6df;
+  --muted: #a8a59c;
+  --bg: #0f1419;
+  --card-bg: #1a2129;
+  --line: #2a3138;
+  --line-strong: #3d454e;
+  --good: #5fd39b;
+  --good-bg: #14352a;
+  --bad: #ff8fa3;
+  --bad-bg: #3a1a22;
+  --warn: #f0c674;
+  --warn-bg: #3a2f18;
+  --flame: #ffa24d;
+  --on-cyan: #06222c;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.25);
 }
 
 * { box-sizing: border-box; }
@@ -81,10 +110,13 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 .btn-primary {
   background: var(--cyan);
   border-color: var(--cyan);
-  color: #06222c;
+  color: var(--on-cyan);
 }
-@media (prefers-color-scheme: dark) { .btn-primary { color: #06222c; } }
 .btn-primary:hover { filter: brightness(1.08); }
+
+/* Icons. Sizing is font-relative so buttons and headings scale together. */
+.ico { width: 1.1em; height: 1.1em; flex: none; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.ico--lg { width: 1.5em; height: 1.5em; }
 
 /* ---------- login ---------- */
 
@@ -228,7 +260,11 @@ header.top {
 
 .mastery { margin-top: 1.5rem; }
 .mrow { display: grid; grid-template-columns: 1fr auto; gap: .5rem 1rem; align-items: baseline; margin-bottom: .1rem; }
-.mrow .lbl { font-size: .87rem; }
+.mrow .lbl { font-size: .87rem; display: flex; align-items: center; gap: .45rem; }
+.mrow .lbl .ico { color: var(--cyan); opacity: .85; }
+h2 .ico, h3 .ico { color: var(--cyan); vertical-align: -.15em; }
+.tagline .ico { vertical-align: -.2em; margin-right: .2em; }
+.chip .ico { vertical-align: -.2em; margin-right: .25em; }
 .mrow .val { font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .bar { height: 7px; border-radius: 4px; background: var(--line); overflow: hidden; margin-bottom: .7rem; }
 .bar i { display: block; height: 100%; background: var(--cyan); border-radius: 4px; transition: width .4s; }
@@ -382,6 +418,112 @@ footer.foot a { color: var(--muted); }
 
 .hidden { display: none !important; }
 
+/* ---------- daily goal, streak, resume ---------- */
+
+.today {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  flex-wrap: wrap;
+}
+.ring { position: relative; width: 78px; height: 78px; flex: none; }
+.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring circle { fill: none; stroke-width: 8; stroke-linecap: round; }
+.ring .track { stroke: var(--line); }
+.ring .fill { stroke: var(--cyan); transition: stroke-dasharray .6s ease; }
+.ring .fill.done { stroke: var(--good); }
+.ring b {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  font-family: var(--serif); font-size: 1.15rem; line-height: 1;
+}
+.today-copy { min-width: 0; flex: 1 1 12rem; }
+.today-copy h3 { margin-bottom: .15rem; display: flex; align-items: center; gap: .4rem; }
+.today-copy p { margin: 0; font-size: .87rem; color: var(--muted); }
+
+.streak {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-weight: 700; font-size: .92rem;
+  padding: .35rem .7rem; border-radius: 999px;
+  background: var(--warn-bg); color: var(--flame);
+  white-space: nowrap;
+}
+.streak.cold { background: var(--line); color: var(--muted); }
+
+.resume {
+  display: flex; align-items: center; gap: .8rem;
+  width: 100%; text-align: left;
+  padding: .85rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--cyan);
+  background: var(--card-bg);
+  margin-bottom: 1.25rem;
+}
+.resume .ico { color: var(--cyan); }
+.resume span { min-width: 0; }
+.resume b { display: block; font-size: .95rem; }
+.resume small { color: var(--muted); font-weight: 400; }
+.resume .go { margin-left: auto; color: var(--cyan); flex: none; }
+
+/* Week strip: seven dots, one per day. Read-only, no guilt. */
+.week { display: flex; gap: .3rem; margin-top: .6rem; }
+.week i {
+  width: 1.55rem; height: 1.55rem; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: .62rem; font-style: normal; font-weight: 700;
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+.week i.hit { background: var(--cyan); border-color: var(--cyan); color: var(--on-cyan); }
+.week i.today { outline: 2px solid var(--fg); outline-offset: 1px; }
+
+/* ---------- readiness ---------- */
+
+.ready-num { font-family: var(--serif); font-size: 2.6rem; line-height: 1; }
+.ready-bar { height: 10px; border-radius: 5px; background: var(--line); overflow: hidden; margin: .6rem 0 .4rem; position: relative; }
+.ready-bar i { display: block; height: 100%; border-radius: 5px; background: var(--cyan); transition: width .5s; }
+.ready-bar .mark {
+  position: absolute; top: -3px; bottom: -3px; width: 2px;
+  background: var(--fg); opacity: .55;
+}
+
+/* ---------- celebration ---------- */
+
+.celebrate { text-align: center; padding: .5rem 0 0; }
+.celebrate .big { font-size: 2.6rem; line-height: 1; margin-bottom: .4rem; }
+.celebrate h2 { font-family: var(--serif); margin-bottom: .25rem; }
+@keyframes pop { 0% { transform: scale(.7); opacity: 0 } 60% { transform: scale(1.08) } 100% { transform: scale(1); opacity: 1 } }
+.celebrate .big, .celebrate .score-big { animation: pop .45s ease-out both; }
+
+/* ---------- theme switcher ---------- */
+
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--card-bg);
+}
+.seg button {
+  border: 0; border-radius: 0;
+  padding: .45rem .8rem;
+  font-size: .82rem; font-weight: 600;
+  background: none; color: var(--muted);
+  display: inline-flex; align-items: center; gap: .35rem;
+  min-height: 40px;
+}
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--cyan); color: var(--on-cyan); }
+.seg button:hover:not([aria-pressed="true"]) { color: var(--fg); }
+
+.theme-btn {
+  width: 40px; height: 40px; padding: 0;
+  display: grid; place-items: center;
+  border-radius: 10px;
+  color: var(--muted);
+}
+.theme-btn:hover { color: var(--cyan); }
+
 /* ---------- floating buttons: flag bottom-left, top bottom-right ---------- */
 
 #topSentinel {
@@ -474,12 +616,71 @@ footer.foot a { color: var(--muted); }
   .fab--top { right: .7rem; }
 }
 
-@media (max-width: 560px) {
-  .stat-row { gap: 1.1rem; }
-  .stat b { font-size: 1.3rem; }
-  .panel, .hero { padding: 1rem; }
+/* ---------- responsive ----------
+   She studies on a phone more than anything else, so the phone rules are not
+   an afterthought: 44px minimum touch targets, no hover-only affordances,
+   16px form text so iOS does not zoom on focus, and safe-area insets so the
+   floating buttons clear the home indicator. */
+
+@supports (padding: max(0px)) {
+  .fab { bottom: max(1rem, env(safe-area-inset-bottom)); }
+  .fab--flag { left: max(1rem, env(safe-area-inset-left)); }
+  .fab--top { right: max(1rem, env(safe-area-inset-right)); }
+  footer.foot { padding-bottom: max(1.25rem, calc(env(safe-area-inset-bottom) + 3.5rem)); }
+}
+
+/* Tablet: two columns of modes, roomier reading measure. */
+@media (max-width: 900px) {
+  .shell, .top-inner, footer.foot { max-width: 100%; }
+  .modes { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  .shell { padding: 0 .8rem 5.5rem; }
+  .top-inner { padding: .6rem .8rem; }
+  .panel, .hero { padding: .95rem; }
+  .modes { grid-template-columns: 1fr; gap: .6rem; }
+  .stat-row { gap: 0; display: grid; grid-template-columns: repeat(2, 1fr); row-gap: .9rem; }
+  .stat b { font-size: 1.35rem; }
+  .ring { width: 66px; height: 66px; }
+  .stem { font-size: 1.05rem; }
+
+  /* Comfortable thumb targets. 44px is the Apple/WCAG floor and choices are
+     what she taps hundreds of times a session. */
+  .choice { padding: .85rem .8rem; min-height: 52px; }
+  .choice .key { width: 1.6rem; height: 1.6rem; }
+  button, .btn { min-height: 44px; }
+  .actions { gap: .5rem; }
+  .actions button { flex: 1 1 auto; }
+  .rate { grid-template-columns: repeat(2, 1fr); }
+  .rate button { min-height: 56px; }
+
+  /* Exam navigator: smaller cells so 80 questions stay reachable. */
+  .grid-nav { grid-template-columns: repeat(auto-fill, minmax(34px, 1fr)); }
+  .grid-nav button { min-height: 34px; padding: .3rem 0; }
+
+  .body-md table { font-size: .82rem; }
+  .flag-dialog { width: calc(100vw - 20px); padding: 1rem; }
+  .seg button { padding: .45rem .6rem; }
+  .today { gap: .8rem; }
+}
+
+/* Landscape phone: the sticky header eats too much of a 375px-tall viewport. */
+@media (max-height: 460px) and (orientation: landscape) {
+  header.top { position: static; }
+}
+
+/* Inputs at 16px or iOS zooms the whole page on focus. */
+input, textarea, select { font-size: max(16px, 1rem); }
+
+/* Coarse pointers get no hover styling, which otherwise sticks after a tap. */
+@media (hover: none) {
+  .mode:hover, .choice:hover:not(:disabled), button:hover, .btn:hover { border-color: var(--line-strong); }
+  .btn-primary:hover { border-color: var(--cyan); filter: none; }
+  .fab:hover { color: var(--muted); border-color: var(--line-strong); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; animation: none !important; }
+  * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
