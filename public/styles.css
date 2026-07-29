@@ -1175,3 +1175,21 @@ input, textarea, select { font-size: max(16px, 1rem); }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
+
+/* ---------- flag photo attachment (flag 108) ---------- */
+.flag-photo { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; margin: .7rem 0 .2rem; }
+.flag-photo > button { font-size: .85rem; min-height: 44px; }
+.flag-photo-preview { position: relative; display: inline-block; }
+.flag-photo-preview[hidden] { display: none; }
+.flag-photo-preview img { max-width: 110px; max-height: 84px; border-radius: 8px; display: block; }
+.flag-photo-remove {
+  position: absolute; top: -8px; right: -8px;
+  width: 24px; height: 24px; min-height: 0; padding: 0;
+  border-radius: 50%; border: none;
+  background: var(--bad); color: #fff; font-size: 15px; line-height: 1;
+}
+/* The "write a note or add a photo" escape hatch on the sub-reason list. */
+.flag-opt--alt { border-top: 1px solid var(--line); border-radius: 0 0 9px 9px; margin-top: .25rem; color: var(--cyan); }
+.flag-opt--alt:hover { background: var(--bg); }
+/* Sub-hint under a prompt, used by the change-your-answer affordance. */
+.ask-sub { font-size: .82rem; color: var(--muted); margin: 0 0 .55rem; }

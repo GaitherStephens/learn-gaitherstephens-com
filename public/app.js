@@ -684,6 +684,11 @@
     const [head, ...rest] = raw.split("/");
     const fn = routes[head] || home;
     window.scrollTo(0, 0);
+    // Coming back into the mode she walked out of mid-run: ask first instead
+    // of silently throwing the run away and building a new one (flag #72).
+    // Only for a bare mode route - a deep link like #/quiz/3 asked for
+    // something specific and should get it.
+    if (head && !rest.length && runResumePrompt(head, () => fn(rest))) return;
     fn(rest);
   }
 
@@ -1417,6 +1422,111 @@
 
   /* ================= quiz / drill / missed (shared engine) ================= */
 
+  /* ---- surviving a trip out of the app ----
+     Meg, flag #72: "if I'm in a test (drill I think) and leave the app and
+     come back it doesn't start the test over it instead of continuing the
+     test I was in? Or asks what I want to do".
+     iOS discards the tab when she switches apps or locks the phone, so the
+     module-level `session` is gone on the way back and the route handler
+     cheerfully builds a brand new 20-question drill. We checkpoint the run
+     on every render and offer the choice she asked for when she returns to
+     the same mode.
+     Only `run` sessions (drill / quiz / missed / skill / review). The mock
+     exam is deliberately one-sitting and already warns before you leave it,
+     and flashcards resume on their own through the scheduler. */
+  const RUN_KEY = "ftce:run-in-progress";
+  const RUN_MAX_AGE_MS = 36 * 60 * 60 * 1000;   // a day and a half
+
+  function saveRun() {
+    const s = session;
+    if (!s || s.kind !== "run" || !s.qs || !s.qs.length) return;
+    // A revealed question has already gone through recordQuestion, so coming
+    // back should land on the NEXT one - otherwise she answers it twice and
+    // it gets counted twice in her stats.
+    const at = s.stage === "reveal" ? s.i + 1 : s.i;
+    if (at >= s.qs.length) { clearRun(); return; }
+    try {
+      localStorage.setItem(RUN_KEY, JSON.stringify({
+        v: 1, at: now(), route: s.route || "", label: s.label || "Practice",
+        opts: s.opts || {}, i: at, right: s.right || 0,
+        qids: s.qs.map((q) => q.id),
+        orders: s.qs.map((q) => q._order || null),
+      }));
+    } catch (_) { /* private mode or quota: resume is a nicety, never fatal */ }
+  }
+
+  function clearRun() {
+    try { localStorage.removeItem(RUN_KEY); } catch (_) {}
+  }
+
+  function loadRun() {
+    let raw = null;
+    try { raw = localStorage.getItem(RUN_KEY); } catch (_) { return null; }
+    if (!raw) return null;
+    let d;
+    try { d = JSON.parse(raw); } catch (_) { clearRun(); return null; }
+    if (!d || d.v !== 1 || !Array.isArray(d.qids) || !d.qids.length) { clearRun(); return null; }
+    if (now() - (d.at || 0) > RUN_MAX_AGE_MS) { clearRun(); return null; }
+    // Content may not be in yet on a cold boot; without this the router
+    // would throw on DATA.questions and take the whole app down with it.
+    if (!DATA || !Array.isArray(DATA.questions) || !DATA.questions.length) return null;
+    // Rehydrate against the CURRENT question bank. content.json is rebuilt
+    // from content-src, so ids can disappear under a saved run; if any is
+    // missing the checkpoint is no longer meaningful and gets dropped.
+    const byId = new Map(DATA.questions.map((q) => [q.id, q]));
+    const qs = [];
+    for (const id of d.qids) {
+      const q = byId.get(id);
+      if (!q) { clearRun(); return null; }
+      qs.push(q);
+    }
+    if (!(d.i >= 0) || d.i >= qs.length) { clearRun(); return null; }
+    return { d, qs };
+  }
+
+  function resumeRun() {
+    const found = loadRun();
+    if (!found) return false;
+    const { d, qs } = found;
+    // Restore the shuffled choice order too, or the answer she half-remembers
+    // would be sitting in a different slot than when she left.
+    for (let k = 0; k < qs.length; k++) {
+      if (Array.isArray(d.orders[k])) qs[k]._order = d.orders[k];
+    }
+    session = {
+      kind: "run", label: d.label, qs, i: d.i, right: d.right || 0,
+      opts: d.opts || {}, route: d.route,
+      picked: null, stage: null, conf: 0, ms: 0, why: undefined,
+      logged: false, shownAt: now(),
+    };
+    renderRunQuestion();
+    return true;
+  }
+
+  /* Shown when she re-enters the mode she walked away from. Answers the
+     "or asks what I want to do" half of the request. */
+  function runResumePrompt(routeName, startFresh) {
+    const found = loadRun();
+    if (!found || found.d.route !== routeName) return false;
+    const { d, qs } = found;
+    const left = qs.length - d.i;
+    app.innerHTML = `
+      <div class="panel">
+        <h1>Pick up where you left off?</h1>
+        <p class="muted">${esc(d.label)}. You were on question ${d.i + 1} of
+          ${qs.length}, ${d.right} right so far.</p>
+        <div class="actions">
+          <button class="btn-primary" id="runResume">Continue &middot; ${left} to go</button>
+          <button id="runFresh">Start a new one</button>
+        </div>
+      </div>`;
+    const r = document.getElementById("runResume");
+    const f = document.getElementById("runFresh");
+    if (r) r.onclick = () => { if (!resumeRun()) { clearRun(); startFresh(); } };
+    if (f) f.onclick = () => { clearRun(); startFresh(); };
+    return true;
+  }
+
   function startQuestionRun(questions, label, opts = {}) {
     if (!questions.length) {
       app.innerHTML = `<div class="panel"><h1>Nothing to do</h1><p class="muted">No questions match that.</p>
@@ -1425,6 +1535,9 @@
     }
     session = {
       kind: "run", label, qs: questions, i: 0, right: 0, opts,
+      // Which mode produced this run, so the resume prompt only appears when
+      // she comes back to that same mode rather than ambushing every screen.
+      route: (location.hash || "").replace(/^#\/?/, "").split("/")[0],
       picked: null, stage: null, conf: 0, ms: 0, why: undefined, logged: false, shownAt: now(),
     };
     renderRunQuestion();
@@ -1458,6 +1571,7 @@
   function renderRunQuestion() {
     const s = session;
     if (s.i >= s.qs.length) return runDone();
+    saveRun();   // checkpoint: every state change funnels through here
     const q = s.qs[s.i];
     // Shuffle choices per presentation so she learns the science, not the shape.
     if (!q._order) q._order = shuffle(q.choices.map((_, idx) => idx));
@@ -1483,14 +1597,26 @@
             if (revealed && pos === correctPos) cls += " correct";
             else if (revealed && pos === s.picked) cls += " wrong";
             else if (!revealed && pos === s.picked) cls += " picked";
-            return `<button class="${cls}" data-pos="${pos}" ${picked ? "disabled" : ""}>
+            // Locked only once the answer is REVEALED. Before that she can tap a
+            // different choice to change her mind (flag #107: "it doesn't allow
+            // me to go back and change it before saying how I answered").
+            return `<button class="${cls}" data-pos="${pos}" ${revealed ? "disabled" : ""}>
               <span class="key">${"ABCD"[pos]}</span><span>${esc(q.choices[origIdx])}</span></button>`;
           }).join("")}
         </div>
 
+        ${s.stage === "commit" ? `
+          <div class="ask">
+            <p class="ask-sub">Change your answer above if you want to, then check it.</p>
+            <div class="actions">
+              <button class="btn-primary" id="commitAnswer">${icon("i-check")}Check my answer</button>
+            </div>
+          </div>` : ""}
+
         ${s.stage === "conf" ? `
           <div class="ask">
-            <p class="ask-q">How sure are you?</p>
+            <p class="ask-q">${icon("i-quiz")}How sure are you?</p>
+            <p class="ask-sub">Tap a different answer above if you want to change it first.</p>
             <div class="ask-opts">
               ${CONF.map((c) => `<button data-conf="${c.v}">${icon(CONF_ICON[c.v])}${esc(c.label)}</button>`).join("")}
             </div>
@@ -1517,10 +1643,12 @@
         ${!picked ? `<p class="small muted">Keys A-D or 1-4 to answer</p>` : ""}
       </div>`;
 
-    if (!picked) {
+    if (!revealed) {
       app.querySelectorAll(".choice").forEach((b) => { b.onclick = () => pickAnswer(Number(b.dataset.pos)); });
     }
     if (revealed && !wasRight) wireLearnMore(q);
+    const commitBtn = $("#commitAnswer");
+    if (commitBtn) commitBtn.onclick = () => revealAnswer();
     app.querySelectorAll("[data-conf]").forEach((b) => { b.onclick = () => setConfidence(Number(b.dataset.conf)); });
     app.querySelectorAll("[data-why]").forEach((b) => {
       b.onclick = () => { session.why = b.dataset.why; commitAttempt(); renderRunQuestion(); };
@@ -1570,10 +1698,16 @@
 
   function pickAnswer(pos) {
     const s = session;
+    if (s.stage === "reveal") return;                 // already committed
     s.picked = pos;
-    s.ms = now() - (s.shownAt || now());
-    if (askConfidence()) { s.stage = "conf"; renderRunQuestion(); }
-    else { s.conf = 0; revealAnswer(); }
+    // Time only the FIRST selection, so changing your mind is not recorded as
+    // a slow answer.
+    if (!s.ms) s.ms = now() - (s.shownAt || now());
+    // Selecting never commits. With the confidence prompt on, the confidence
+    // tap commits; with it off, an explicit button does.
+    if (askConfidence()) { s.stage = "conf"; }
+    else { s.conf = 0; s.stage = "commit"; }
+    renderRunQuestion();
   }
 
   function setConfidence(v) {
@@ -1642,6 +1776,7 @@
 
   function runDone() {
     const s = session;
+    clearRun();   // finished: nothing left to resume
     const pct = Math.round((s.right / s.qs.length) * 100);
     const b = band(s.right / s.qs.length);
     const byComp = {};
@@ -2856,11 +2991,55 @@
   const FLAG_ICONS = {
     flag: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><path d="M4 21V4M4 4h13l-2 4 2 4H4"/></svg>',
     back: '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>',
+    camera: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.5"/></svg>',
   };
+
+  /* Photo attachment (flag #108: "allow to submit photos"). Downscaled in the
+     browser to 1280px on the long edge at JPEG 0.82, because the collector
+     caps the payload near 2 MB and a phone photo is far larger. */
+  let flagPhoto = null;
+
+  function resetFlagPhoto() {
+    flagPhoto = null;
+    const pp = $("#flagPhotoPreview"); if (pp) pp.hidden = true;
+    const pi = $("#flagPhotoImg"); if (pi) pi.removeAttribute("src");
+    const pf = $("#flagPhotoFile"); if (pf) pf.value = "";
+    const pb = $("#flagPhotoBtn"); if (pb) pb.hidden = false;
+  }
+
+  function initFlagPhoto() {
+    const btn = $("#flagPhotoBtn"), file = $("#flagPhotoFile");
+    const prev = $("#flagPhotoPreview"), img = $("#flagPhotoImg"), rm = $("#flagPhotoRemove");
+    if (!btn || !file) return;
+    btn.onclick = () => file.click();
+    if (rm) rm.onclick = resetFlagPhoto;
+    file.onchange = () => {
+      const f = file.files && file.files[0];
+      if (!f || f.type.indexOf("image/") !== 0) return;
+      const im = new Image();
+      const url = URL.createObjectURL(f);
+      im.onload = () => {
+        URL.revokeObjectURL(url);
+        const MAX = 1280;
+        const scale = Math.min(1, MAX / Math.max(im.naturalWidth, im.naturalHeight));
+        const c = document.createElement("canvas");
+        c.width = Math.round(im.naturalWidth * scale);
+        c.height = Math.round(im.naturalHeight * scale);
+        c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+        flagPhoto = c.toDataURL("image/jpeg", 0.82);
+        if (img) img.src = flagPhoto;
+        if (prev) prev.hidden = false;
+        btn.hidden = true;
+      };
+      im.onerror = () => URL.revokeObjectURL(url);
+      im.src = url;
+    };
+  }
 
   function initFlag() {
     const dlg = $("#flagDialog");
     if (!dlg) return;
+    initFlagPhoto();
     const stepCats = $("#flagStepCats"), stepSubs = $("#flagStepSubs"), stepNote = $("#flagStepNote");
     const hint = $("#flagHint"), noteLabel = $("#flagNoteLabel"), noteEl = $("#flagNote");
     const sendBtn = $("#flagSend"), toast = $("#flagToast");
@@ -2884,7 +3063,10 @@
       stepSubs.innerHTML =
         `<button type="button" class="flag-back-row" data-flag-back>${FLAG_ICONS.back}Back</button>` +
         reason.subs.map(([id, label]) => `<button type="button" class="flag-opt" data-sub="${id}"><span>${esc(label)}</span></button>`).join("") +
-        `<button type="button" class="flag-opt" data-sub="general"><span>Not sure, just flag it</span></button>`;
+        `<button type="button" class="flag-opt" data-sub="general"><span>Not sure, just flag it</span></button>` +
+        // One tap stays the default; this is the way through to a note and a
+        // screenshot when a picture says it better.
+        `<button type="button" class="flag-opt flag-opt--alt" data-note-instead="1">${FLAG_ICONS.camera}<span>Write a note or add a photo</span></button>`;
       show("subs");
     }
 
@@ -2959,6 +3141,7 @@
             note: note.slice(0, 1800),
             page_url: location.pathname + location.hash,
             context: flagContext(),
+            ...(flagPhoto ? { image: flagPhoto } : {}),
           }),
         });
         ok = r.ok;
@@ -2978,6 +3161,7 @@
       if (open) {
         e.preventDefault();
         picked = { reason: null };
+        resetFlagPhoto();
         $("#flagPageUrl").textContent = location.pathname + location.hash;
         toast.hidden = true;
         renderCats();
@@ -2998,6 +3182,7 @@
         else renderNote();
         return;
       }
+      if (e.target.closest("[data-note-instead]")) { renderNote(); return; }
       const subBtn = e.target.closest(".flag-opt[data-sub]");
       if (subBtn && picked.reason?.subs) {
         const subId = subBtn.dataset.sub;
@@ -3077,7 +3262,7 @@
   (async () => {
     try {
       const [content] = await Promise.all([
-        fetch("/content.json?v=2026.07.27-1955").then((r) => {
+        fetch("/content.json?v=2026.07.29-1149").then((r) => {
           if (!r.ok) throw new Error("content " + r.status);
           return r.json();
         }),
