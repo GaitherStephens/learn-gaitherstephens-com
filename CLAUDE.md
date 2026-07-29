@@ -60,6 +60,12 @@ One shared account. All progress lives in a single `state` row as JSON, mirrored
 
 Merge is **per-record last-write-wins**, not blob last-write-wins: each card/question/recall record carries an `at` timestamp and the newer one survives. Implemented identically in `mergeState` (worker) and `pull` (client), so a phone session and a laptop session cannot clobber each other. Exams are appended and de-duplicated on `at:raw:total`. If you change one merge implementation, change the other.
 
+## Two traps that cost real time on 2026-07-29
+
+**The mount is not the truth.** Production was two builds ahead of `~/GaitherDyn/learn.gaitherstephens.com` because a parallel session deployed on 07-28 without pushing. Reading the mount, I concluded a feature (flag 72 session resume) had never been built and started rebuilding it; deploying that would have reverted a working feature. Before answering "is X implemented?", check the **live worker** (`curl the deployed app.js`) or a **fresh clone**, never the mount. Reconcile by rebasing onto the deployed file.
+
+**Wrangler hangs when run from the mount.** `wrangler deploy` prints its banner and then never returns, apparently blocked on the `.wrangler` state directory, which the mount will not let it clear (deletes are denied from the sandbox). It is not a version or network problem: the API answers in 0.2s. Fix: copy `public/ src/ migrations/ wrangler.toml` to a scratch dir outside the mount and deploy from there.
+
 ## Theme and icons
 
 Three themes, **system is the default**. `data-theme` on `<html>` is `"light"`, `"dark"`, or absent for system. Dark tokens are declared twice in `styles.css`, once under `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])` and once under `:root[data-theme="dark"]`. That repetition is intentional: it is cheaper than adding a build step to a site that has none. An inline script in `<head>` sets the attribute before first paint so there is no white flash. The choice is stored in `localStorage` and also mirrored into synced `prefs` so a new device inherits it.
