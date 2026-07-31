@@ -62,6 +62,34 @@
   addEventListener("pagehide", flush);
 })();
 </script>
+<!-- Deferred GA4 (G-SVFQ6B3W71) + Clarity (xv4mv577z2) loader
+     (analytics-rollout 2026-07-31). GPC gate + queue stubs + inject on
+     first user interaction, same pattern as gaitherstephens.com. -->
+<script>
+(function () {
+  if (typeof navigator !== "undefined" && navigator.globalPrivacyControl === true) return;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { window.dataLayer.push(arguments); };
+  window.gtag("js", new Date());
+  window.gtag("config", "G-SVFQ6B3W71");
+  window.clarity = window.clarity || function () { (window.clarity.q = window.clarity.q || []).push(arguments); };
+  var evts = ["pointerdown", "keydown", "scroll", "touchstart"];
+  var load = function () {
+    if (load.done) return;
+    load.done = 1;
+    evts.forEach(function (e) { removeEventListener(e, load, true); });
+    var ga = document.createElement("script");
+    ga.async = true;
+    ga.src = "https://www.googletagmanager.com/gtag/js?id=G-SVFQ6B3W71";
+    document.head.appendChild(ga);
+    var cl = document.createElement("script");
+    cl.async = true;
+    cl.src = "https://www.clarity.ms/tag/xv4mv577z2";
+    document.head.appendChild(cl);
+  };
+  evts.forEach(function (e) { addEventListener(e, load, { capture: true, passive: true }); });
+})();
+</script>
 </head>
 <body>
 

@@ -5,3 +5,6 @@ node_modules/
 
 .trash/
 *.bak
+
+# Deploy key + local secrets (added 2026-07-30 with the repo import)
+.gaither-private/

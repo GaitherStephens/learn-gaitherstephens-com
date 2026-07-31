@@ -205,6 +205,31 @@ const SEC_HEADERS = {
   "X-Frame-Options": "DENY",
   "Permissions-Policy": "geolocation=(), microphone=(), camera=(), interest-cohort=()",
   "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+  // CSP in REPORT-ONLY first (STD-06). This site was the only one in
+  // the network serving no CSP at all. Report-Only cannot break the
+  // app: violations are reported to the shared collector and show up on
+  // /admin/csp-violations, and once a week or two passes clean this
+  // becomes a real Content-Security-Policy. 'unsafe-inline' is present
+  // because the login page and the study app both use inline
+  // script/style; tightening that is the follow-up, not a blocker.
+  // (Re-landed 2026-07-31: this block was shipped 07-30 but lived only
+  // as mount drift; a later deploy from repo HEAD dropped it. Now it is
+  // in git where it cannot be lost. Includes the 07-31 #53 fix -
+  // Cloudflare Web Analytics beacon - and the GA4/Clarity allowances
+  // from the analytics rollout.)
+  "Content-Security-Policy-Report-Only": [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com https://*.clarity.ms",
+    "font-src 'self' data:",
+    // gaithernews.com = the network's RUM + flag + CSP-report collector.
+    "connect-src 'self' https://gaithernews.com https://cloudflareinsights.com https://*.cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.clarity.ms",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "frame-ancestors 'none'",
+    "report-uri https://gaithernews.com/api/csp-report",
+  ].join("; "),
 };
 
 function json(body, status = 200, extra = {}) {
