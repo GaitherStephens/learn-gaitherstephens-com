@@ -1641,12 +1641,15 @@
           </div>` : ""}
 
         ${!picked ? `<p class="small muted">Keys A-D or 1-4 to answer</p>` : ""}
+        <button class="report-q" id="reportQ">${icon("i-flame", "ico ico--sm")}Something wrong with this question?</button>
       </div>`;
 
     if (!revealed) {
       app.querySelectorAll(".choice").forEach((b) => { b.onclick = () => pickAnswer(Number(b.dataset.pos)); });
     }
     if (revealed && !wasRight) wireLearnMore(q);
+    const rq = $("#reportQ");
+    if (rq) rq.onclick = () => flagThisQuestion(q);
     const commitBtn = $("#commitAnswer");
     if (commitBtn) commitBtn.onclick = () => revealAnswer();
     app.querySelectorAll("[data-conf]").forEach((b) => { b.onclick = () => setConfidence(Number(b.dataset.conf)); });
@@ -2994,6 +2997,20 @@
     camera: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.5"/></svg>',
   };
 
+  /* The question a report is about, set when she uses the small "Report this
+     question" link on a question rather than the general flag button. Without
+     it a content complaint arrives with no way to tell WHICH item was wrong:
+     flag #121 said "question references another question but doesn't give the
+     complete info" and carried no question id, so the item had to be found by
+     scanning all 252. */
+  let flagTarget = null;
+
+  function flagThisQuestion(q) {
+    flagTarget = { id: q.id, comp: q.comp, skill: q.skill, topic: q.topic, stem: q.stem };
+    const dlg = $("#flagDialog");
+    if (dlg) dlg.dispatchEvent(new CustomEvent("open-for-question"));
+  }
+
   /* Photo attachment (flag #108: "allow to submit photos"). Downscaled in the
      browser to 1280px on the long edge at JPEG 0.82, because the collector
      caps the payload near 2 MB and a phone photo is far larger. */
@@ -3119,6 +3136,8 @@
         load_ms: loadMs,
         referrer: document.referrer,
         studying,
+        question: flagTarget ? `${flagTarget.id} (comp ${flagTarget.comp} skill ${flagTarget.skill}, ${flagTarget.topic})` : "",
+        question_stem: flagTarget ? flagTarget.stem.slice(0, 300) : "",
         progress: `${o.seen}/${o.total} questions tried`,
         errors: errLog.slice(-5),
       };
@@ -3138,7 +3157,7 @@
             site: SITE,
             version,
             category,
-            note: note.slice(0, 1800),
+            note: (flagTarget ? `[${flagTarget.id}] ` : "") + note.slice(0, 1700),
             page_url: location.pathname + location.hash,
             context: flagContext(),
             ...(flagPhoto ? { image: flagPhoto } : {}),
@@ -3161,6 +3180,7 @@
       if (open) {
         e.preventDefault();
         picked = { reason: null };
+        flagTarget = null;
         resetFlagPhoto();
         $("#flagPageUrl").textContent = location.pathname + location.hash;
         toast.hidden = true;
@@ -3194,6 +3214,17 @@
     });
 
     dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close("cancel"); });
+
+    // Opened from a specific question: skip straight to the content reasons,
+    // which are the only ones that make sense for a bad item.
+    dlg.addEventListener("open-for-question", () => {
+      picked = { reason: FLAG_REASONS.find((r) => r.id === "content") };
+      resetFlagPhoto();
+      $("#flagPageUrl").textContent = (flagTarget ? flagTarget.id + " " : "") + location.pathname + location.hash;
+      toast.hidden = true;
+      renderSubs(picked.reason);
+      if (!dlg.open) dlg.showModal();
+    });
 
     stepNote.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -3262,7 +3293,7 @@
   (async () => {
     try {
       const [content] = await Promise.all([
-        fetch("/content.json?v=2026.07.29-1149").then((r) => {
+        fetch("/content.json?v=2026.07.31-1047").then((r) => {
           if (!r.ok) throw new Error("content " + r.status);
           return r.json();
         }),

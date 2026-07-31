@@ -1193,3 +1193,13 @@ input, textarea, select { font-size: max(16px, 1rem); }
 .flag-opt--alt:hover { background: var(--bg); }
 /* Sub-hint under a prompt, used by the change-your-answer affordance. */
 .ask-sub { font-size: .82rem; color: var(--muted); margin: 0 0 .55rem; }
+
+/* Quiet per-question report link. Deliberately low contrast: available when
+   wanted, never competing with the answer choices. */
+.report-q {
+  display: inline-flex; align-items: center; gap: .35rem;
+  margin-top: .9rem; padding: .4rem .6rem;
+  border: 0; background: none; color: var(--muted);
+  font-size: .8rem; font-weight: 500; min-height: 44px;
+}
+.report-q:hover { color: var(--bad); border-color: transparent; }

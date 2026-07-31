@@ -6,12 +6,61 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="color-scheme" content="light dark">
 <title>FTCE Science 5-9 Study</title>
-<link rel="stylesheet" href="/styles.css?v=2026.07.29-1149">
+<link rel="stylesheet" href="/styles.css?v=2026.07.31-1047">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%94%AC%3C/text%3E%3C/svg%3E">
 <script>
 // Theme before first paint. Anything later and she gets a white flash on a
 // dark phone at 6am. Kept inline and tiny for exactly that reason.
 (function(){try{var t=localStorage.getItem("ftce004.theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();
+</script>
+<!-- RUM collector: anonymous field Core Web Vitals to the network
+     collector (gaithernews.com/api/rum, allowed by our CSP
+     connect-src). No identifiers: hostname + metric values + m/d +
+     first path segment. ES2019 syntax by hand - pre-2020 iPads. -->
+<script>
+(function () {
+  if (!("PerformanceObserver" in window) || !navigator.sendBeacon) return;
+  var lcp = 0, cls = 0, worstEvt = 0, clsSeen = false;
+  try {
+    new PerformanceObserver(function (l) {
+      var es = l.getEntries();
+      if (es.length) lcp = es[es.length - 1].startTime;
+    }).observe({ type: "largest-contentful-paint", buffered: true });
+  } catch (_) {}
+  try {
+    new PerformanceObserver(function (l) {
+      l.getEntries().forEach(function (e) { if (!e.hadRecentInput) { cls += e.value; } });
+    }).observe({ type: "layout-shift", buffered: true });
+    clsSeen = true;
+  } catch (_) {}
+  try {
+    new PerformanceObserver(function (l) {
+      l.getEntries().forEach(function (e) { if (e.duration > worstEvt) worstEvt = e.duration; });
+    }).observe({ type: "event", buffered: true, durationThreshold: 40 });
+  } catch (_) {}
+  var sent = false;
+  function flush() {
+    if (sent) return; sent = true;
+    var nav = performance.getEntriesByType("navigation")[0];
+    var m = {};
+    if (lcp > 0) m.lcp = Math.round(lcp);
+    if (clsSeen) m.cls = Math.round(cls * 1000) / 1000;
+    if (worstEvt > 0) m.inp = Math.round(worstEvt);
+    if (nav && nav.responseStart > 0) m.ttfb = Math.round(nav.responseStart);
+    if (!Object.keys(m).length) return;
+    navigator.sendBeacon("https://gaithernews.com/api/rum",
+      new Blob([JSON.stringify({
+        site: location.hostname,
+        device: innerWidth < 768 ? "m" : "d",
+        pg: location.pathname.split("/")[1] || "",
+        metrics: m
+      })], { type: "text/plain" }));
+  }
+  addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "hidden") flush();
+  });
+  addEventListener("pagehide", flush);
+})();
 </script>
 </head>
 <body>
@@ -94,7 +143,7 @@
 
 <footer class="foot">
   <p>Built for the Florida Middle Grades General Science 5&ndash;9 (004) exam: 80 multiple-choice questions, 2 hours 30 minutes, scaled score of 200 to pass. Practice questions here are original and modeled on the state competency framework; they are not actual test items.</p>
-  <p><a href="/logout">Sign out</a> &middot; <a href="https://www.fl.nesinc.com/testPage.asp?test=004" target="_blank" rel="noopener">Official test page</a> &middot; <a href="#" data-learn-flag="open">Report a problem</a> &middot; <span class="footer-version" data-learn-flag="open" title="Report a problem">v2026.07.29-1149</span></p>
+  <p><a href="/logout">Sign out</a> &middot; <a href="https://www.fl.nesinc.com/testPage.asp?test=004" target="_blank" rel="noopener">Official test page</a> &middot; <a href="#" data-learn-flag="open">Report a problem</a> &middot; <span class="footer-version" data-learn-flag="open" title="Report a problem">v2026.07.31-1047</span></p>
 </footer>
 
 <!-- Bottom-left: flag. Bottom-right: back to top. Network convention. -->
@@ -135,7 +184,7 @@
   <div class="flag-toast" id="flagToast" hidden></div>
 </dialog>
 
-<script src="/diagrams.js?v=2026.07.29-1149"></script>
-<script src="/app.js?v=2026.07.29-1149"></script>
+<script src="/diagrams.js?v=2026.07.31-1047"></script>
+<script src="/app.js?v=2026.07.31-1047"></script>
 </body>
 </html>

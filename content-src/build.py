@@ -29,6 +29,41 @@ POSITIONAL = [
     r"\bletter\s+[A-D]\b",
 ]
 
+# Questions are drawn individually and shuffled, so a stem that leans on a
+# scenario set up in a DIFFERENT question is unanswerable when it appears
+# alone. Meg hit exactly this: three questions said "that tomato fertilizer
+# investigation" while only a fourth described it. A stem must stand by itself.
+CROSS_REF = [
+    # a demonstrative pointing at a scenario, e.g. "that same X investigation"
+    r"(?i)\b(that|this|the)\s+(?:same\s+)?(?:\w+\s+){0,3}"
+    r"(investigation|experiment|study|trial|setup|scenario|activity|procedure|lab)\b",
+    # explicit pointers to neighbouring items
+    r"(?i)\b(previous|preceding|prior|earlier|above|next|following)\s+(question|item|problem)\b",
+    r"(?i)\bquestion\s+\d+\b",
+]
+
+# Signs that a stem describes its OWN scenario rather than borrowing one.
+SETUP_PRESENT = [
+    r"(?i)\b(a|an|one|two|three|four|several)\s+(student|teacher|scientist|researcher|class|group|technician)\b",
+    r"(?i)\b(grows?|measures?|designs?|sets? up|tests?|places?|heats?|cools?|records?|conducts?|performs?|mixes?|drops?|observes?|compares?|builds?|adds?)\b",
+    r"\d+\s*(mL|L|g|kg|cm|m|km|s|min|N|J|W|V|A|°C|K|%)",
+]
+
+def stem_is_self_contained(stem: str) -> bool:
+    """A stem may say "this investigation" only if it also describes the
+    investigation. Counting words before the reference was the wrong test: it
+    passed "...for every group in the tomato fertilizer investigation?" because
+    the reference came late, and failed legitimate stems that opened with a
+    demonstrative and explained themselves afterwards."""
+    has_backref = any(re.search(p, stem) for p in CROSS_REF)
+    if not has_backref:
+        return True
+    # Pointers at neighbouring items are never rescuable by context.
+    for p in CROSS_REF[1:]:
+        if re.search(p, stem):
+            return False
+    return any(re.search(p, stem) for p in SETUP_PRESENT)
+
 def main():
     Q, F = [], []
     for f in sorted(glob.glob(os.path.join(HERE, "q_*.json"))):
@@ -62,6 +97,9 @@ def main():
         for p in POSITIONAL:
             if re.search(p, q["explanation"]):
                 errs.append(f"{q['id']}: explanation references an answer by position")
+        if not stem_is_self_contained(q["stem"]):
+            errs.append(f"{q['id']}: stem leans on a scenario from another question, "
+                        f"so it cannot be answered on its own: {q['stem'][:70]}...")
     fseen = set()
     for c in F:
         allowed = {"id","comp","topic","front","back"}
