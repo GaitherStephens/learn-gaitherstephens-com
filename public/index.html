@@ -90,6 +90,32 @@
   evts.forEach(function (e) { addEventListener(e, load, { capture: true, passive: true }); });
 })();
 </script>
+<!-- Sentry Loader Script (network convention: GPC gate + third-party
+     denyUrls; analytics-rollout orange burn-down 2026-07-31). -->
+<script>
+if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === true)) {
+  window.sentryOnLoad = function () {
+    Sentry.init({
+      ignoreErrors: [
+        "Invalid call to runtime.sendMessage",
+        "Object Not Found Matching Id",
+        /Non-Error promise rejection captured with value: Object Not Found/,
+      ],
+      denyUrls: [
+        /clarity\.js/i,
+        /clarity\.ms/i,
+        /cloudflareinsights\.com/i,
+        /beacon\.min\.js/i,
+        /googletagmanager\.com/i,
+      ],
+    });
+  };
+  var __sentry = document.createElement("script");
+  __sentry.src = "https://js.sentry-cdn.com/7be8f36d1e84f7d6960d0d6eb8e1a63c.min.js";
+  __sentry.crossOrigin = "anonymous";
+  document.head.appendChild(__sentry);
+}
+</script>
 </head>
 <body>
 
