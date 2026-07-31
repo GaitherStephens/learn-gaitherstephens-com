@@ -1,12 +1,12 @@
 {
   "site": "learn.gaitherstephens.com",
-  "$comment": "Unauthenticated only (PIN app). Zone host: gaitherstephens zone GETs proven fine from runners (stubbyz/fifthsense a11y baselines); no workers.dev subdomain enabled for this worker.",
+  "$comment": "Scan host is learn-gaitherstephens.gaitherstephens.workers.dev: the learn.gaitherstephens.com zone serves GitHub-runner browsers a bot-challenge interstitial (meta-refresh page; diagnosed 2026-07-31, same class as house/news). Same content, WAF bypassed. The PUBLIC site host stays learn.gaitherstephens.com.",
   "journeys": [
     {
       "id": "login-renders",
       "steps": [
         {
-          "goto": "https://learn.gaitherstephens.com/login"
+          "goto": "https://learn-gaitherstephens.gaitherstephens.workers.dev/login"
         },
         {
           "wait_for": "form"
@@ -23,7 +23,7 @@
       "id": "root-redirects-to-login",
       "steps": [
         {
-          "goto": "https://learn.gaitherstephens.com/"
+          "goto": "https://learn-gaitherstephens.gaitherstephens.workers.dev/"
         },
         {
           "wait_for": "form"
