@@ -1,0 +1,32 @@
+# Weekly critical-journey smoke checks against the deployed site
+# (report-only; pattern from gaitherdyn.com, SITE_STANDARD STD-25).
+# Manual runs: Actions tab -> assurance -> Run workflow.
+name: assurance
+on:
+  schedule:
+    - cron: "0 9 * * MON"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  journeys:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Install deps
+        run: |
+          npm i --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Critical journeys (report-only)
+        env:
+          ASSURANCE_INGEST_URL: https://gaithernews-com.gaitherstephens.workers.dev/run-assurance-ingest
+          ASSURANCE_OPS_TOKEN: ${{ secrets.OPS_TOKEN }}
+        run: node assurance/journeys.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: journeys-report
+          path: journeys-report.json
+          retention-days: 90
