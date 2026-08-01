@@ -17,6 +17,22 @@ binding = "DB"
 database_name = "learn-db"
 database_id = "f1bf3d0a-a92e-4e1f-a2a8-fb02e62c494a"
 
+# External D1 backup target (STD-22): weekly dump of learn-db, resumable,
+# manifest-gated. Bucket is learn's own; house/recipes each use their own too.
+[[r2_buckets]]
+binding = "BACKUPS"
+bucket_name = "learn-gaitherstephens-backups"
+
+# Weekly D1 -> R2 backup, Monday 09:00 UTC (house digest+backup = Mon 11/12
+# UTC, gaithernews backup = Sun 04:00-06:45 UTC; this slot collides with
+# neither). Handler: scheduled() in src/worker.js.
+[triggers]
+crons = ["0 9 * * 1"]
+
 [vars]
 APP_NAME = "FTCE Science 5-9 Study"
 SITE_URL = "https://learn.gaitherstephens.com"
+# Shared assurance collector: the weekly backup reports its freshness here
+# (data / backup:learn) so a stalled backup shows on /admin/health instead of
+# failing silently (STD-23). OPS_TOKEN is a secret, set via wrangler secret put.
+OPS_INGEST_URL = "https://gaithernews-com.gaitherstephens.workers.dev/run-assurance-ingest"

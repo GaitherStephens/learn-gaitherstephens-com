@@ -348,6 +348,28 @@ export default {
       return new Response("ok", { headers: { "Content-Type": "text/plain", ...SEC_HEADERS } });
     }
 
+    /* --- ops: manual D1 -> R2 backup trigger (STD-22/STD-23) --- */
+    // Same gate as house's /api/run-backup: OPS token only, timing-safe
+    // compare, fails CLOSED if the secret is unset. Deliberately outside
+    // the PIN session gate — this is an operator endpoint, not a user one,
+    // and nothing here is readable without the token.
+    if (path === "/run-backup" && method === "POST") {
+      const expected = env.OPS_TOKEN;
+      const given = request.headers.get("x-ops-token") || url.searchParams.get("token") || "";
+      if (!expected || !constantEqual(given, expected)) {
+        return new Response("unauthorized", { status: 401, headers: SEC_HEADERS });
+      }
+      try {
+        const { runLearnBackup } = await import("./backup.js");
+        const summary = await runLearnBackup(env);
+        return new Response(summary + "\n", {
+          headers: { "Content-Type": "text/plain; charset=utf-8", ...SEC_HEADERS },
+        });
+      } catch (e) {
+        return new Response("backup failed: " + (e?.message || e), { status: 500, headers: SEC_HEADERS });
+      }
+    }
+
     const ip = request.headers.get("CF-Connecting-IP") || "0.0.0.0";
     const ipHash = await sha256Hex(ip + "|" + sessionSecret(env));
 
@@ -586,5 +608,19 @@ export default {
     else if (url.searchParams.has("v")) out.headers.set("Cache-Control", "public, max-age=31536000, immutable");
     else out.headers.set("Cache-Control", "public, max-age=300");
     return out;
+  },
+
+  // Weekly D1 -> R2 backup (Mon 09:00 UTC — clear of house's Mon 11/12 UTC
+  // digest pair and gaithernews's Sun backup window). Resumable and
+  // manifest-gated; see src/backup.js. STD-22/STD-23.
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil((async () => {
+      try {
+        const { runLearnBackup } = await import("./backup.js");
+        console.log(await runLearnBackup(env));
+      } catch (e) {
+        console.error("learn backup FAILED:", e?.stack || e);
+      }
+    })());
   },
 };

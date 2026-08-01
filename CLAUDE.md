@@ -54,6 +54,10 @@ Back-to-top is driven by an **IntersectionObserver on `#topSentinel`** (a 400px 
 
   Do **not** try to shortcut this with a case-insensitive grep. `grep -iE 'answers? +[A-D]'` matches the ordinary phrase "cannot answer a question", which produced a false failure once. The letter class has to stay case-sensitive.
 
+## Backups
+
+Weekly external D1 backup (STD-22/STD-23), a direct port of house's `src/lib/backup.ts`: cron `0 9 * * 1` (Mon 09:00 UTC) dumps every `learn-db` table except `_cf_KV` to R2 bucket `learn-gaitherstephens-backups` under `backups/d1/YYYY-MM-DD/<table>.jsonl`. Resumable (only missing tables are written), smallest-table-first, and `manifest.json` is written only when every table is present, so its existence means the folder is complete. 120-day retention. Completion reports to the shared assurance collector as `data` / `backup:learn` (warn >9d, fail >16d). Manual trigger: `POST /run-backup` with `x-ops-token` (the shared OPS token; secret `OPS_TOKEN` on the worker), timing-safe compare, fails closed, sits outside the PIN gate on purpose. Code: `src/backup.js`.
+
 ## Progress sync
 
 One shared account. All progress lives in a single `state` row as JSON, mirrored to `localStorage` so the app works offline.
