@@ -6,6 +6,11 @@ compatibility_flags = ["nodejs_compat"]
 routes = [
   { pattern = "learn.gaitherstephens.com", custom_domain = true }
 ]
+# The workers.dev host must STAY enabled: CI assurance scans hit
+# learn-gaitherstephens.gaitherstephens.workers.dev because the zone's
+# bot challenge blocks GH runners (a0bb391). wrangler 4 disables it by
+# default when unset, which a 2026-08-01 deploy proved the hard way.
+workers_dev = true
 
 [assets]
 directory = "./public"
