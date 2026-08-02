@@ -1,0 +1,12 @@
+{
+  "site": "learn.gaitherstephens.com",
+  "$comment": "PIN app: only the sign-in surface is public. workers.dev host: the gaitherstephens zone challenges CI browsers (2026-07-31 finding).",
+  "routes": [
+    {
+      "id": "login",
+      "url": "https://learn-gaitherstephens.gaitherstephens.workers.dev/login",
+      "ready_selector": "form",
+      "settle_ms": 1500
+    }
+  ]
+}

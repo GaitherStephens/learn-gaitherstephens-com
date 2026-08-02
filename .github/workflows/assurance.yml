@@ -30,3 +30,24 @@ jobs:
           name: journeys-report
           path: journeys-report.json
           retention-days: 90
+  a11y:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Install scanner deps
+        run: |
+          npm i --no-save playwright @axe-core/playwright
+          npx playwright install --with-deps chromium
+      - name: Axe scan (deployed site, report-only)
+        env:
+          ASSURANCE_INGEST_URL: https://gaithernews-com.gaitherstephens.workers.dev/run-assurance-ingest
+          ASSURANCE_OPS_TOKEN: ${{ secrets.OPS_TOKEN }}
+        run: node assurance/a11y-scan.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a11y-report
+          path: a11y-report.json
+          retention-days: 90
