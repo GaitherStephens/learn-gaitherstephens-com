@@ -273,7 +273,7 @@ function loginPage(error, nextPath) {
     <p class="demo-note">A full working demo with sample progress. Nothing you do is saved, and it cannot see anyone's real account.</p>
   </div>
 </main>
-<p class="login-legal">An independent study tool. Not affiliated with, endorsed by, or connected to the Florida Department of Education or Pearson. FTCE is their trademark, used here only to say which exam this prepares for. All questions and explanations are original; no actual test items appear here.</p>
+<footer><p class="login-legal">An independent study tool. Not affiliated with, endorsed by, or connected to the Florida Department of Education or Pearson. FTCE is their trademark, used here only to say which exam this prepares for. All questions and explanations are original; no actual test items appear here.</p></footer>
 <script>
 (() => {
   const btn = document.getElementById("passkeyBtn");
