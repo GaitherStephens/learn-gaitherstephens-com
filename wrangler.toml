@@ -32,7 +32,9 @@ bucket_name = "learn-gaitherstephens-backups"
 # UTC, gaithernews backup = Sun 04:00-06:45 UTC; this slot collides with
 # neither). Handler: scheduled() in src/worker.js.
 [triggers]
-crons = ["0 9 * * 1"]
+# Day-of-week by NAME: Cloudflare cron numbers day-of-week from SUNDAY=1,
+# so "* * 1" fired Sundays, not Mondays (same bug as house, fixed 2026-08-03).
+crons = ["0 9 * * MON"]
 
 [vars]
 APP_NAME = "FTCE Science 5-9 Study"
