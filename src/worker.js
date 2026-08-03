@@ -221,7 +221,7 @@ const SEC_HEADERS = {
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms https://js.sentry-cdn.com https://browser.sentry-cdn.com",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com https://*.clarity.ms",
+    "img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com https://*.clarity.ms https://c.clarity.ms",
     "font-src 'self' data:",
     // gaithernews.com = the network's RUM + flag + CSP-report collector.
     "connect-src 'self' https://gaithernews.com https://cloudflareinsights.com https://*.cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.clarity.ms https://*.ingest.us.sentry.io https://*.ingest.sentry.io https://js.sentry-cdn.com",
