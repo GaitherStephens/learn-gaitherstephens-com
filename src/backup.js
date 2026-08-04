@@ -147,10 +147,17 @@ export async function runLearnBackup(env) {
     : `[learn-backup] PARTIAL ${folder} — ${written} written, ${skipped} left for next run`;
 
   // Report to the shared collector so a stalled backup is VISIBLE.
+  // GOTCHA (2026-08-04): a request served on the workers.dev host cannot
+  // fetch the sibling gaithernews workers.dev collector (same-account
+  // workers.dev worker-to-worker fetch fails). Cron/scheduled context and
+  // requests served on learn.gaitherstephens.com both work. So: trigger
+  // manual /run-backup via the CUSTOM DOMAIN, and the outcome below is
+  // appended to the summary so a swallowed report is never invisible again.
+  let reported = "skipped (no collector configured)";
   if (complete && env.OPS_INGEST_URL && env.OPS_TOKEN) {
     const ageDays = Math.floor((Date.now() - Date.parse(date + "T00:00:00Z")) / 86400000);
     try {
-      await fetch(env.OPS_INGEST_URL, {
+      const r = await fetch(env.OPS_INGEST_URL, {
         method: "POST",
         headers: { "content-type": "application/json", "x-ops-token": env.OPS_TOKEN },
         body: JSON.stringify({ snapshots: [{
@@ -159,7 +166,8 @@ export async function runLearnBackup(env) {
           detail: { subtitle: `newest COMPLETE learn-db backup ${date} (${ageDays}d) · ${tables.length} tables · weekly Mon 09 UTC · warn >9d, fail >16d` },
         }] }),
       });
-    } catch { /* reporting must never fail the backup */ }
+      reported = r.ok ? "ok" : "HTTP " + r.status;
+    } catch (e) { reported = "FAILED: " + (e && e.message ? e.message : e); /* reporting must never fail the backup */ }
   }
-  return summary;
+  return summary + " \u00b7 tile report: " + reported;
 }
