@@ -42,4 +42,13 @@ SITE_URL = "https://learn.gaitherstephens.com"
 # Shared assurance collector: the weekly backup reports its freshness here
 # (data / backup:learn) so a stalled backup shows on /admin/health instead of
 # failing silently (STD-23). OPS_TOKEN is a secret, set via wrangler secret put.
-OPS_INGEST_URL = "https://gaithernews-com.gaitherstephens.workers.dev/run-assurance-ingest"
+# CUSTOM DOMAIN, not workers.dev (2026-08-13). The workers.dev target
+# silently ate every CRON report: the Mon Aug 10 09:00 backup COMPLETED
+# (manifest written at 09:00:45) but its tile never arrived, so the
+# health board showed "stopped reporting" for 9 days over a backup that
+# was fine. The 08-04 gotcha note assumed scheduled context could reach
+# a sibling workers.dev host; it cannot. Manual runs reported fine
+# because they arrive via the custom domain. Same-account workers.dev
+# to workers.dev fetch fails in EVERY context; always target the
+# custom domain.
+OPS_INGEST_URL = "https://gaithernews.com/run-assurance-ingest"

@@ -154,16 +154,31 @@ export async function runLearnBackup(env) {
   // manual /run-backup via the CUSTOM DOMAIN, and the outcome below is
   // appended to the summary so a swallowed report is never invisible again.
   let reported = "skipped (no collector configured)";
-  if (complete && env.OPS_INGEST_URL && env.OPS_TOKEN) {
+  // Report EVERY outcome, not just COMPLETE (2026-08-13). A tile
+  // written only on the happy path cannot report failure: house and
+  // recipes went silently unprotected for 9 days behind exactly this
+  // shape, and the board said "stopped reporting" instead of "backup
+  // stuck". A PARTIAL pass posts a warn so a stall is a colored tile,
+  // never an absence.
+  if (env.OPS_INGEST_URL && env.OPS_TOKEN) {
     const ageDays = Math.floor((Date.now() - Date.parse(date + "T00:00:00Z")) / 86400000);
+    const tile = complete
+      ? {
+          status: ageDays > 16 ? "fail" : ageDays > 9 ? "warn" : "ok",
+          subtitle: `newest COMPLETE learn-db backup ${date} (${ageDays}d) · ${tables.length} tables · weekly Mon 09 UTC · warn >9d, fail >16d`,
+        }
+      : {
+          status: "warn",
+          subtitle: `PARTIAL learn-db backup ${date}: ${written} table(s) this pass, ${skipped} still to go · will resume next run · complete-backup age gates: warn >9d, fail >16d`,
+        };
     try {
       const r = await fetch(env.OPS_INGEST_URL, {
         method: "POST",
         headers: { "content-type": "application/json", "x-ops-token": env.OPS_TOKEN },
         body: JSON.stringify({ snapshots: [{
-          category: "data", key: "backup:learn", status: ageDays > 16 ? "fail" : ageDays > 9 ? "warn" : "ok",
+          category: "data", key: "backup:learn", status: tile.status,
           value: ageDays,
-          detail: { subtitle: `newest COMPLETE learn-db backup ${date} (${ageDays}d) · ${tables.length} tables · weekly Mon 09 UTC · warn >9d, fail >16d` },
+          detail: { subtitle: tile.subtitle },
         }] }),
       });
       reported = r.ok ? "ok" : "HTTP " + r.status;
