@@ -362,4 +362,31 @@ window.DIAGRAMS = {
     </svg>`,
     caption: "Date order: Dalton, Thomson, Rutherford, Bohr, Schrodinger, Chadwick. Only three found a particle: Thomson the electron, Rutherford the nucleus (and later the proton), Chadwick the neutron. The other three changed the picture, not the particle list.",
   },
+
+  scientistportraits: {
+    title: "The six faces, same order",
+    // Real portraits (flag 211). Files live in /img/scientists/, 240x300
+    // grayscale JPEGs, ~15 KB each. Licenses verified via the Commons API on
+    // 2026-08-17: five are public domain; the Chadwick photo is Los Alamos
+    // National Laboratory's attribution license (credited in the caption).
+    // Exact source URLs: docs/IMAGE-SOURCES.md. xlink:href kept alongside
+    // href for the pre-2020 iPads.
+    svg: `<svg viewBox="0 0 400 340" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-label="Portraits of Dalton, Thomson, Rutherford, Bohr, Schrodinger and Chadwick">
+      ${[
+        ["dalton", "Dalton", "solid ball", 66, 0],
+        ["thomson", "Thomson", "electron", 200, 0],
+        ["rutherford", "Rutherford", "nucleus", 333, 0],
+        ["bohr", "Bohr", "energy levels", 66, 1],
+        ["schrodinger", "Schrodinger", "electron cloud", 200, 1],
+        ["chadwick", "Chadwick", "neutron", 333, 1],
+      ].map(([slug, name, hook, cx, row]) => {
+        const y = row * 168 + 8;
+        return `<image href="/img/scientists/${slug}.jpg" xlink:href="/img/scientists/${slug}.jpg" x="${cx - 46}" y="${y}" width="92" height="115" preserveAspectRatio="xMidYMin slice"/>
+      <rect x="${cx - 46}" y="${y}" width="92" height="115" fill="none" class="d-axis"/>
+      <text x="${cx}" y="${y + 129}" class="d-lbl d-key" text-anchor="middle">${name}</text>
+      <text x="${cx}" y="${y + 142}" class="d-lbl" text-anchor="middle">${hook}</text>`;
+      }).join("\n      ")}
+    </svg>`,
+    caption: "Same order as the timeline: Dalton, Thomson, Rutherford, Bohr, Schrodinger, Chadwick. Portraits are public domain via Wikimedia Commons; the Chadwick photo is credited to Los Alamos National Laboratory.",
+  },
 };
