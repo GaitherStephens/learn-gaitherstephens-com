@@ -3293,7 +3293,7 @@
   (async () => {
     try {
       const [content] = await Promise.all([
-        fetch("/content.json?v=2026.07.31-1047").then((r) => {
+        fetch("/content.json?v=2026.08.17-1527").then((r) => {
           if (!r.ok) throw new Error("content " + r.status);
           return r.json();
         }),

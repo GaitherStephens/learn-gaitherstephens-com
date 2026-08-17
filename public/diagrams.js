@@ -303,4 +303,63 @@ window.DIAGRAMS = {
     </svg>`,
     caption: "Plant cells add a cell wall, a large central vacuole and chloroplasts. Both have a nucleus, membrane, cytoplasm and mitochondria.",
   },
+
+  atomicmodels: {
+    title: "How the model of the atom evolved",
+    // One panel per scientist, in date order, each drawn as HIS picture of the
+    // atom. The picture is the distinguisher: solid ball, pudding, empty space
+    // with a core, orbits, cloud, and finally the completed nucleus.
+    svg: `<svg viewBox="0 0 400 330" role="img" aria-label="Six atomic models in order: Dalton's solid sphere, Thomson's plum pudding, Rutherford's nuclear model, Bohr's orbits, Schrodinger's electron cloud, and Chadwick's neutron">
+      <!-- row 1: Dalton, Thomson, Rutherford -->
+      <circle cx="66" cy="52" r="24" class="d-fill-2"/>
+      <text x="66" y="106" class="d-lbl d-key" text-anchor="middle">Dalton  1803</text>
+      <text x="66" y="120" class="d-lbl" text-anchor="middle">solid ball</text>
+      <text x="66" y="133" class="d-lbl" text-anchor="middle">atoms are real</text>
+
+      <circle cx="200" cy="52" r="24" class="d-fill-3"/>
+      <circle cx="190" cy="44" r="4" class="d-fill-1"/>
+      <circle cx="210" cy="50" r="4" class="d-fill-1"/>
+      <circle cx="196" cy="62" r="4" class="d-fill-1"/>
+      <circle cx="209" cy="38" r="4" class="d-fill-1"/>
+      <text x="200" y="106" class="d-lbl d-key" text-anchor="middle">Thomson  1897</text>
+      <text x="200" y="120" class="d-lbl" text-anchor="middle">plum pudding</text>
+      <text x="200" y="133" class="d-lbl" text-anchor="middle">cathode rays: ELECTRON</text>
+
+      <circle cx="333" cy="52" r="24" fill="none" class="d-axis" stroke-dasharray="3 3"/>
+      <circle cx="333" cy="52" r="4" class="d-fill-1"/>
+      <text x="333" y="106" class="d-lbl d-key" text-anchor="middle">Rutherford  1911</text>
+      <text x="333" y="120" class="d-lbl" text-anchor="middle">gold foil: tiny NUCLEUS</text>
+      <text x="333" y="133" class="d-lbl" text-anchor="middle">mostly empty space</text>
+
+      <!-- row 2: Bohr, Schrodinger, Chadwick -->
+      <circle cx="66" cy="205" r="4" class="d-fill-1"/>
+      <circle cx="66" cy="205" r="13" fill="none" class="d-axis"/>
+      <circle cx="66" cy="205" r="24" fill="none" class="d-axis"/>
+      <circle cx="79" cy="205" r="3" class="d-fill-1"/>
+      <circle cx="49" cy="196" r="3" class="d-fill-1"/>
+      <text x="66" y="259" class="d-lbl d-key" text-anchor="middle">Bohr  1913</text>
+      <text x="66" y="273" class="d-lbl" text-anchor="middle">fixed energy levels</text>
+      <text x="66" y="286" class="d-lbl" text-anchor="middle">explains line spectra</text>
+
+      <circle cx="200" cy="205" r="24" class="d-fill-4"/>
+      <circle cx="200" cy="205" r="16" class="d-fill-3"/>
+      <circle cx="200" cy="205" r="8" class="d-fill-2"/>
+      <circle cx="200" cy="205" r="3" class="d-fill-1"/>
+      <text x="200" y="259" class="d-lbl d-key" text-anchor="middle">Schrodinger  1926</text>
+      <text x="200" y="273" class="d-lbl" text-anchor="middle">electron CLOUD</text>
+      <text x="200" y="286" class="d-lbl" text-anchor="middle">probability, not paths</text>
+
+      <circle cx="333" cy="205" r="24" fill="none" class="d-axis" stroke-dasharray="3 3"/>
+      <circle cx="327" cy="200" r="5" class="d-fill-1"/>
+      <circle cx="339" cy="202" r="5" class="d-fill-1"/>
+      <circle cx="330" cy="211" r="5" class="d-fill-4 d-axis"/>
+      <circle cx="339" cy="210" r="5" class="d-fill-4 d-axis"/>
+      <text x="333" y="259" class="d-lbl d-key" text-anchor="middle">Chadwick  1932</text>
+      <text x="333" y="273" class="d-lbl" text-anchor="middle">found the NEUTRON</text>
+      <text x="333" y="286" class="d-lbl" text-anchor="middle">explains isotopes</text>
+
+      <text x="200" y="318" class="d-lbl d-key" text-anchor="middle">Dalton's Theory Really Bothered Some Chemists</text>
+    </svg>`,
+    caption: "Date order: Dalton, Thomson, Rutherford, Bohr, Schrodinger, Chadwick. Only three found a particle: Thomson the electron, Rutherford the nucleus (and later the proton), Chadwick the neutron. The other three changed the picture, not the particle list.",
+  },
 };

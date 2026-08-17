@@ -249,7 +249,7 @@ function loginPage(error, nextPath) {
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><meta name="color-scheme" content="light dark">
 <title>Sign in : FTCE Science 5-9 Study</title>
-<link rel="stylesheet" href="/styles.css?v=2026.07.27-1506">
+<link rel="stylesheet" href="/styles.css?v=2026.08.17-1527">
 </head><body class="login-body">
 <main class="login-card">
   <div class="login-mark">FTCE</div>
