@@ -250,6 +250,29 @@ function loginPage(error, nextPath) {
 <meta name="robots" content="noindex,nofollow"><meta name="color-scheme" content="light dark">
 <title>Sign in : FTCE Science 5-9 Study</title>
 <link rel="stylesheet" href="/styles.css?v=2026.08.17-1552">
+<script>
+if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === true)) {
+  window.sentryOnLoad = function () {
+    Sentry.init({
+      ignoreErrors: [
+        "Invalid call to runtime.sendMessage",
+        "Object Not Found Matching Id",
+      ],
+      denyUrls: [
+        /clarity\\.js/i,
+        /clarity\\.ms/i,
+        /cloudflareinsights\\.com/i,
+        /beacon\\.min\\.js/i,
+        /googletagmanager\\.com/i,
+      ],
+    });
+  };
+  var __sentry = document.createElement("script");
+  __sentry.src = "https://js.sentry-cdn.com/7be8f36d1e84f7d6960d0d6eb8e1a63c.min.js";
+  __sentry.crossOrigin = "anonymous";
+  document.head.appendChild(__sentry);
+}
+</script>
 </head><body class="login-body">
 <main class="login-card">
   <div class="login-mark">FTCE</div>
