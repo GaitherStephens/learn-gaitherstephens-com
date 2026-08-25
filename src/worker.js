@@ -46,7 +46,20 @@ async function hmac(secret, msg) {
 }
 
 function sessionSecret(env) {
-  return env.SESSION_SECRET || env.LEARN_PIN || "learn-dev-secret";
+  // No hardcoded fallback. This used to end with || "learn-dev-secret",
+  // a constant sitting in a public-shaped repo: with neither binding
+  // configured, anyone who read this line could mint a valid session
+  // token and walk straight past the login gate. SESSION_SECRET is set
+  // in production today (checked with `wrangler secret list`), so the
+  // fallback was never live, but a config slip would have downgraded
+  // auth to a known secret SILENTLY instead of failing.
+  //
+  // Now it throws. mintSession and sessionValid are the only callers and
+  // both sit behind try/catch at the router, so a missing secret means
+  // nobody gets a session, which is the correct direction to fail.
+  const secret = env.SESSION_SECRET || env.LEARN_PIN;
+  if (!secret) throw new Error("SESSION_SECRET is not configured");
+  return secret;
 }
 
 async function mintSession(env) {
@@ -204,12 +217,30 @@ const SEC_HEADERS = {
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "X-Frame-Options": "DENY",
   "Permissions-Policy": "geolocation=(), microphone=(), camera=(), interest-cohort=()",
-  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
-  // CSP in REPORT-ONLY first (STD-06). This site was the only one in
-  // the network serving no CSP at all. Report-Only cannot break the
-  // app: violations are reported to the shared collector and show up on
-  // /admin/csp-violations, and once a week or two passes clean this
-  // becomes a real Content-Security-Policy. 'unsafe-inline' is present
+  // Network canonical string, exactly. Was "max-age=31536000;
+  // includeSubDomains": one year and no preload, which does not match
+  // SECURITY_BASELINE section 1 and would be rejected by the HSTS
+  // preload list.
+  "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+  // Was absent entirely, which is why this site scored 6/7.
+  "Cross-Origin-Opener-Policy": "same-origin",
+  // CSP is still REPORT-ONLY, and here is the honest reason, because
+  // "once a week or two passes clean" was written on 2026-07-31 and
+  // four weeks went by.
+  //
+  // State as of 2026-08-25: the shared collector's last violation from
+  // this host was 2026-08-16 (www.google.com/g/collect on connect-src,
+  // and c.clarity.ms on img-src before that). BOTH origins are in the
+  // policy below now and the last deploy was 08-19, so nothing has
+  // reported since the current policy went live. The login page was
+  // also loaded directly and produced zero report-only violations.
+  //
+  // What is NOT verified is the AUTHENTICATED app, which needs a login
+  // to exercise and which no automated pass should be doing. Its
+  // siblings stubbyz and fifthsense were promoted to enforcing on
+  // 2026-08-25 after exactly this kind of check; this one waits until
+  // someone opens the study app once and confirms the console is clean.
+  // Flip it by deleting "-Report-Only" from the key below. 'unsafe-inline' is present
   // because the login page and the study app both use inline
   // script/style; tightening that is the follow-up, not a blocker.
   // (Re-landed 2026-07-31: this block was shipped 07-30 but lived only
@@ -227,7 +258,11 @@ const SEC_HEADERS = {
     "connect-src 'self' https://gaithernews.com https://www.google.com https://cloudflareinsights.com https://*.cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.clarity.ms https://*.ingest.us.sentry.io https://*.ingest.sentry.io https://js.sentry-cdn.com",
     "object-src 'none'",
     "base-uri 'self'",
+    // The login form posts to /login, same origin, so this is a
+    // no-op for the app and closes off exfiltration to a third party.
+    "form-action 'self'",
     "frame-ancestors 'none'",
+    "upgrade-insecure-requests",
     "report-uri https://gaithernews.com/api/csp-report",
   ].join("; "),
 };

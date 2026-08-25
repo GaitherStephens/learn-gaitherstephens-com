@@ -8,3 +8,6 @@ node_modules/
 
 # Deploy key + local secrets (added 2026-07-30 with the repo import)
 .gaither-private/
+
+# SECURITY_BASELINE section 5: every repo's .gitignore must carry these.
+.env

@@ -1111,8 +1111,8 @@
           <div><b>${R.seen}<span class="muted">/${o.total}</span></b><span>${icon("i-quiz", "ico ico--sm")}Questions answered</span></div>
           <div><b>${Math.round(R.coverage * 100)}%</b><span>${icon("i-layers", "ico ico--sm")}Bank covered</span></div>
           <div><b>${R.sk.mastered}<span class="muted">/${SKILL_COUNT()}</span></b><span>${icon("i-check-circle", "ico ico--sm")}Skills mastered</span></div>
-          <div><b>${R.lastMock ? Math.round((R.lastMock.raw / R.lastMock.total) * 100) + "%" : "&mdash;"}</b><span>${icon("i-exam", "ico ico--sm")}Last full mock</span></div>
-          <div><b>${R.trend ? `<span style="color:var(--${R.trend.delta >= 0 ? "good" : "bad"})">${(R.trend.delta >= 0 ? "+" : "") + Math.round(R.trend.delta * 100)}%</span>` : "&mdash;"}</b><span>${icon(R.trend && R.trend.delta < 0 ? "i-trend-down" : "i-trend-up", "ico ico--sm")}Recent trend</span></div>
+          <div><b>${R.lastMock ? Math.round((R.lastMock.raw / R.lastMock.total) * 100) + "%" : "·"}</b><span>${icon("i-exam", "ico ico--sm")}Last full mock</span></div>
+          <div><b>${R.trend ? `<span style="color:var(--${R.trend.delta >= 0 ? "good" : "bad"})">${(R.trend.delta >= 0 ? "+" : "") + Math.round(R.trend.delta * 100)}%</span>` : "·"}</b><span>${icon(R.trend && R.trend.delta < 0 ? "i-trend-down" : "i-trend-up", "ico ico--sm")}Recent trend</span></div>
           <div><b>${due}</b><span>${icon("i-cards", "ico ico--sm")}Cards due</span></div>
         </div>
         <p class="small muted" style="margin:.8rem 0 0">A band rather than a number on purpose: Pearson does not publish how raw scores convert to the 200 scaled pass mark, so a precise percentage would be false precision.</p>
@@ -2244,7 +2244,24 @@
     const skip = $("#skipTyped");
     if (skip) skip.onclick = () => gradeTyped("", true);
     const ov = $("#override");
-    if (ov) ov.onclick = () => { s.stage = "right"; s.right++; scheduleTyped(s.queue[s.i], true); renderTyped(); };
+    // "I actually had this right." Two bugs lived on this one line.
+    //
+    // It never called save(), unlike gradeTyped() directly below, so the
+    // correction was thrown away on reload: the box promotion, the
+    // right-count, all of it. The user pressed the button, saw the UI
+    // agree, and got the card back in the wrong box next session.
+    //
+    // And it re-ran scheduleTyped(), which calls bump("c"), for a card
+    // gradeTyped() had already counted moments earlier. So every
+    // override counted twice toward the daily goal. countIt=false skips
+    // the second count while still promoting the box.
+    if (ov) ov.onclick = () => {
+      s.stage = "right";
+      s.right++;
+      scheduleTyped(s.queue[s.i], true, false);
+      save();
+      renderTyped();
+    };
     const nt = $("#nextTyped");
     if (nt) nt.onclick = () => { s.i++; s.stage = "ask"; s.value = ""; renderTyped(); };
   }
@@ -2263,8 +2280,10 @@
 
   // Typed cards ride the same Leitner schedule, but a miss drops straight to
   // box 0 rather than easing back a step. Formulas are all-or-nothing.
-  function scheduleTyped(card, ok) {
-    bump("c");
+  function scheduleTyped(card, ok, countIt = true) {
+    // countIt=false for the "I actually had this right" override, which
+    // re-schedules a card gradeTyped() has already counted.
+    if (countIt) bump("c");
     const prev = S.cards[card.id] || { box: 0, seen: 0 };
     const box = ok ? Math.min(BOXES.length - 1, prev.box + 1) : 0;
     S.cards[card.id] = { box, due: now() + days(BOXES[box]), seen: (prev.seen || 0) + 1, at: now() };
@@ -2354,9 +2373,9 @@
         ${helpBox("review")}
         <div class="stat-row">
           <div class="stat"><b style="color:var(--${barTone(acc)})">${Math.round(acc * 100)}%</b><span>${icon("i-percent", "ico ico--sm")}Accuracy</span></div>
-          <div class="stat"><b style="color:var(--${avgS && avgS > 112 ? "bad" : "fg"})">${avgS ? avgS.toFixed(0) + "s" : "&mdash;"}</b><span>${icon("i-clock", "ico ico--sm")}Avg time</span></div>
+          <div class="stat"><b style="color:var(--${avgS && avgS > 112 ? "bad" : "fg"})">${avgS ? avgS.toFixed(0) + "s" : "·"}</b><span>${icon("i-clock", "ico ico--sm")}Avg time</span></div>
           <div class="stat"><b style="color:var(--${dangerous.length ? "bad" : "good"})">${dangerous.length}</b><span>${icon("i-alert", "ico ico--sm")}Sure but wrong</span></div>
-          <div class="stat"><b style="color:var(--${t ? (t.delta >= 0 ? "good" : "bad") : "fg"})">${t ? (t.delta >= 0 ? "+" : "") + Math.round(t.delta * 100) + "%" : "&mdash;"}</b><span>${icon(t && t.delta < 0 ? "i-trend-down" : "i-trend-up", "ico ico--sm")}Trend</span></div>
+          <div class="stat"><b style="color:var(--${t ? (t.delta >= 0 ? "good" : "bad") : "fg"})">${t ? (t.delta >= 0 ? "+" : "") + Math.round(t.delta * 100) + "%" : "·"}</b><span>${icon(t && t.delta < 0 ? "i-trend-down" : "i-trend-up", "ico ico--sm")}Trend</span></div>
         </div>
         <p class="small muted" style="margin:1rem 0 0">Real exam pace is 112 seconds per question. ${
           avgS ? (avgS > 112 ? `You are averaging ${avgS.toFixed(0)}s, which would leave you short on the real clock.` : `You are averaging ${avgS.toFixed(0)}s, comfortably inside the limit.`) : ""}</p>
@@ -2592,7 +2611,7 @@
         ${helpBox("progress")}
         <div class="stat-row">
           <div class="stat"><b>${o.seen}/${o.total}</b><span>${icon("i-quiz", "ico ico--sm")}Questions tried</span></div>
-          <div class="stat"><b>${o.seen ? Math.round(o.accuracy * 100) + "%" : "&mdash;"}</b><span>Accuracy</span></div>
+          <div class="stat"><b>${o.seen ? Math.round(o.accuracy * 100) + "%" : "·"}</b><span>Accuracy</span></div>
           <div class="stat"><b>${cardsSeen}/${DATA.cards.length}</b><span>${icon("i-cards", "ico ico--sm")}Cards started</span></div>
           <div class="stat"><b>${S.exams.length}</b><span>${icon("i-exam", "ico ico--sm")}Mock exams</span></div>
         </div>
@@ -2608,7 +2627,7 @@
       <div class="panel">
         <h2>Mastery detail</h2>
         ${rows.map((r) => `<div class="mrow"><span class="lbl">${r.comp}. ${esc(r.title)}</span>
-          <span class="val">${r.m.seen}/${r.m.total} tried &middot; ${r.m.seen ? Math.round(r.m.accuracy * 100) + "% right" : "&mdash;"}</span></div>
+          <span class="val">${r.m.seen}/${r.m.total} tried &middot; ${r.m.seen ? Math.round(r.m.accuracy * 100) + "% right" : "·"}</span></div>
           <div class="bar"><i class="${barClass(r.m.score)}" style="width:${Math.round(r.m.score * 100)}%"></i></div>`).join("")}
         <p class="small muted">The bar is accuracy scaled down until you have covered at least 60 percent of that competency's questions, so a short hot streak does not read as mastery.</p>
       </div>
