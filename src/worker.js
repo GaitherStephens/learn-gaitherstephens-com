@@ -123,7 +123,7 @@ async function pinValid(env, attempted) {
   return false;
 }
 
-/* ---------- login throttle (fails OPEN if table missing) ---------- */
+/* ---------- login throttle (fails CLOSED on DB error, review F10) ---------- */
 
 async function throttled(env, ipHash) {
   try {
@@ -133,7 +133,11 @@ async function throttled(env, ipHash) {
     ).bind(ipHash, `-${ATTEMPT_WINDOW_MIN} minutes`).first();
     return (row?.c ?? 0) >= MAX_ATTEMPTS;
   } catch {
-    return false;
+    // Fail CLOSED: a read failure must not silently remove the brute-force
+    // throttle. Treat an unreadable store as "throttled" so login refuses
+    // rather than opening an unbounded guess loop. Break-glass if the table
+    // is ever genuinely absent: it is recreated by the migration on deploy.
+    return true;
   }
 }
 
@@ -444,6 +448,22 @@ export default {
       } catch (e) {
         return new Response("backup failed: " + (e?.message || e), { status: 500, headers: SEC_HEADERS });
       }
+    }
+
+    // CSRF origin check (security review F11): state-changing requests must
+    // come from our own page. The OPS-token /run-backup above already returned,
+    // so it is exempt (machine endpoint, no browser Origin). learn serves no
+    // CORS, so every legitimate non-safe request is a same-origin fetch that
+    // carries Origin; a cross-site forgery does not. Fails closed when both
+    // Origin and Referer are absent.
+    if (method !== "GET" && method !== "HEAD" && method !== "OPTIONS") {
+      const self = url.origin;
+      const origin = request.headers.get("origin");
+      const referer = request.headers.get("referer");
+      const okOrigin = origin
+        ? origin === self
+        : referer ? referer === self || referer.startsWith(self + "/") : false;
+      if (!okOrigin) return json({ error: "bad_origin" }, 403);
     }
 
     const ip = request.headers.get("CF-Connecting-IP") || "0.0.0.0";
