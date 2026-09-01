@@ -270,7 +270,19 @@ const SEC_HEADERS = {
   // in git where it cannot be lost. Includes the 07-31 #53 fix -
   // Cloudflare Web Analytics beacon - and the GA4/Clarity allowances
   // from the analytics rollout.)
-  "Content-Security-Policy-Report-Only": [
+  // PROMOTED TO ENFORCING 2026-09-01 (security review F18). Evidence: the
+  // shared csp_violations collector shows ZERO learn violations since the
+  // current policy went live 2026-08-19; the 12 earlier ones were all GA4
+  // (www.google.com/g/collect), Clarity (c.clarity.ms), and the CF beacon,
+  // every origin now allowlisted below. The AUTHENTICATED study app WAS
+  // exercised under report-only (GA4 recorded scroll-to-90% + page_view
+  // events titled "FTCE Science 5-9 Study"), so the earlier "waiting on a
+  // real login" caveat is satisfied. A static scan found no external
+  // resource beyond www.google.com; every client fetch is same-origin
+  // /api/*, including the new /passkey page. report-uri stays on so any
+  // regression is still reported. 'unsafe-inline' remains (inline
+  // script/style); tightening it to hashes is the follow-up, not a blocker.
+  "Content-Security-Policy": [
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms https://js.sentry-cdn.com https://browser.sentry-cdn.com",
     "style-src 'self' 'unsafe-inline'",
