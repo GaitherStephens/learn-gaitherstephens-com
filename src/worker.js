@@ -57,7 +57,15 @@ function sessionSecret(env) {
   // Now it throws. mintSession and sessionValid are the only callers and
   // both sit behind try/catch at the router, so a missing secret means
   // nobody gets a session, which is the correct direction to fail.
-  const secret = env.SESSION_SECRET || env.LEARN_PIN;
+  // The `|| env.LEARN_PIN` fallback is gone too (security review F5,
+  // 2026-09-01). It was the same defect one layer down: signing sessions
+  // with the LOGIN PIN means the signing key is a 4-digit number, and this
+  // repository is public, so the token format is readable by anyone. One
+  // observed cookie plus 10,000 offline guesses would have recovered the key
+  // and allowed forged sessions indefinitely, with no way to revoke them
+  // short of rotating the secret. A signing key must not be a credential a
+  // human types.
+  const secret = env.SESSION_SECRET;
   if (!secret) throw new Error("SESSION_SECRET is not configured");
   return secret;
 }
