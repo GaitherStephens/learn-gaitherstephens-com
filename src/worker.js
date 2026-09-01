@@ -105,6 +105,16 @@ function sessionCookie(token) {
 // DB-stored hash wins (so the PIN can be changed in-app), env var is the
 // fallback. Fails CLOSED: with neither configured, nobody gets in.
 async function pinValid(env, attempted) {
+  // Explicit PIN retirement (2026-09-01). Once Meg has added a passkey she can
+  // turn the PIN off from /passkey; after that a stolen or guessed PIN is
+  // worth nothing. Explicit rather than automatic, because learn has ONE user
+  // and no second person to keep the door open: she disables it only when she
+  // is confident her devices carry passkeys. Break-glass, if a device is lost:
+  //   UPDATE settings SET value='0' WHERE key='pin_disabled';
+  try {
+    const off = await env.DB.prepare("SELECT value FROM settings WHERE key = 'pin_disabled'").first();
+    if (off?.value === "1") return false;
+  } catch { /* settings table may not exist yet: PIN stays enabled */ }
   try {
     const row = await env.DB.prepare("SELECT value FROM settings WHERE key = ?").bind(PIN_SETTING).first();
     if (row?.value) return constantEqual(await sha256Hex(attempted), row.value);
@@ -572,6 +582,124 @@ export default {
 
     /* --- passkey management (auth required) --- */
 
+    // Passkey management page (session-gated by the auth check above).
+    // learn had passkey LOGIN but no way to REGISTER one; this is that page.
+    if (path === "/passkey" && method === "GET") {
+      const html = `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Passkeys · Learn</title>
+<style>
+  body{font:16px/1.55 system-ui,-apple-system,sans-serif;margin:0;background:#0f1419;color:#e8e6df}
+  main{max-width:520px;margin:0 auto;padding:28px 20px}
+  h1{font-size:1.4rem;margin:0 0 6px} .sub{color:#a8a59c;margin:0 0 22px}
+  .card{border:1px solid #2a3138;border-radius:12px;padding:16px;margin:0 0 16px;background:#1a2129}
+  button{font:inherit;padding:9px 16px;border-radius:9px;border:1px solid #3d454e;background:#01CCFF;color:#04222b;font-weight:600;cursor:pointer}
+  button.ghost{background:transparent;color:#e8e6df}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .pk{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid #2a3138}
+  .pk:first-child{border-top:0}
+  .err{color:#e26b87;margin:8px 0 0} .ok{color:#7bd88f;margin:8px 0 0}
+  .note{color:#a8a59c;font-size:.9rem;margin:10px 0 0} a{color:#01CCFF}
+  .del{background:transparent;border-color:#e26b87;color:#e26b87;padding:4px 10px;font-size:.85rem}
+</style></head><body><main>
+  <h1>Passkeys</h1>
+  <p class="sub">Sign in with Face ID, Touch ID, or your device unlock instead of the PIN.</p>
+  <div class="card">
+    <div id="list">Loading…</div>
+    <div style="margin-top:12px"><button id="add">Add a passkey to this device</button></div>
+    <p id="addMsg"></p>
+    <p class="note">Add one on each device you use. A passkey lives on the device that made it, so a second one is what keeps you from being locked out if you lose this one.</p>
+  </div>
+  <div class="card">
+    <h2 style="font-size:1.05rem;margin:0 0 4px">The PIN</h2>
+    <p class="sub" id="pinState" style="margin:0 0 12px">…</p>
+    <button id="pinToggle" class="ghost" disabled>…</button>
+    <p id="pinMsg"></p>
+  </div>
+  <p class="note"><a href="/">← Back to studying</a></p>
+<script>
+(() => {
+  const b2b=(x)=>{const b=x.replace(/-/g,"+").replace(/_/g,"/")+"===".slice((x.length+3)%4);const s=atob(b);const u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u.buffer;};
+  const buf2b=(b)=>{const u=new Uint8Array(b);let s="";for(let i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");};
+  const $=(id)=>document.getElementById(id);
+  let count=0, pinOff=false;
+  async function refresh(){
+    const r=await (await fetch("/api/auth/passkey")).json();
+    const creds=r.credentials||[];
+    count=creds.length;
+    $("list").innerHTML = creds.length
+      ? creds.map(c=>`<div class="pk"><span>${(c.label||"Passkey").replace(/[<>&]/g,"")}</span><button class="del" data-id="${c.id}">Remove</button></div>`).join("")
+      : "<p class='sub' style='margin:0'>No passkeys yet. Add one below.</p>";
+    document.querySelectorAll(".del").forEach(b=>b.onclick=async()=>{
+      if(!confirm("Remove this passkey?"))return;
+      await fetch("/api/auth/passkey?id="+encodeURIComponent(b.dataset.id),{method:"DELETE"});
+      refresh();
+    });
+    const ps=await (await fetch("/api/auth/pin-state")).json().catch(()=>({pin_disabled:false}));
+    pinOff=!!ps.pin_disabled;
+    $("pinState").textContent = pinOff
+      ? "The PIN is turned off. You sign in with a passkey."
+      : (count? "You can turn the PIN off now that you have a passkey." : "Add a passkey first, then you can turn the PIN off.");
+    const t=$("pinToggle");
+    t.textContent = pinOff ? "Turn the PIN back on" : "Turn the PIN off";
+    t.disabled = !pinOff && count===0;
+  }
+  $("add").onclick=async()=>{
+    $("addMsg").textContent=""; $("add").disabled=true;
+    try{
+      const o=await (await fetch("/api/auth/passkey/register/options",{method:"POST"})).json();
+      if(o.error){$("addMsg").className="err";$("addMsg").textContent=o.error;return;}
+      const cred=await navigator.credentials.create({publicKey:{
+        challenge:b2b(o.challenge), rp:o.rp,
+        user:{id:b2b(o.user.id), name:o.user.name, displayName:o.user.displayName},
+        pubKeyCredParams:o.pubKeyCredParams,
+        excludeCredentials:(o.excludeCredentials||[]).map(c=>({type:"public-key",id:b2b(c.id)})),
+        authenticatorSelection:o.authenticatorSelection, timeout:o.timeout, attestation:o.attestation,
+      }});
+      const label = (navigator.platform||"This device").slice(0,40);
+      const r=await fetch("/api/auth/passkey/register/verify",{method:"POST",headers:{"content-type":"application/json"},
+        body:JSON.stringify({
+          id:cred.id,
+          clientDataJSON:buf2b(cred.response.clientDataJSON),
+          publicKey:buf2b(cred.response.getPublicKey()),
+          alg:cred.response.getPublicKeyAlgorithm(),
+          label,
+        })});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok){$("addMsg").className="err";$("addMsg").textContent=j.error||"Could not add the passkey.";return;}
+      $("addMsg").className="ok";$("addMsg").textContent="Passkey added.";
+      refresh();
+    }catch(e){
+      $("addMsg").className="err";
+      $("addMsg").textContent = (e&&e.name==="NotAllowedError")?"Prompt dismissed.":"Could not add the passkey.";
+    }finally{$("add").disabled=false;}
+  };
+  $("pinToggle").onclick=async()=>{
+    $("pinMsg").textContent="";
+    const disable=!pinOff;
+    if(disable && !confirm("Turn the PIN off? You will sign in with a passkey. Make sure you have one on each device you use."))return;
+    const r=await fetch("/api/auth/pin-toggle",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({disable})});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok){$("pinMsg").className="err";$("pinMsg").textContent=j.error||"Could not change the PIN setting.";return;}
+    refresh();
+  };
+  refresh();
+})();
+</script></main></body></html>`;
+      return new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8", ...SEC_HEADERS } });
+    }
+
+    // Read-only PIN state for the /passkey page.
+    if (path === "/api/auth/pin-state" && method === "GET") {
+      let disabled = false;
+      try {
+        const row = await env.DB.prepare("SELECT value FROM settings WHERE key='pin_disabled'").first();
+        disabled = row?.value === "1";
+      } catch { /* default enabled */ }
+      return json({ pin_disabled: disabled });
+    }
+
     if (path === "/api/auth/passkey") {
       if (method === "GET") return json({ credentials: await listCredentials(env.DB) });
       if (method === "DELETE") {
@@ -580,6 +708,23 @@ export default {
         return json({ ok: await deleteCredential(env.DB, id) });
       }
       return json({ error: "method not allowed" }, 405);
+    }
+
+    // Turn the PIN off / back on (session-gated, since it sits after the auth
+    // gate above). Guarded: the PIN can only be DISABLED when at least one
+    // passkey exists, so a click cannot lock the only user out with no way
+    // back in. Re-enabling is always allowed.
+    if (path === "/api/auth/pin-toggle" && method === "POST") {
+      const body = await request.json().catch(() => ({}));
+      const disable = body.disable === true;
+      if (disable) {
+        const creds = await listCredentials(env.DB);
+        if (!creds.length) return json({ error: "Add a passkey before turning the PIN off." }, 400);
+      }
+      await env.DB.prepare(
+        "INSERT INTO settings (key, value) VALUES ('pin_disabled', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+      ).bind(disable ? "1" : "0").run();
+      return json({ ok: true, pin_disabled: disable });
     }
 
     if (path === "/api/auth/passkey/register/options" && method === "POST") {
