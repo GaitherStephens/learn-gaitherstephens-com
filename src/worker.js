@@ -629,7 +629,7 @@ export default {
     const creds=r.credentials||[];
     count=creds.length;
     $("list").innerHTML = creds.length
-      ? creds.map(c=>`<div class="pk"><span>${(c.label||"Passkey").replace(/[<>&]/g,"")}</span><button class="del" data-id="${c.id}">Remove</button></div>`).join("")
+      ? creds.map(function(c){var l=(c.label||"Passkey").replace(/[<>&]/g,"");return "<div class=\"pk\"><span>"+l+"</span><button class=\"del\" data-id=\""+c.id+"\">Remove</button></div>";}).join("")
       : "<p class='sub' style='margin:0'>No passkeys yet. Add one below.</p>";
     document.querySelectorAll(".del").forEach(b=>b.onclick=async()=>{
       if(!confirm("Remove this passkey?"))return;
