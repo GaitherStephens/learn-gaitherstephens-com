@@ -342,6 +342,9 @@ if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === tru
   document.head.appendChild(__sentry);
 }
 </script>
+<script id="gd-flag-config" type="application/json">{"site":"learn.gaitherstephens.com","version":"2026-09-07_b31b532"}</script>
+<link rel="stylesheet" href="/js/network-flag.css">
+<script defer src="/js/network-flag.js"></script>
 </head><body class="login-body">
 <main class="login-card">
   <div class="login-mark">FTCE</div>
@@ -425,6 +428,52 @@ if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === tru
   });
 })();
 </script>
+<p class="gd-flag-row" style="text-align:center;margin:18px 0 0;font-size:.85rem"><button type="button" data-gd-flag="open" class="gd-flag-trigger" style="background:none;border:0;color:inherit;text-decoration:underline;cursor:pointer;font:inherit">Report a problem with this page</button></p>
+<script>
+(function () {
+  if (!("PerformanceObserver" in window) || !navigator.sendBeacon) return;
+  var lcp = 0, cls = 0, worstEvt = 0, clsSeen = false;
+  try {
+    new PerformanceObserver(function (l) {
+      var es = l.getEntries();
+      if (es.length) lcp = es[es.length - 1].startTime;
+    }).observe({ type: "largest-contentful-paint", buffered: true });
+  } catch (_) {}
+  try {
+    new PerformanceObserver(function (l) {
+      l.getEntries().forEach(function (e) { if (!e.hadRecentInput) { cls += e.value; } });
+    }).observe({ type: "layout-shift", buffered: true });
+    clsSeen = true;
+  } catch (_) {}
+  try {
+    new PerformanceObserver(function (l) {
+      l.getEntries().forEach(function (e) { if (e.duration > worstEvt) worstEvt = e.duration; });
+    }).observe({ type: "event", buffered: true, durationThreshold: 40 });
+  } catch (_) {}
+  var sent = false;
+  function flush() {
+    if (sent) return; sent = true;
+    var nav = performance.getEntriesByType("navigation")[0];
+    var m = {};
+    if (lcp > 0) m.lcp = Math.round(lcp);
+    if (clsSeen) m.cls = Math.round(cls * 1000) / 1000;
+    if (worstEvt > 0) m.inp = Math.round(worstEvt);
+    if (nav && nav.responseStart > 0) m.ttfb = Math.round(nav.responseStart);
+    if (!Object.keys(m).length) return;
+    navigator.sendBeacon("https://gaithernews.com/api/rum",
+      new Blob([JSON.stringify({
+        site: location.hostname,
+        device: innerWidth < 768 ? "m" : "d",
+        pg: location.pathname.split("/")[1] || "",
+        metrics: m,
+      })], { type: "text/plain" }));
+  }
+  addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "hidden") flush();
+  });
+  addEventListener("pagehide", flush);
+})();
+</script>
 </body></html>`;
 }
 
@@ -433,6 +482,8 @@ if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === tru
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    // STD-43: the zone may not have Always Use HTTPS on; answer it here.
+    if (url.protocol === "http:") return Response.redirect("https://" + url.host + url.pathname + url.search, 301);
     const path = url.pathname;
     const method = request.method;
 
@@ -585,7 +636,7 @@ export default {
     // The login page needs its own stylesheet before a session exists, so a tiny
     // allowlist of chrome-only assets is served unauthenticated. Study material
     // (app.js, content.json) is never in here.
-    const PUBLIC_ASSETS = new Set(["/styles.css", "/favicon.ico"]);
+    const PUBLIC_ASSETS = new Set(["/styles.css", "/favicon.ico", "/js/network-flag.js", "/js/network-flag.css"]);
 
     const authed = await sessionValid(env, getCookie(request, COOKIE));
     const isDemo = !authed && getCookie(request, DEMO_COOKIE) === "1";

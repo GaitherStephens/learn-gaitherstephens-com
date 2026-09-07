@@ -1,0 +1,189 @@
+/* Network feedback flag modal. Same shape on every Gaither site.
+   Uses neutral colors so it works on dark and light brand palettes.
+   Sites can override .gd-flag-send background to match their accent. */
+
+html.gd-flag-open { overflow: hidden; }
+.gd-flag-wrap[hidden] { display: none; }
+
+.gd-flag-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.gd-flag-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 12, 20, 0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.gd-flag-panel {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: 85vh;
+  overflow: auto;
+  background: #ffffff;
+  color: #0f1419;
+  border-radius: 14px;
+  padding: 1.75rem 1.75rem 1.5rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  font: 0.95rem/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  .gd-flag-panel {
+    background: #16202b;
+    color: #e8e6df;
+  }
+}
+
+.gd-flag-x {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.75rem;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.6;
+  border-radius: 6px;
+}
+.gd-flag-x:hover { opacity: 1; background: rgba(127, 127, 127, 0.12); }
+
+#gd-flag-title {
+  margin: 0 0 0.25rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.gd-flag-sub {
+  margin: 0 0 1.1rem;
+  font-size: 0.95rem;
+  opacity: 0.78;
+}
+
+.gd-flag-meta {
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  opacity: 0.75;
+  word-break: break-all;
+}
+.gd-flag-meta code {
+  font: 0.85em/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+  background: rgba(127, 127, 127, 0.14);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+.gd-flag-cats {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.gd-flag-cats legend {
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  padding: 0;
+}
+.gd-flag-cat {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.gd-flag-cat:hover { background: rgba(127, 127, 127, 0.08); }
+.gd-flag-cat input { margin: 0; }
+
+.gd-flag-note-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0 0 1rem;
+}
+.gd-flag-note-wrap > span {
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+.gd-flag-note-wrap textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+  color: inherit;
+  background: rgba(127, 127, 127, 0.08);
+  border: 1px solid rgba(127, 127, 127, 0.28);
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.gd-flag-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+.gd-flag-cancel,
+.gd-flag-send {
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.gd-flag-cancel {
+  background: transparent;
+  color: inherit;
+  border-color: rgba(127, 127, 127, 0.32);
+}
+.gd-flag-cancel:hover { background: rgba(127, 127, 127, 0.12); }
+
+.gd-flag-send {
+  background: #01CCFF;
+  color: #04222b;
+}
+.gd-flag-send:hover:not(:disabled) { background: #4dd9ff; }
+.gd-flag-send:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.gd-flag-toast {
+  margin-top: 0.85rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+.gd-flag-toast--ok {
+  background: rgba(46, 192, 116, 0.14);
+  color: #2ec074;
+}
+.gd-flag-toast--err {
+  background: rgba(232, 90, 90, 0.16);
+  color: #e85a5a;
+}
+
+/* The footer trigger itself. Sites can opt out by not adding this class. */
+.gd-flag-trigger {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  cursor: pointer;
+}
+.gd-flag-trigger:hover { text-decoration-style: solid; }
