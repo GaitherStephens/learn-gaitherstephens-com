@@ -1,0 +1,16 @@
+# The link-preview bots are allowed so a pasted link renders a card.
+# They only ever reach the sign-in page. Search engines stay out.
+User-agent: Slackbot-LinkExpanding
+User-agent: Slackbot
+User-agent: Twitterbot
+User-agent: facebookexternalhit
+User-agent: LinkedInBot
+User-agent: Discordbot
+User-agent: WhatsApp
+User-agent: TelegramBot
+User-agent: SkypeUriPreview
+User-agent: Applebot
+Allow: /
+
+User-agent: *
+Disallow: /

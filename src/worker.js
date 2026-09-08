@@ -318,6 +318,15 @@ function loginPage(error, nextPath) {
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><meta name="color-scheme" content="light dark">
 <title>Sign in : FTCE Science 5-9 Study</title>
+<meta name="description" content="A study app for the Florida teacher certification exam in Science 5 to 9: lessons, diagrams and practice questions.">
+<meta property="og:title" content="FTCE Science 5 to 9 Study">
+<meta property="og:description" content="A study app for the Florida teacher certification exam: lessons, diagrams and practice questions.">
+<meta property="og:image" content="https://learn.gaitherstephens.com/og-image.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:url" content="https://learn.gaitherstephens.com/"><meta property="og:type" content="website">
+<meta property="og:site_name" content="FTCE Science 5 to 9 Study">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://learn.gaitherstephens.com/og-image.jpg">
 <link rel="stylesheet" href="/styles.css?v=2026.08.17-1552">
 <script>
 if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === true)) {
@@ -636,7 +645,10 @@ export default {
     // The login page needs its own stylesheet before a session exists, so a tiny
     // allowlist of chrome-only assets is served unauthenticated. Study material
     // (app.js, content.json) is never in here.
-    const PUBLIC_ASSETS = new Set(["/styles.css", "/favicon.ico", "/js/network-flag.js", "/js/network-flag.css"]);
+    const PUBLIC_ASSETS = new Set(["/styles.css", "/favicon.ico", "/js/network-flag.js", "/js/network-flag.css",
+      // Reachable signed out on purpose: the share card and the robots file
+      // are what a link preview fetches before anyone signs in (STD-40).
+      "/og-image.jpg", "/robots.txt"]);
 
     const authed = await sessionValid(env, getCookie(request, COOKIE));
     const isDemo = !authed && getCookie(request, DEMO_COOKIE) === "1";
