@@ -238,7 +238,7 @@ const SEC_HEADERS = {
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "X-Frame-Options": "DENY",
-  "Permissions-Policy": "geolocation=(), microphone=(), camera=(), interest-cohort=()",
+  "Permissions-Policy": "geolocation=(), microphone=(), camera=()",
   // Network canonical string, exactly. Was "max-age=31536000;
   // includeSubDomains": one year and no preload, which does not match
   // SECURITY_BASELINE section 1 and would be rejected by the HSTS

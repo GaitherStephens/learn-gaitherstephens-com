@@ -102,7 +102,7 @@
 
 * { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 64px; /* sticky header.top: anchors and Tab focus land below it (WCAG 2.2, 2.4.11) */ }
 
 body {
   margin: 0;
