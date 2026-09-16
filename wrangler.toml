@@ -1,6 +1,10 @@
 name = "learn-gaitherstephens"
 main = "src/worker.js"
-compatibility_date = "2026-01-28"
+# Bumped 2026-09-16 from 2026-01-28, past the 6-month minimum in
+# SITE_STANDARD.md. nodejs_compat is declared but this Worker imports no
+# node: module (auth is Web Crypto subtle), so the node:* flags in the
+# window are inert here. Smoke tested live after deploy.
+compatibility_date = "2026-09-16"
 compatibility_flags = ["nodejs_compat"]
 
 routes = [
