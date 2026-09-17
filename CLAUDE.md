@@ -1,6 +1,12 @@
 # learn.gaitherstephens.com
 
-Study app for the Florida FTCE **Middle Grades General Science 5–9 (004)** exam. Built for Meg (first-year middle school science teacher, Charlotte County). She sat the test once and finished about 7 scaled points short.
+Study app for the Florida FTCE **Middle Grades General Science 5–9 (004)** exam.
+Built for one learner, a teacher who has sat the test once and is retaking it.
+Everything about the design follows from that: one person, one exam, one
+retake, so the app optimises for a known weak spot rather than for breadth.
+
+Who the learner is stays out of this repository. It is public, and a person's
+exam history is theirs to tell.
 
 ## The exam, per Pearson/FLDOE
 
@@ -34,7 +40,7 @@ Secrets: `LEARN_PIN`, `SESSION_SECRET` (Worker secrets). Local copy in `../.gait
 
 Flag button bottom-left, back-to-top bottom-right, network convention. The flag posts **browser-direct** to `https://gaithernews.com/api/network-flag` and surfaces in admin.gaitherdyn.com.
 
-`learn.gaitherstephens.com` had to be added to **both** `ALLOWED_ORIGINS` and `VALID_SITES` in `gaithernews/src/index.ts` (commit `0ab6a9e`). Those two lists are separate and a site missing from either fails silently, which is what ate Meg's recipes flag in June. Verified end to end: a real flag landed as `network_flags` id 68.
+`learn.gaitherstephens.com` had to be added to **both** `ALLOWED_ORIGINS` and `VALID_SITES` in `gaithernews/src/index.ts` (commit `0ab6a9e`). Those two lists are separate and a site missing from either fails silently, which is what ate a recipes flag in June. Verified end to end: a real flag landed as `network_flags` id 68.
 
 Back-to-top is driven by an **IntersectionObserver on `#topSentinel`** (a 400px marker pinned to the top of the document) plus a scroll listener plus an unconditional call at init. All three are needed: scroll events do not fire when the browser restores a scroll position or when a route render changes page height, and IntersectionObserver does not run in a tab the browser is not painting.
 

@@ -31,7 +31,7 @@ POSITIONAL = [
 
 # Questions are drawn individually and shuffled, so a stem that leans on a
 # scenario set up in a DIFFERENT question is unanswerable when it appears
-# alone. Meg hit exactly this: three questions said "that tomato fertilizer
+# alone. The learner hit exactly this: three questions said "that tomato fertilizer
 # investigation" while only a fourth described it. A stem must stand by itself.
 CROSS_REF = [
     # a demonstrative pointing at a scenario, e.g. "that same X investigation"

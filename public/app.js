@@ -1423,7 +1423,7 @@
   /* ================= quiz / drill / missed (shared engine) ================= */
 
   /* ---- surviving a trip out of the app ----
-     Meg, flag #72: "if I'm in a test (drill I think) and leave the app and
+     Flag #72: "if I'm in a test (drill I think) and leave the app and
      come back it doesn't start the test over it instead of continuing the
      test I was in? Or asks what I want to do".
      iOS discards the tab when she switches apps or locks the phone, so the

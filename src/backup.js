@@ -11,7 +11,7 @@
 //  - RESUMABLE: each run backs up only tables missing from the current
 //    folder, so a run that dies still banks progress.
 //  - SMALLEST-FIRST: the small tables are the irreplaceable ones
-//    (state = Meg's entire study history, settings = the PIN hash,
+//    (state = the learner's entire study history, settings = the PIN hash,
 //    webauthn_credentials = her passkeys).
 //  - manifest.json is written ONLY when every table is present, so its
 //    existence means "complete" and a half-finished folder can never

@@ -12,11 +12,11 @@ Paste this whole document into ChatGPT (or any other model) and ask it to critiq
 
 ## 1. The situation
 
-**Learner:** one person. A first-year middle school science teacher in Charlotte County, Florida. Not a student, not a cohort. She teaches the subject daily.
+**Learner:** one person, a practising middle school science teacher. Not a student, not a cohort. She teaches the subject daily, which is why the app assumes subject familiarity and targets exam form instead.
 
-**Stakes:** she must pass the Florida Teacher Certification Exam, **Middle Grades General Science 5–9 (test code 004)**, by the end of the school year to keep teaching the subject next year. This is a job-retention exam, not a credential upgrade.
+**Stakes:** she must pass the Florida Teacher Certification Exam, **Middle Grades General Science 5–9 (test code 004)**, against a fixed deadline. Treat it as high stakes with no option to defer, which is what rules out a long ramp.
 
-**Prior attempt:** she failed by roughly **7 scaled points**, described as being about two questions short.
+**Prior attempt:** one, and it fell just short rather than badly short. That is the single most important design input: the gap to close is small, so the app has to find marginal gains rather than teach the subject from scratch.
 
 **Exam facts** (from the official Pearson/FLDOE test page):
 
@@ -39,9 +39,9 @@ Paste this whole document into ChatGPT (or any other model) and ask it to critiq
 | 8 | The science learning environment | 5 |
 | 9 | Process skills and scientific inquiry | 13 |
 
-The state also publishes 92 individual skills beneath those nine competencies. Her stated problem before this build was **not knowing what she was responsible for**. The published skill list is the direct answer to that.
+The state also publishes 92 individual skills beneath those nine competencies. The stated problem before this build was **not knowing what was on the hook**. The published skill list is the direct answer to that.
 
-**Critical unknown:** Pearson does **not** publish the raw-to-scaled score conversion. So "7 scaled points" cannot be reliably translated into "N more questions right."
+**Critical unknown:** Pearson does **not** publish the raw-to-scaled score conversion. So a near miss in scaled points cannot be reliably translated into "N more questions right", which is why the app reports raw percent with a band and refuses to invent a scaled score.
 
 ## 2. What was built
 

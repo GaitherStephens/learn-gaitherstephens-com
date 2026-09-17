@@ -105,7 +105,7 @@ function sessionCookie(token) {
 // DB-stored hash wins (so the PIN can be changed in-app), env var is the
 // fallback. Fails CLOSED: with neither configured, nobody gets in.
 async function pinValid(env, attempted) {
-  // Explicit PIN retirement (2026-09-01). Once Meg has added a passkey she can
+  // Explicit PIN retirement (2026-09-01). Once the learner has added a passkey she can
   // turn the PIN off from /passkey; after that a stolen or guessed PIN is
   // worth nothing. Explicit rather than automatic, because learn has ONE user
   // and no second person to keep the door open: she disables it only when she
@@ -830,8 +830,12 @@ export default {
         rp: { id: RP_ID, name: RP_NAME },
         user: {
           id: bytesToB64url(new TextEncoder().encode("learn-user-1")),
-          name: "meg",
-          displayName: "Meg",
+          /* Display strings only. The stable user handle above is what a
+             credential is bound to, so these can be changed without
+             invalidating a passkey that is already registered. Kept
+             impersonal because this repository is public. */
+          name: "learner",
+          displayName: "Learner",
         },
         pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
         excludeCredentials: existing.map((c) => ({ type: "public-key", id: c.id })),
