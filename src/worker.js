@@ -317,7 +317,8 @@ function loginPage(error, nextPath) {
   return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><meta name="color-scheme" content="light dark">
-<title>Sign in : FTCE Science 5-9 Study</title>
+<title>Sign in · FTCE Science 5-9 Study</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%94%AC%3C/text%3E%3C/svg%3E">
 <meta name="description" content="A study app for the Florida teacher certification exam in Science 5 to 9: lessons, diagrams and practice questions.">
 <meta property="og:title" content="FTCE Science 5 to 9 Study">
 <meta property="og:description" content="A study app for the Florida teacher certification exam: lessons, diagrams and practice questions.">
@@ -684,6 +685,7 @@ export default {
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Passkeys · Learn</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%94%AC%3C/text%3E%3C/svg%3E">
 <style>
   body{font:16px/1.55 system-ui,-apple-system,sans-serif;margin:0;background:#0f1419;color:#e8e6df}
   main{max-width:520px;margin:0 auto;padding:28px 20px}

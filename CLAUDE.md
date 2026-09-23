@@ -29,7 +29,7 @@ Repo: `GaitherStephens/learn-gaitherstephens-com`, deploy key at `../.gaither-pr
 
 Same shape as house/recipes: **PIN + optional passkeys**.
 
-- PIN is `1450` initially. The DB hash in `settings.learn_pin_sha256` wins; the `LEARN_PIN` secret is the fallback. Changing the PIN in the app writes the DB row, so it does not need a redeploy.
+- The initial PIN is the household PIN. **Never write the PIN, or any secret, in this repo: it is PUBLIC.** The DB hash in `settings.learn_pin_sha256` wins; the `LEARN_PIN` secret is the fallback. Changing the PIN in the app writes the DB row, so it does not need a redeploy.
 - Throttle: 6 attempts per 15 minutes per hashed IP, cleared on success. Fails **open** if the table is missing (deliberate: a broken table should not lock her out) but PIN checking fails **closed** if neither hash nor secret is set.
 - Passkeys are the hand-rolled SubtleCrypto WebAuthn port from `recipes/src/lib/webauthn.ts`, reduced to a single user (no `user_id` column). Discoverable/resident key, UV required. Challenges are stateless HMAC-signed cookies with a secret that self-bootstraps into `settings`.
 - Register one from Progress → Sign-in, after signing in with the PIN. `RP_ID`/`ORIGIN` in `src/webauthn.js` are hardcoded to this domain; they must match exactly or every assertion fails on rpId mismatch.
