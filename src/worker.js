@@ -333,6 +333,7 @@ function loginPage(error, nextPath) {
 if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === true)) {
   window.sentryOnLoad = function () {
     Sentry.init({
+      replaysSessionSampleRate: 0, replaysOnErrorSampleRate: 0, tracesSampleRate: 0, // D-001/D-002: Replay + tracing off in code
       ignoreErrors: [
         "Invalid call to runtime.sendMessage",
         "Object Not Found Matching Id",
