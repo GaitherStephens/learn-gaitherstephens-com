@@ -378,6 +378,7 @@ if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === tru
     <a class="demo-btn" href="/demo">Take a look around</a>
     <p class="demo-note">A full working demo with sample progress. Nothing you do is saved, and it cannot see anyone's real account.</p>
   </div>
+  <p class="demo-note">Behind the scenes: Cloudflare serves the pages, sees your IP address and browser like any web server, and counts visits without cookies. Sentry gets script errors only (skipped if your browser sends Global Privacy Control), and a page-speed beacon sends timing numbers with no identifier to gaithernews.com. Nothing you type here goes anywhere but this app.</p>
 </main>
 <footer><p class="login-legal">An independent study tool. Not affiliated with, endorsed by, or connected to the Florida Department of Education or Pearson. FTCE is their trademark, used here only to say which exam this prepares for. All questions and explanations are original; no actual test items appear here.</p></footer>
 <script>
