@@ -162,7 +162,9 @@
     var _pp = modal.querySelector(".gd-flag-photo-preview"); if (_pp) _pp.hidden = true;
     var _pb = modal.querySelector(".gd-flag-photo-btn"); if (_pb) _pb.hidden = false;
     var _pf = modal.querySelector(".gd-flag-photo-file"); if (_pf) _pf.value = "";
-    form.querySelector(".gd-flag-send").disabled = false;
+    var _send = form.querySelector(".gd-flag-send");
+    _send.disabled = false;
+    _send.textContent = "Send";
     modal.hidden = false;
     document.documentElement.classList.add("gd-flag-open");
     setTimeout(function () {
@@ -245,6 +247,7 @@
             : "Thanks. We will look at it.";
           toast.hidden = false;
           toast.className = "gd-flag-toast gd-flag-toast--ok";
+          send.textContent = "Sent";
           setTimeout(closeModal, 1800);
         } else {
           toast.textContent = "Could not send right now. Try again later.";
