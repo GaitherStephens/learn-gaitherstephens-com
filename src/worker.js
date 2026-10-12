@@ -312,6 +312,11 @@ function safePath(p) {
   return /^\/[A-Za-z0-9/_-]*$/.test(p || "") ? p : "/";
 }
 
+// STD-48: the Report a problem pill on every page the Worker draws itself
+// (sign-in, sign-up). Styled by .fab in /styles.css; network-flag.js opens
+// the form on [data-gd-flag="open"].
+const FLAG_PILL = '<button type="button" class="fab fab--flag" data-gd-flag="open" aria-label="Report a problem with this page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V4M4 4h13l-2 4 2 4H4"/></svg><span>Report a problem</span></button>';
+
 function loginPage(error, nextPath) {
   const next = safePath(nextPath);
   return `<!doctype html><html lang="en"><head>
@@ -328,7 +333,7 @@ function loginPage(error, nextPath) {
 <meta property="og:site_name" content="FTCE Science 5 to 9 Study">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://learn.gaitherstephens.com/og-image.jpg">
-<link rel="stylesheet" href="/styles.css?v=2026.08.17-1552">
+<link rel="stylesheet" href="/styles.css?v=2026.10.12-1818">
 <script>
 if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === true)) {
   window.sentryOnLoad = function () {
@@ -440,7 +445,7 @@ if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === tru
   });
 })();
 </script>
-<p class="gd-flag-row" style="text-align:center;margin:18px 0 0;font-size:.85rem"><button type="button" data-gd-flag="open" class="gd-flag-trigger" style="background:none;border:0;color:inherit;text-decoration:underline;cursor:pointer;font:inherit">Report a problem with this page</button></p>
+${FLAG_PILL}
 <script>
 (function () {
   if (!("PerformanceObserver" in window) || !navigator.sendBeacon) return;

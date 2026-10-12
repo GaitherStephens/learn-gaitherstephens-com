@@ -3195,7 +3195,7 @@
     }
 
     document.addEventListener("click", (e) => {
-      const open = e.target.closest('[data-learn-flag="open"]');
+      const open = e.target.closest('[data-learn-flag="open"],[data-gd-flag="open"]');
       if (open) {
         e.preventDefault();
         picked = { reason: null };
@@ -3233,6 +3233,9 @@
     });
 
     dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close("cancel"); });
+    // STD-48: the floating pair hides while the flag form is open.
+    new MutationObserver(() => document.documentElement.classList.toggle("gd-flag-open", dlg.open))
+      .observe(dlg, { attributes: true, attributeFilter: ["open"] });
 
     // Opened from a specific question: skip straight to the content reasons,
     // which are the only ones that make sense for a bad item.
@@ -3312,7 +3315,7 @@
   (async () => {
     try {
       const [content] = await Promise.all([
-        fetch("/content.json?v=2026.08.17-1552").then((r) => {
+        fetch("/content.json?v=2026.10.12-1818").then((r) => {
           if (!r.ok) throw new Error("content " + r.status);
           return r.json();
         }),
