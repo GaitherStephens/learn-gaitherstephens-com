@@ -22,6 +22,7 @@ Plain Cloudflare **Worker** (no framework) + static assets + D1. Deliberately no
 - D1 `learn-db` (`f1bf3d0a-a92e-4e1f-a2a8-fb02e62c494a`), migrations in `migrations/`
 
 Deploy is **manual**: `wrangler deploy` from this directory. There is no CI; pushing alone ships nothing.
+Run `node --test test/*.test.mjs` first (the PIN door tests, NET-02 2026-10-21: they run the real Worker on SQLite built from migrations/ with a test PIN); do not deploy on a red test.
 
 Repo: `GaitherStephens/learn-gaitherstephens-com`, deploy key at `../.gaither-private/id_ed25519_learn`. Push does **not** deploy; run `wrangler deploy` yourself.
 

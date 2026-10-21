@@ -8,6 +8,7 @@ import {
   verifyAssertion, listCredentials, getCredential, saveCredential,
   deleteCredential, touchCredential, bytesToB64url,
 } from "./webauthn.js";
+import * as guard from "./pin-guard.js";
 
 const COOKIE = "learn_session";
 const DEMO_COOKIE = "learn_demo";
@@ -595,6 +596,14 @@ export default {
       if (method === "POST") {
         if (await throttled(env, ipHash)) {
           return new Response(loginPage("Too many attempts. Wait 15 minutes and try again.", "/"), {
+            status: 429, headers: { "Content-Type": "text/html; charset=utf-8", ...SEC_HEADERS },
+          });
+        }
+        // Household-wide cap (NET-02): the PIN is shared by every personal app,
+        // so many addresses guessing together are capped too. Passkeys are
+        // never under it. src/pin-guard.js is a byte copy of piano's.
+        if (await guard.globallyThrottled(env.DB)) {
+          return new Response(loginPage("PIN sign-in is paused for an hour after too many wrong tries. Use your passkey, or try again later.", "/"), {
             status: 429, headers: { "Content-Type": "text/html; charset=utf-8", ...SEC_HEADERS },
           });
         }
