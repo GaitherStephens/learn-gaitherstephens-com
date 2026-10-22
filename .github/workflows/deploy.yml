@@ -74,14 +74,20 @@ jobs:
           SHA="${GITHUB_SHA::7}"
           npx wrangler@4 deploy --var COMMIT_SHA:"$SHA" --message "$SHA $(git log -1 --format=%s | cut -c1-72)"
 
-      - name: Live /version names this commit
+      # The deployment record is the proof: wrangler stamped the commit into the
+      # deployment message. A direct curl of /version from a GitHub runner meets
+      # Cloudflare's bot challenge ("Just a moment") on this zone, so it is only
+      # printed here, never judged; the gaithernews drift tile reads /version
+      # from inside Cloudflare, where it answers.
+      - name: The live deployment names this commit
         if: steps.token.outputs.present == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           SHA="${GITHUB_SHA::7}"
-          for i in $(seq 1 12); do
-            if curl -s --max-time 15 "https://learn.gaitherstephens.com/version" | grep -q "$SHA"; then echo "live: $SHA"; exit 0; fi
-            sleep 5
-          done
-          echo "::error::https://learn.gaitherstephens.com/version does not name $SHA after 60 s"
-          curl -s --max-time 15 "https://learn.gaitherstephens.com/version"; echo
-          exit 1
+          MSG=$(curl -s --max-time 20 -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/accounts/dfbcad0a915bee82d64efc99aa9fdb1a/workers/scripts/learn-gaitherstephens/deployments" \
+            | python3 -c 'import json,sys; d=json.load(sys.stdin)["result"]["deployments"][0]; print(d.get("annotations",{}).get("workers/message",""))')
+          echo "newest deployment message: $MSG"
+          case "$MSG" in "$SHA"*) echo "live: $SHA";; *) echo "::error::the newest deployment does not name $SHA"; exit 1;; esac
+          curl -s --max-time 15 -A "gaitherdyn-deploy-check/1.0" "https://learn.gaitherstephens.com/version" | head -c 200; echo
