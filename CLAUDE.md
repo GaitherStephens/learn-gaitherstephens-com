@@ -21,10 +21,10 @@ Plain Cloudflare **Worker** (no framework) + static assets + D1. Deliberately no
 - `public/content.json` — the entire question/flashcard/guide bank, ~480 KB
 - D1 `learn-db` (`f1bf3d0a-a92e-4e1f-a2a8-fb02e62c494a`), migrations in `migrations/`
 
-Deploy is **manual**: `wrangler deploy` from this directory. There is no CI; pushing alone ships nothing.
-Run `node --test test/*.test.mjs` first (the PIN door tests, NET-02 2026-10-21: they run the real Worker on SQLite built from migrations/ with a test PIN); do not deploy on a red test.
+Deploy: **a push to main deploys** through `.github/workflows/deploy.yml` (gitleaks, the tests, the stamp, `wrangler deploy --var COMMIT_SHA --message <sha>`, then a check that the live `/version` names the pushed commit) once the repo secret `CLOUDFLARE_API_TOKEN` is set; until then the deploy steps skip and the run is a green no-op, and `npm run deploy` from a fresh pushed clone is the way (it runs `tools/predeploy-guard.mjs` first, which refuses a dirty, unpushed or stale tree). `/version` (`{site, version, sha}`) is the authority on what is live; the committed `BUILD` lags it because the stamp runs in the runner. Apply migrations BEFORE pushing code that needs them.
+The tests (`npm test`: the PIN door, NET-02 2026-10-21) run the real Worker on SQLite built from migrations/ with a test PIN; never deploy on a red test.
 
-Repo: `GaitherStephens/learn-gaitherstephens-com`, deploy key at `../.gaither-private/id_ed25519_learn`. Push does **not** deploy; run `wrangler deploy` yourself.
+Repo: `GaitherStephens/learn-gaitherstephens-com`, deploy key at `../.gaither-private/id_ed25519_learn`.
 
 ## Auth
 

@@ -1,0 +1,10 @@
+{
+  "name": "learn-gaitherstephens-com",
+  "private": true,
+  "description": "FTCE study app. No dependencies: tests and deploy run with Node 22+ and npx wrangler.",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "stamp": "bash scripts/stamp.sh",
+    "deploy": "node tools/predeploy-guard.mjs && npm test && npx wrangler@4 deploy --var COMMIT_SHA:$(node tools/predeploy-guard.mjs --sha) --message \"$(node tools/predeploy-guard.mjs --sha) manual deploy\""
+  }
+}

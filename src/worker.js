@@ -334,7 +334,7 @@ function loginPage(error, nextPath) {
 <meta property="og:site_name" content="FTCE Science 5 to 9 Study">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://learn.gaitherstephens.com/og-image.jpg">
-<link rel="stylesheet" href="/styles.css?v=2026.10.12-1818">
+<link rel="stylesheet" href="/styles.css?v=2026.10.22-1154">
 <script>
 if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === true)) {
   window.sentryOnLoad = function () {
@@ -359,7 +359,7 @@ if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === tru
   document.head.appendChild(__sentry);
 }
 </script>
-<script id="gd-flag-config" type="application/json">{"site":"learn.gaitherstephens.com","version":"2026-09-07_b31b532"}</script>
+<script id="gd-flag-config" type="application/json">{"site":"learn.gaitherstephens.com","version":"${BUILD}"}</script>
 <link rel="stylesheet" href="/js/network-flag.css">
 <script defer src="/js/network-flag.js"></script>
 </head><body class="login-body">
@@ -497,6 +497,10 @@ ${FLAG_PILL}
 
 /* ---------- worker ---------- */
 
+// Stamped by scripts/stamp.sh on every deploy; /version also carries COMMIT_SHA,
+// set by the deploy (--var), which is the authority on what is live.
+const BUILD = "2026.10.22-1154";
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -507,6 +511,10 @@ export default {
 
     if (path === "/health") {
       return new Response("ok", { headers: { "Content-Type": "text/plain", ...SEC_HEADERS } });
+    }
+    // NET-06 (2026-10-22): what is live, for the drift check and for people.
+    if (path === "/version") {
+      return json({ site: "learn.gaitherstephens.com", version: BUILD, sha: env.COMMIT_SHA || null });
     }
 
     /* --- ops: manual D1 -> R2 backup trigger (STD-22/STD-23) --- */

@@ -33,6 +33,7 @@ perl -pi -e 's{/app\.js(\?v=[^"\n]*)?"}{/app.js?v=$ENV{BUILD}"}g' public/index.h
 perl -pi -e 's{/diagrams\.js(\?v=[^"\n]*)?"}{/diagrams.js?v=$ENV{BUILD}"}g' public/index.html
 perl -pi -e 's{/content\.json(\?v=[^"\n]*)?"}{/content.json?v=$ENV{BUILD}"}g' public/app.js
 perl -pi -e 's{(class="footer-version"[^>]*>)v[^<\n]*}{${1}v$ENV{BUILD}}' public/index.html
+perl -pi -e 's{^const BUILD = "[^"\n]*";}{const BUILD = "$ENV{BUILD}";}' src/worker.js
 
 # A silent no-op is how this script failed before, so prove every stamp landed.
 fail=0
@@ -43,6 +44,7 @@ need public/index.html "/diagrams.js?v=$BUILD\""
 need public/index.html ">v$BUILD<"
 need src/worker.js "/styles.css?v=$BUILD\""
 need public/app.js "/content.json?v=$BUILD\""
+need src/worker.js "const BUILD = \"$BUILD\";"
 if grep -oE '(styles\.css|app\.js|diagrams\.js|content\.json)\?v=[^"]*' public/index.html src/worker.js public/app.js | grep -vF "?v=$BUILD" >&2; then
   echo "stamp: the references above still carry an old version" >&2; fail=1
 fi

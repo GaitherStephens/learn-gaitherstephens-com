@@ -1,0 +1,87 @@
+name: deploy
+
+# Deploys the learn Worker to Cloudflare on every push to main from GitHub's
+# runners (network audit NET-07, 2026-10-22), replacing the hand-run wrangler
+# from a clone. The same gates run here as in `npm run deploy`; gitleaks runs
+# as a step in this job (not its own job: a job bills a whole minute).
+#
+# One-time setup: repo secret CLOUDFLARE_API_TOKEN (Workers Scripts:Edit plus
+# the bindings this Worker uses, on this account). Until it is set the deploy
+# steps SKIP and the run is a green no-op, so merging this workflow changes
+# nothing by itself. Runtime secrets and bindings are not touched by a code
+# deploy: wrangler secrets persist, bindings come from wrangler.toml.
+#
+# Provenance (NET-06): the deploy carries --var COMMIT_SHA and a --message
+# naming the commit, and the last step fails unless the live /version names
+# this commit. /version is the authority on what is live.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Secret scan (gitleaks, blocking)
+        run: |
+          curl -sL https://github.com/gitleaks/gitleaks/releases/download/v8.24.3/gitleaks_8.24.3_linux_x64.tar.gz | tar xz -C /tmp gitleaks
+          /tmp/gitleaks git . --no-banner --redact=100 --exit-code 1
+          rm -f /tmp/gitleaks
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      - name: Tests (PIN door, on SQLite from migrations/)
+        run: node --test test/*.test.mjs
+
+      - name: Stamp the build version onto the cached assets
+        run: bash scripts/stamp.sh "$(date -u +%Y.%m.%d)-${GITHUB_SHA::7}"
+
+      - name: Detect deploy token
+        id: token
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -n "$CF_TOKEN" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::CLOUDFLARE_API_TOKEN not set, so nothing was deployed. Set it (gh secret set CLOUDFLARE_API_TOKEN -R $GITHUB_REPOSITORY) and re-run."
+          fi
+
+      - name: Deploy to Cloudflare Workers
+        if: steps.token.outputs.present == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: dfbcad0a915bee82d64efc99aa9fdb1a
+        run: |
+          SHA="${GITHUB_SHA::7}"
+          npx wrangler@4 deploy --var COMMIT_SHA:"$SHA" --message "$SHA $(git log -1 --format=%s | cut -c1-72)"
+
+      - name: Live /version names this commit
+        if: steps.token.outputs.present == 'true'
+        run: |
+          SHA="${GITHUB_SHA::7}"
+          for i in $(seq 1 12); do
+            if curl -s --max-time 15 "https://learn.gaitherstephens.com/version" | grep -q "$SHA"; then echo "live: $SHA"; exit 0; fi
+            sleep 5
+          done
+          echo "::error::https://learn.gaitherstephens.com/version does not name $SHA after 60 s"
+          curl -s --max-time 15 "https://learn.gaitherstephens.com/version"; echo
+          exit 1
