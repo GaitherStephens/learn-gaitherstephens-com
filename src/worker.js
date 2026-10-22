@@ -337,7 +337,7 @@ function loginPage(error, nextPath) {
 <meta property="og:site_name" content="FTCE Science 5 to 9 Study">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://learn.gaitherstephens.com/og-image.jpg">
-<link rel="stylesheet" href="/styles.css?v=2026.10.22-1504">
+<link rel="stylesheet" href="/styles.css?v=2026.10.22-1508">
 <script>
 if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === true)) {
   window.sentryOnLoad = function () {
@@ -514,7 +514,7 @@ ${FLAG_PILL}
 
 // Stamped by scripts/stamp.sh on every deploy; /version also carries COMMIT_SHA,
 // set by the deploy (--var), which is the authority on what is live.
-const BUILD = "2026.10.22-1504";
+const BUILD = "2026.10.22-1508";
 
 export default {
   async fetch(request, env) {
@@ -968,7 +968,14 @@ export default {
     ctx.waitUntil((async () => {
       try {
         const { runLearnBackup } = await import("./backup.js");
-        console.log(await runLearnBackup(env));
+        // A PARTIAL pass used to wait a week for the next cron (audit, 2026-10-22):
+        // keep going in this invocation, each pass with its own 20 s budget, until
+        // COMPLETE or a pass makes no progress (six passes at most).
+        for (let pass = 1; pass <= 6; pass++) {
+          const line = await runLearnBackup(env);
+          console.log(`pass ${pass}: ${line}`);
+          if (line.includes("COMPLETE") || /PARTIAL .* 0 written/.test(line)) break;
+        }
       } catch (e) {
         console.error("learn backup FAILED:", e?.stack || e);
       }

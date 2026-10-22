@@ -90,8 +90,10 @@ export async function runLearnBackup(env) {
   pending.sort((a, b) => (sizes.get(a) ?? 0) - (sizes.get(b) ?? 0));
 
   let written = 0, rows = 0, skipped = 0;
+  const timings = []; // [table, ms]: a PARTIAL pass names what was slow (2026-10-22)
   for (const table of pending) {
     if (outOfBudget()) { skipped++; continue; }
+    const t0 = Date.now();
     const schema = await env.DB
       .prepare(`SELECT sql FROM sqlite_master WHERE type='table' AND name=?1`)
       .bind(table).first();
@@ -111,7 +113,10 @@ export async function runLearnBackup(env) {
       httpMetadata: { contentType: "application/x-ndjson" },
     });
     written++; rows += n;
+    timings.push([table, Date.now() - t0]);
   }
+  timings.sort((a, b) => b[1] - a[1]);
+  const slowest = timings.length ? ` · slowest ${timings[0][0]} ${timings[0][1]} ms` : "";
 
   const complete = skipped === 0;
   if (complete) {
@@ -143,8 +148,8 @@ export async function runLearnBackup(env) {
   }
 
   const summary = complete
-    ? `[learn-backup] COMPLETE ${folder} — ${written} written this run, ${tables.length} tables, ${rows} rows`
-    : `[learn-backup] PARTIAL ${folder} — ${written} written, ${skipped} left for next run`;
+    ? `[learn-backup] COMPLETE ${folder} · ${written} written this run, ${tables.length} tables, ${rows} rows${slowest}`
+    : `[learn-backup] PARTIAL ${folder} · ${written} written, ${skipped} left for the next pass${slowest}`;
 
   // Report to the shared collector so a stalled backup is VISIBLE.
   // GOTCHA (2026-08-04): a request served on the workers.dev host cannot
@@ -169,7 +174,7 @@ export async function runLearnBackup(env) {
         }
       : {
           status: "warn",
-          subtitle: `PARTIAL learn-db backup ${date}: ${written} table(s) this pass, ${skipped} still to go · will resume next run · complete-backup age gates: warn >9d, fail >16d`,
+          subtitle: `PARTIAL learn-db backup ${date}: ${written} table(s) this pass, ${skipped} still to go · the next pass resumes it in the same run · complete-backup age gates: warn >9d, fail >16d`,
         };
     try {
       const r = await fetch(env.OPS_INGEST_URL, {
