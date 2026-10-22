@@ -448,13 +448,14 @@ if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === tru
 </script>
 ${FLAG_PILL}
 <script>
+/* gd-rum v2026-10-22 start */
 (function () {
   if (!("PerformanceObserver" in window) || !navigator.sendBeacon) return;
   var lcp = 0, cls = 0, worstEvt = 0, clsSeen = false;
   try {
     new PerformanceObserver(function (l) {
       var es = l.getEntries();
-      if (es.length) lcp = es[es.length - 1].startTime;
+      /* LCP like web-vitals (2026-09-14): ignore a page that was hidden before it painted (background tab) and stop at the first key or click. */ if (!window.__gdLcpInit) { window.__gdLcpInit = 1; window.__gdHiddenAt = document.visibilityState === "hidden" ? 0 : Infinity; addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden" && window.__gdHiddenAt === Infinity) window.__gdHiddenAt = performance.now(); }, true); ["keydown", "click"].forEach(function (t) { addEventListener(t, function () { window.__gdLcpStop = 1; }, { once: true, capture: true }); }); } for (var k = 0; k < es.length; k++) { if (!window.__gdLcpStop && es[k].startTime < window.__gdHiddenAt) { lcp = es[k].startTime; /* What it was (2026-09-23): the desktop p75 read 5.5 s and no lab run could reproduce it, so the beacon says which element, e.g. "IMG how-america-720w.webp". */ var el = es[k].element; window.__gdLcpD = (el ? el.tagName : "?") + " " + ((es[k].url || "").split("/").pop().split("?")[0] || (el && typeof el.className === "string" ? el.className.split(" ")[0] : "")).slice(0, 48) + " t=" + Math.round(es[k].renderTime || 0) + "/" + Math.round(es[k].loadTime || 0); } }
     }).observe({ type: "largest-contentful-paint", buffered: true });
   } catch (_) {}
   try {
@@ -478,12 +479,22 @@ ${FLAG_PILL}
     if (worstEvt > 0) m.inp = Math.round(worstEvt);
     if (nav && nav.responseStart > 0) m.ttfb = Math.round(nav.responseStart);
     if (!Object.keys(m).length) return;
+    /* Headless browsers are not readers (2026-09-28). 38 of 73 desktop LCP
+       beacons in a week came from windows exactly the size of the screen
+       (1920x1080, 1280x720: no browser toolbar at all), averaging 8.7 s
+       against 1.2 s for real windows, bunched on the NOFO email links,
+       which is what mail-security scanners do. Desktop only: a phone can
+       legitimately fill its screen. */
+    if (navigator.webdriver || (innerWidth >= 768 && innerWidth === screen.width && innerHeight === screen.height)) return;
     navigator.sendBeacon("https://gaithernews.com/api/rum",
       new Blob([JSON.stringify({
         site: location.hostname,
         device: innerWidth < 768 ? "m" : "d",
         pg: location.pathname.split("/")[1] || "",
         metrics: m,
+        // Element, navigation type, activation and response time: enough
+        // to tell a slow server from a slow image from a restored tab.
+        lcpd: m.lcp && window.__gdLcpD ? window.__gdLcpD + "|" + (nav ? nav.type : "?") + "|act=" + Math.round((nav && nav.activationStart) || 0) + "|rs=" + Math.round((nav && nav.responseStart) || 0) + "|" + innerWidth + "x" + innerHeight : undefined,
       })], { type: "text/plain" }));
   }
   addEventListener("visibilitychange", function () {
@@ -491,6 +502,7 @@ ${FLAG_PILL}
   });
   addEventListener("pagehide", flush);
 })();
+/* gd-rum end */
 </script>
 </body></html>`;
 }
