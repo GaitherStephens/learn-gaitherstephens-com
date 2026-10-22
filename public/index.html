@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#fafaf7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0f1419" media="(prefers-color-scheme: dark)">
 <title>FTCE Science 5-9 Study</title>
-<link rel="stylesheet" href="/styles.css?v=2026.10.22-1503">
+<link rel="stylesheet" href="/styles.css?v=2026.10.22-1504">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%94%AC%3C/text%3E%3C/svg%3E">
 <script>
 // Theme before first paint. Anything later and she gets a white flash on a
@@ -76,34 +76,9 @@
 })();
 /* gd-rum end */
 </script>
-<!-- Deferred GA4 (G-SVFQ6B3W71) + Clarity (xv4mv577z2) loader
-     (analytics-rollout 2026-07-31). GPC gate + queue stubs + inject on
-     first user interaction, same pattern as gaitherstephens.com. -->
-<script>
-(function () {
-  if (typeof navigator !== "undefined" && navigator.globalPrivacyControl === true) return;
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = function () { window.dataLayer.push(arguments); };
-  window.gtag("js", new Date());
-  window.gtag("config", "G-SVFQ6B3W71");
-  window.clarity = window.clarity || function () { (window.clarity.q = window.clarity.q || []).push(arguments); };
-  var evts = ["pointerdown", "keydown", "scroll", "touchstart"];
-  var load = function () {
-    if (load.done) return;
-    load.done = 1;
-    evts.forEach(function (e) { removeEventListener(e, load, true); });
-    var ga = document.createElement("script");
-    ga.async = true;
-    ga.src = "https://www.googletagmanager.com/gtag/js?id=G-SVFQ6B3W71";
-    document.head.appendChild(ga);
-    var cl = document.createElement("script");
-    cl.async = true;
-    cl.src = "https://www.clarity.ms/tag/xv4mv577z2";
-    document.head.appendChild(cl);
-  };
-  evts.forEach(function (e) { addEventListener(e, load, { capture: true, passive: true }); });
-})();
-</script>
+<!-- GA4 and Clarity left this app on 2026-10-22 (D-081, Gaither: "remove"):
+     a one-person study app behind a PIN, and the sign-in notice and the
+     network privacy record already said learn carries neither. -->
 <!-- Sentry Loader Script (network convention: GPC gate + third-party
      denyUrls; analytics-rollout orange burn-down 2026-07-31). -->
 <script>
@@ -212,7 +187,7 @@ if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === tru
 
 <footer class="foot">
   <p>Built for the Florida Middle Grades General Science 5&ndash;9 (004) exam: 80 multiple-choice questions, 2 hours 30 minutes, scaled score of 200 to pass. Practice questions here are original and modeled on the state competency framework; they are not actual test items.</p>
-  <p><a href="/logout">Sign out</a> &middot; <a href="https://www.fl.nesinc.com/testPage.asp?test=004" target="_blank" rel="noopener">Official test page</a> &middot; <a href="#" data-learn-flag="open">Report a problem</a> &middot; <span class="footer-version" data-learn-flag="open" title="Report a problem">v2026.10.22-1503</span></p>
+  <p><a href="/logout">Sign out</a> &middot; <a href="https://www.fl.nesinc.com/testPage.asp?test=004" target="_blank" rel="noopener">Official test page</a> &middot; <a href="#" data-learn-flag="open">Report a problem</a> &middot; <span class="footer-version" data-learn-flag="open" title="Report a problem">v2026.10.22-1504</span></p>
 </footer>
 
 <!-- Bottom-left: flag. Bottom-right: back to top. Network convention. -->
@@ -253,7 +228,7 @@ if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === tru
   <div class="flag-toast" id="flagToast" hidden></div>
 </dialog>
 
-<script src="/diagrams.js?v=2026.10.22-1503"></script>
-<script src="/app.js?v=2026.10.22-1503"></script>
+<script src="/diagrams.js?v=2026.10.22-1504"></script>
+<script src="/app.js?v=2026.10.22-1504"></script>
 </body>
 </html>

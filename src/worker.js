@@ -283,14 +283,17 @@ const SEC_HEADERS = {
   // /api/*, including the new /passkey page. report-uri stays on so any
   // regression is still reported. 'unsafe-inline' remains (inline
   // script/style); tightening it to hashes is the follow-up, not a blocker.
+  // 2026-10-22 (D-081): GA4 and Clarity left this app, and their origins left
+  // the policy with them (script-src, img-src, connect-src). The CF beacon,
+  // Sentry and the gaithernews collectors are what remains.
   "Content-Security-Policy": [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms https://js.sentry-cdn.com https://browser.sentry-cdn.com",
+    "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://js.sentry-cdn.com https://browser.sentry-cdn.com",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com https://*.clarity.ms https://c.clarity.ms",
+    "img-src 'self' data: blob:",
     "font-src 'self' data:",
     // gaithernews.com = the network's RUM + flag + CSP-report collector.
-    "connect-src 'self' https://gaithernews.com https://www.google.com https://cloudflareinsights.com https://*.cloudflareinsights.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.clarity.ms https://*.ingest.us.sentry.io https://*.ingest.sentry.io https://js.sentry-cdn.com",
+    "connect-src 'self' https://gaithernews.com https://cloudflareinsights.com https://*.cloudflareinsights.com https://*.ingest.us.sentry.io https://*.ingest.sentry.io https://js.sentry-cdn.com",
     "object-src 'none'",
     "base-uri 'self'",
     // The login form posts to /login, same origin, so this is a
@@ -334,7 +337,7 @@ function loginPage(error, nextPath) {
 <meta property="og:site_name" content="FTCE Science 5 to 9 Study">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://learn.gaitherstephens.com/og-image.jpg">
-<link rel="stylesheet" href="/styles.css?v=2026.10.22-1503">
+<link rel="stylesheet" href="/styles.css?v=2026.10.22-1504">
 <script>
 if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === true)) {
   window.sentryOnLoad = function () {
@@ -511,7 +514,7 @@ ${FLAG_PILL}
 
 // Stamped by scripts/stamp.sh on every deploy; /version also carries COMMIT_SHA,
 // set by the deploy (--var), which is the authority on what is live.
-const BUILD = "2026.10.22-1503";
+const BUILD = "2026.10.22-1504";
 
 export default {
   async fetch(request, env) {
