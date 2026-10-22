@@ -334,7 +334,7 @@ function loginPage(error, nextPath) {
 <meta property="og:site_name" content="FTCE Science 5 to 9 Study">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://learn.gaitherstephens.com/og-image.jpg">
-<link rel="stylesheet" href="/styles.css?v=2026.10.22-1154">
+<link rel="stylesheet" href="/styles.css?v=2026.10.22-1503">
 <script>
 if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === true)) {
   window.sentryOnLoad = function () {
@@ -511,7 +511,7 @@ ${FLAG_PILL}
 
 // Stamped by scripts/stamp.sh on every deploy; /version also carries COMMIT_SHA,
 // set by the deploy (--var), which is the authority on what is live.
-const BUILD = "2026.10.22-1154";
+const BUILD = "2026.10.22-1503";
 
 export default {
   async fetch(request, env) {
