@@ -86,7 +86,11 @@ if (!(typeof navigator !== "undefined" && navigator.globalPrivacyControl === tru
   window.sentryOnLoad = function () {
     Sentry.init({
       replaysSessionSampleRate: 0, replaysOnErrorSampleRate: 0, tracesSampleRate: 0, // D-001/D-002: Replay + tracing off in code
+      // A local dev server loads the same loader key and reports as production; drop it (standard-snippets/sentry.html, 2026-10-23).
+      beforeSend: function (e) { return /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) ? null : e; },
       ignoreErrors: [
+        // A cross-origin script's error with the details withheld (no message, no stack) and a skipped ResizeObserver frame: nothing to act on.
+        /^Script error\.?$/, /ResizeObserver loop (completed with undelivered notifications|limit exceeded)/,
         "Invalid call to runtime.sendMessage",
         "Object Not Found Matching Id",
         /Non-Error promise rejection captured with value: Object Not Found/,
