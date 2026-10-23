@@ -516,8 +516,9 @@ ${FLAG_PILL}
 // set by the deploy (--var), which is the authority on what is live.
 const BUILD = "2026.10.22-1508";
 
-export default {
-  async fetch(request, env) {
+/* Every request, routed. Runs inside withBoundary() below, so a throw
+   anywhere in here becomes a 500 that still carries SEC_HEADERS. */
+async function handle(request, env) {
     const url = new URL(request.url);
     // STD-43: the zone may not have Always Use HTTPS on; answer it here.
     if (url.protocol === "http:") return Response.redirect("https://" + url.host + url.pathname + url.search, 301);
@@ -619,7 +620,7 @@ export default {
       if (method === "POST") {
         if (await throttled(env, ipHash)) {
           return new Response(loginPage("Too many attempts. Wait 15 minutes and try again.", "/"), {
-            status: 429, headers: { "Content-Type": "text/html; charset=utf-8", ...SEC_HEADERS },
+            status: 429, headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", ...SEC_HEADERS },
           });
         }
         // Household-wide cap (NET-02): the PIN is shared by every personal app,
@@ -627,16 +628,23 @@ export default {
         // never under it. src/pin-guard.js is a byte copy of piano's.
         if (await guard.globallyThrottled(env.DB)) {
           return new Response(loginPage("PIN sign-in is paused for an hour after too many wrong tries. Use your passkey, or try again later.", "/"), {
-            status: 429, headers: { "Content-Type": "text/html; charset=utf-8", ...SEC_HEADERS },
+            status: 429, headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", ...SEC_HEADERS },
           });
         }
-        const form = await request.formData();
+        // A body that is not a form (a probe, a cut-off upload) used to throw
+        // out of the router; it is a 400 now, not a 500 (audit 2026-10-23).
+        const form = await request.formData().catch(() => null);
+        if (!form) {
+          return new Response(loginPage("That did not arrive as a form. Try again.", "/"), {
+            status: 400, headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", ...SEC_HEADERS },
+          });
+        }
         const pin = String(form.get("pin") || "");
         const next = String(form.get("next") || "/");
         if (!(await pinValid(env, pin))) {
           await recordAttempt(env, ipHash);
           return new Response(loginPage("That PIN did not match. Try again.", next), {
-            status: 401, headers: { "Content-Type": "text/html; charset=utf-8", ...SEC_HEADERS },
+            status: 401, headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", ...SEC_HEADERS },
           });
         }
         await clearAttempts(env, ipHash);
@@ -647,7 +655,7 @@ export default {
         });
       }
       return new Response(loginPage(null, url.searchParams.get("next") || "/"), {
-        headers: { "Content-Type": "text/html; charset=utf-8", ...SEC_HEADERS },
+        headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", ...SEC_HEADERS },
       });
     }
 
@@ -823,7 +831,7 @@ export default {
   refresh();
 })();
 </script></main></body></html>`;
-      return new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8", ...SEC_HEADERS } });
+      return new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", ...SEC_HEADERS } });
     }
 
     // Read-only PIN state for the /passkey page.
@@ -959,7 +967,33 @@ export default {
     else if (url.searchParams.has("v")) out.headers.set("Cache-Control", "public, max-age=31536000, immutable");
     else out.headers.set("Cache-Control", "public, max-age=300");
     return out;
-  },
+}
+
+/** The error boundary (audit 2026-10-23). Before it, any uncaught throw in the
+ *  router became Cloudflare's bare 1101 page: no HSTS, no CSP, no nosniff,
+ *  and nothing of ours in the log. Now the stack goes to Workers Logs
+ *  (wrangler.toml [observability]) and the reader gets a short page or, under
+ *  /api/, a JSON error, both with the full header set and no caching. */
+export function withBoundary(handler) {
+  return async (request, env) => {
+    try {
+      return await handler(request, env);
+    } catch (e) {
+      console.error("learn unhandled", e?.stack || e);
+      let path = "/";
+      try { path = new URL(request.url).pathname; } catch { /* keep "/" */ }
+      if (path.startsWith("/api/")) return json({ error: "server_error" }, 500);
+      return new Response(
+        "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Something broke</title></head>"
+        + "<body style=\"font-family:system-ui,sans-serif;max-width:32rem;margin:4rem auto;padding:0 1rem\"><h1>Something broke on our side.</h1><p>Nothing you did caused it. Go back and try again in a moment.</p><p><a href=\"/\">Home</a></p></body></html>",
+        { status: 500, headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", ...SEC_HEADERS } },
+      );
+    }
+  };
+}
+
+export default {
+  fetch: withBoundary(handle),
 
   // Weekly D1 -> R2 backup (Mon 09:00 UTC — clear of house's Mon 11/12 UTC
   // digest pair and gaithernews's Sun backup window). Resumable and
