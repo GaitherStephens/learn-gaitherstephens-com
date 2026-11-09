@@ -9,6 +9,7 @@ import {
   deleteCredential, touchCredential, bytesToB64url,
 } from "./webauthn.js";
 import * as guard from "./pin-guard.js";
+import { checkPinAndUpgrade, hashPinForStorage } from "./pin-store.js";
 
 const COOKIE = "learn_session";
 const DEMO_COOKIE = "learn_demo";
@@ -118,7 +119,7 @@ async function pinValid(env, attempted) {
   } catch { /* settings table may not exist yet: PIN stays enabled */ }
   try {
     const row = await env.DB.prepare("SELECT value FROM settings WHERE key = ?").bind(PIN_SETTING).first();
-    if (row?.value) return constantEqual(await sha256Hex(attempted), row.value);
+    if (row?.value) return await checkPinAndUpgrade(env.DB, PIN_SETTING, row.value, attempted, env.PIN_PEPPER);
   } catch { /* settings table may not exist yet */ }
   if (env.LEARN_PIN) return constantEqual(await sha256Hex(attempted), await sha256Hex(env.LEARN_PIN));
   return false;
@@ -923,7 +924,7 @@ async function handle(request, env) {
       if (!/^\d{4,12}$/.test(next)) return json({ error: "PIN must be 4 to 12 digits." }, 400);
       await env.DB.prepare(
         "INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value",
-      ).bind(PIN_SETTING, await sha256Hex(next)).run();
+      ).bind(PIN_SETTING, await hashPinForStorage(next, env.PIN_PEPPER)).run();
       return json({ ok: true });
     }
 

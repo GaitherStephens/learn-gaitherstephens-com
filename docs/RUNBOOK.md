@@ -46,7 +46,7 @@ passkeys. If those devices are lost:
 npx wrangler d1 execute learn-db --remote --command "UPDATE settings SET value='0' WHERE key='pin_disabled'"
 ```
 
-The household PIN then works again at `/login` (the hash is in `settings`
+The household PIN then works again at `/login` (the value is in `settings`
 under `learn_pin_sha256`; it is the same PIN as every personal app, see
 `~/GaitherDyn/standard-snippets/` and the root CLAUDE.md on the household PIN).
 
@@ -55,7 +55,9 @@ under `learn_pin_sha256`; it is the same PIN as every personal app, see
 Worker secrets: `SESSION_SECRET` (signs sessions; rotating it signs
 everyone out, which is the intended effect), `OPS_TOKEN` (the backup
 trigger), `LEARN_PIN` (legacy fallback, unused when the settings hash is
-set). Rotate with `npx wrangler secret put <NAME> --name learn-gaitherstephens`
+set), `PIN_PEPPER` (optional, peppers the stored PIN; do not rotate or delete
+it while a `pbkdf2p$` value is stored, or that value refuses every PIN).
+Rotate with `npx wrangler secret put <NAME> --name learn-gaitherstephens`
 from a terminal; local copies live in `~/GaitherDyn/.gaither-private/`
 (never in this repo). After rotating `SESSION_SECRET`, sign in again.
 
